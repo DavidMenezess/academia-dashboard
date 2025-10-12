@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  academia-dashboard:
+    build: .
+    container_name: academia-dashboard
+    ports:
+      - "8080:80"  # Porta externa:interna
+    volumes:
+      # Dados persistentes
+      - ./data:/app/data
+      # Logs
+      - ./logs:/var/log/nginx
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - academia-network
+
+  # API para processamento de dados Excel/CSV
+  data-api:
+    image: node:18-alpine
+    container_name: academia-data-api
+    working_dir: /app
+    volumes:
+      - ./api:/app
+      - ./data:/app/data
+    ports:
+      - "3000:3000"
+    command: >
+      sh -c "
+        npm install &&
+        node server.js
+      "
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    networks:
+      - academia-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  academia-network:
+    driver: bridge
+
+volumes:
+  academia-data:
+    driver: local

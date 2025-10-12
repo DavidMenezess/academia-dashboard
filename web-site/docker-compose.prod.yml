@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  academia-dashboard:
+    build: .
+    container_name: academia-dashboard-prod
+    ports:
+      - "80:80"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/var/log/nginx
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+      - NODE_ENV=production
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - academia-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+  data-api:
+    image: node:18-alpine
+    container_name: academia-data-api-prod
+    working_dir: /app
+    volumes:
+      - ./api:/app
+      - ./data:/app/data
+    ports:
+      - "3000:3000"
+    command: >
+      sh -c "
+        npm install --production &&
+        node server.js
+      "
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NODE_OPTIONS=--max-old-space-size=512
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - academia-network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+        reservations:
+          memory: 128M
+          cpus: '0.1'
+
+networks:
+  academia-network:
+    driver: bridge
+
+volumes:
+  academia-data:
+    driver: local
+

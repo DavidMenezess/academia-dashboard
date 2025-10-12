@@ -1,0 +1,9 @@
+tipo,total_membros,membros_ativos,receita_mensal,aulas_realizadas,instrutores_ativos,faixa_etaria,aula,observacoes
+estatisticas,150,120,15000.00,45,6,,,
+membro,,,,,,18-25,
+membro,,,,,,26-35,
+membro,,,,,,36-45,
+aula,,,,,,,musculacao,
+aula,,,,,,,pilates,
+aula,,,,,,,spinning,
+

@@ -1,0 +1,72 @@
+{
+  "academia": {
+    "nome": "Academia Força Fitness",
+    "endereco": "Rua das Academias, 123 - Centro",
+    "telefone": "(11) 99999-9999",
+    "email": "contato@forcafitness.com",
+    "horario_funcionamento": "06:00 - 22:00",
+    "dias_funcionamento": "Segunda a Sábado"
+  },
+  "estatisticas": {
+    "total_membros": 150,
+    "membros_ativos": 120,
+    "membros_novos_mes": 8,
+    "receita_mensal": 15000.00,
+    "receita_anual": 180000.00,
+    "aulas_realizadas": 45,
+    "aulas_agendadas": 12,
+    "instrutores_ativos": 6,
+    "equipamentos_total": 25,
+    "equipamentos_manutencao": 2
+  },
+  "membros": {
+    "por_faixa_etaria": {
+      "18-25": 35,
+      "26-35": 45,
+      "36-45": 40,
+      "46-55": 20,
+      "55+": 10
+    },
+    "por_plano": {
+      "mensal": 80,
+      "trimestral": 35,
+      "semestral": 20,
+      "anual": 15
+    }
+  },
+  "aulas": {
+    "musculacao": {
+      "total": 20,
+      "participantes_media": 8
+    },
+    "pilates": {
+      "total": 15,
+      "participantes_media": 6
+    },
+    "spinning": {
+      "total": 10,
+      "participantes_media": 12
+    }
+  },
+  "financeiro": {
+    "receitas": {
+      "mensalidades": 12000.00,
+      "aulas_particulares": 2000.00,
+      "produtos": 1000.00
+    },
+    "despesas": {
+      "aluguel": 3000.00,
+      "funcionarios": 8000.00,
+      "equipamentos": 500.00,
+      "utilitarios": 800.00
+    }
+  },
+  "metas": {
+    "membros_meta": 200,
+    "receita_meta": 20000.00,
+    "satisfacao_meta": 4.5
+  },
+  "ultima_atualizacao": "2025-10-12T17:27:24Z",
+  "versao": "1.0.0"
+}
+
