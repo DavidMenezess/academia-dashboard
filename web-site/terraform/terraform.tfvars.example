@@ -1,0 +1,60 @@
+# ========================================
+# VARIÁVEIS DE CONFIGURAÇÃO - EXEMPLO
+# ========================================
+# Copie este arquivo para terraform.tfvars e preencha com seus valores
+# cp terraform.tfvars.example terraform.tfvars
+
+# Região da AWS (escolha a mais próxima de você)
+# Regiões com Free Tier:
+# - us-east-1 (N. Virginia)
+# - us-west-2 (Oregon)
+# - eu-west-1 (Ireland)
+# - ap-southeast-1 (Singapore)
+# - sa-east-1 (São Paulo)
+aws_region = "us-east-1"
+
+# Nome do projeto (deixe como está ou personalize)
+project_name = "academia-dashboard"
+
+# Ambiente (dev, staging, prod)
+environment = "prod"
+
+# IMPORTANTE: Nome da chave SSH
+# Você precisa criar esta chave no AWS Console antes:
+# AWS Console > EC2 > Key Pairs > Create Key Pair
+# Baixe o arquivo .pem e guarde em local seguro
+key_name = "academia-dashboard-key"
+
+# IMPORTANTE: Seu IP público para acesso SSH
+# Descubra seu IP: curl ifconfig.me
+# Formato: x.x.x.x/32
+# Exemplo: "203.0.113.10/32"
+your_ip = "0.0.0.0/32"  # MUDE ISTO!
+
+# URL do repositório GitHub (opcional, mas recomendado)
+# Se não preencher, será necessário fazer deploy manual
+# Exemplo: "https://github.com/seu-usuario/academia-dashboard.git"
+github_repo = ""
+
+# Tamanho do volume EBS em GB (8-30GB para Free Tier)
+ebs_volume_size = 20
+
+# Monitoramento detalhado (false para Free Tier)
+enable_detailed_monitoring = false
+
+# Porta da API (padrão: 3000)
+api_port = 3000
+
+# Porta do Dashboard (padrão: 80)
+dashboard_port = 80
+
+# Tags personalizadas (opcional)
+tags = {
+  Project     = "Academia Dashboard"
+  ManagedBy   = "Terraform"
+  Environment = "Production"
+  CostCenter  = "Free-Tier"
+  Owner       = "Seu Nome"
+  Email       = "seu-email@exemplo.com"
+}
+
