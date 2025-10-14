@@ -1,640 +1,374 @@
-# 🏗️ Infraestrutura como Código - Academia Dashboard
+# Terraform - Academia Dashboard (AWS Free Tier)
 
-Este projeto contém a infraestrutura completa para deploy do Academia Dashboard na AWS usando **apenas recursos do Free Tier**.
-
-## 📋 Índice
-
-- [Pré-requisitos](#-pré-requisitos)
-- [Recursos AWS Utilizados](#-recursos-aws-utilizados)
-- [Custos (Free Tier)](#-custos-free-tier)
-- [Instalação](#-instalação)
-- [Configuração](#-configuração)
-- [Deploy](#-deploy)
-- [Comandos Úteis](#-comandos-úteis)
-- [Manutenção](#-manutenção)
-- [Troubleshooting](#-troubleshooting)
-- [Limpeza](#-limpeza)
+Infraestrutura como código (IaC) para deploy do Academia Dashboard na AWS usando **100% Free Tier**.
 
 ---
 
-## 🔧 Pré-requisitos
-
-### 1. Conta AWS
-- ✅ Conta AWS ativa
-- ✅ Acesso ao Free Tier (12 meses após criar a conta)
-- ✅ Credenciais AWS configuradas
-
-### 2. Ferramentas Instaladas
+## ⚡ Quick Start
 
 ```bash
-# Terraform (versão >= 1.0)
-# Windows (usando Chocolatey)
-choco install terraform
-
-# Linux
-wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-sudo apt update && sudo apt install terraform
-
-# macOS
-brew tap hashicorp/tap
-brew install hashicorp/tap/terraform
-
-# AWS CLI (versão >= 2.0)
-# Windows
-msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
-
-# Linux
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-
-# macOS
-brew install awscli
-```
-
-### 3. Verificar Instalação
-
-```bash
-terraform --version
-aws --version
-```
-
----
-
-## 🏛️ Recursos AWS Utilizados
-
-### Free Tier Elegíveis
-
-| Recurso | Especificação | Free Tier | Custo Mensal* |
-|---------|---------------|-----------|---------------|
-| **EC2** | t2.micro | 750 horas/mês | R$ 0,00 |
-| **EBS** | 20GB gp2 | 30GB/mês | R$ 0,00 |
-| **Elastic IP** | 1 IP | 1 IP anexado | R$ 0,00 |
-| **Data Transfer** | Saída | 1GB/mês | R$ 0,00 |
-| **VPC** | Default | Ilimitado | R$ 0,00 |
-| **Security Groups** | Padrão | Ilimitado | R$ 0,00 |
-
-*Dentro do Free Tier por 12 meses
-
-### Arquitetura
-
-```
-Internet
-    │
-    ├─── Elastic IP (Público)
-    │
-    ├─── Security Group
-    │    ├── SSH (22)     - Seu IP
-    │    ├── HTTP (80)    - 0.0.0.0/0
-    │    ├── HTTPS (443)  - 0.0.0.0/0
-    │    └── API (3000)   - 0.0.0.0/0
-    │
-    └─── EC2 t2.micro (Ubuntu 22.04)
-         ├── Docker
-         ├── Docker Compose
-         ├── Nginx (Dashboard)
-         └── Node.js (API)
-```
-
----
-
-## 💰 Custos (Free Tier)
-
-### Dentro do Free Tier (12 meses)
-✅ **GRÁTIS** - Enquanto permanecer dentro dos limites:
-- 750 horas/mês de t2.micro (uma instância 24/7)
-- 30GB de armazenamento EBS
-- 1 Elastic IP anexado à instância
-- 15GB de transferência de dados (primeiros 12 meses)
-
-### Após Free Tier ou Exceder Limites
-Se exceder o Free Tier, custos aproximados:
-- EC2 t2.micro: ~US$ 8,50/mês (~R$ 45/mês)
-- EBS 20GB: ~US$ 2,00/mês (~R$ 10/mês)
-- Transferência: ~US$ 0,09/GB
-
-**Total estimado:** US$ 10-15/mês (~R$ 50-75/mês)
-
----
-
-## 📥 Instalação
-
-### 1. Clonar o Repositório
-
-```bash
-cd academia-dashboard/web-site/terraform
-```
-
-### 2. Configurar AWS CLI
-
-```bash
-# Configurar credenciais AWS
+# 1. Configure AWS
 aws configure
 
-# Será solicitado:
-# AWS Access Key ID: [Sua Access Key]
-# AWS Secret Access Key: [Sua Secret Key]
-# Default region name: us-east-1
-# Default output format: json
+# 2. Configure variáveis
+cp terraform.tfvars.example terraform.tfvars
+nano terraform.tfvars  # Edite com suas informações
+
+# 3. Deploy
+terraform init
+terraform plan
+terraform apply
 ```
 
-### 3. Criar Chave SSH na AWS
+**Aguarde 5 minutos e acesse o IP fornecido!**
 
-```bash
-# Opção 1: Pelo AWS Console
-# 1. Acesse: https://console.aws.amazon.com/ec2/
-# 2. Navegue: EC2 > Network & Security > Key Pairs
-# 3. Clique em "Create Key Pair"
-# 4. Nome: academia-dashboard-key
-# 5. Type: RSA
-# 6. Format: .pem
-# 7. Download e salve em local seguro
+---
 
-# Opção 2: Via AWS CLI
-aws ec2 create-key-pair \
-    --key-name academia-dashboard-key \
-    --query 'KeyMaterial' \
-    --output text > academia-dashboard-key.pem
+## 📋 Pré-requisitos
 
-# Ajustar permissões (Linux/macOS)
-chmod 400 academia-dashboard-key.pem
+1. **Conta AWS** (Free Tier)
+2. **Terraform** >= 1.0
+3. **AWS CLI** configurado
+4. **Key pair** criado na AWS Console
+
+---
+
+## 📁 Arquivos
+
+```
+terraform/
+├── provider.tf              # Configuração AWS provider
+├── variables.tf             # Variáveis do projeto
+├── ec2.tf                   # Instância EC2 + Elastic IP
+├── security-groups.tf       # Regras de firewall
+├── outputs.tf               # Outputs após deploy
+├── user-data.sh            # Script de inicialização
+├── terraform.tfvars.example # Exemplo de variáveis
+└── scripts/                 # Scripts auxiliares
 ```
 
 ---
 
 ## ⚙️ Configuração
 
-### 1. Copiar Arquivo de Variáveis
+### 1. Copie o arquivo de exemplo
 
 ```bash
 cp terraform.tfvars.example terraform.tfvars
 ```
 
-### 2. Editar terraform.tfvars
-
-```bash
-# Windows
-notepad terraform.tfvars
-
-# Linux/macOS
-nano terraform.tfvars
-# ou
-vim terraform.tfvars
-```
-
-### 3. Configurações Obrigatórias
+### 2. Edite `terraform.tfvars`
 
 ```hcl
-# Descubra seu IP
-# Windows: Invoke-WebRequest -Uri "https://ifconfig.me" | Select-Object -Expand Content
-# Linux/macOS: curl ifconfig.me
+# Região AWS (Free Tier disponível)
+aws_region = "us-east-1"
 
-your_ip = "SEU.IP.PUBLICO.AQUI/32"  # IMPORTANTE!
-key_name = "academia-dashboard-key"  # Nome da chave criada
+# Nome da chave SSH (criada na AWS Console)
+key_name = "sua-chave"
 
-# Opcional mas recomendado
+# Seu IP público (para SSH)
+# Descubra: curl ifconfig.me
+your_ip = "203.0.113.0/32"
+
+# Repositório GitHub (opcional)
 github_repo = "https://github.com/seu-usuario/academia-dashboard.git"
-```
 
-### 4. Configurações Opcionais
-
-```hcl
-# Região AWS (escolha a mais próxima)
-aws_region = "us-east-1"  # N. Virginia
-# aws_region = "sa-east-1"  # São Paulo (mais caro)
-
-# Tamanho do volume (8-30GB para Free Tier)
+# Tamanho do disco EBS (8-30 GB)
 ebs_volume_size = 20
-
-# Tags personalizadas
-tags = {
-  Owner = "Seu Nome"
-  Email = "seu-email@exemplo.com"
-}
 ```
 
 ---
 
 ## 🚀 Deploy
 
-### 1. Inicializar Terraform
-
 ```bash
+# Inicializar
 terraform init
-```
 
-### 2. Validar Configuração
-
-```bash
-terraform validate
-```
-
-### 3. Planejar Deploy (Preview)
-
-```bash
+# Planejar (ver o que será criado)
 terraform plan
-```
 
-### 4. Aplicar Infraestrutura
-
-```bash
+# Aplicar (criar recursos)
 terraform apply
 
-# Ou sem confirmação
-terraform apply -auto-approve
+# Confirme com: yes
 ```
 
-### 5. Aguardar Conclusão
+---
 
-⏱️ **Tempo estimado:** 3-5 minutos
-- Criação de recursos: ~1 min
-- User Data (instalação): ~2-4 min
+## 📊 Recursos Criados
 
-### 6. Obter Informações
+| Recurso | Tipo | Free Tier | Custo |
+|---------|------|-----------|-------|
+| EC2 | t2.micro | ✅ 750h/mês | $0 |
+| EBS | 20 GB gp2 | ✅ 30GB | $0 |
+| Elastic IP | 1 IP | ✅ 1 grátis | $0 |
+| Security Group | Custom | ✅ Ilimitado | $0 |
 
+**Total: $0/mês** (nos primeiros 12 meses)
+
+---
+
+## 🔧 Comandos Úteis
+
+### Ver outputs (IPs, URLs)
 ```bash
-# Ver todos os outputs
 terraform output
+```
 
-# Ver output específico
+### Ver IP público
+```bash
 terraform output public_ip
-terraform output dashboard_url
+```
+
+### Ver comando SSH
+```bash
 terraform output ssh_command
+```
 
-# Ver resumo completo
-terraform output deployment_summary
+### Atualizar infraestrutura
+```bash
+terraform plan
+terraform apply
+```
 
-# Ver próximos passos
-terraform output next_steps
+### Destruir tudo
+```bash
+terraform destroy
 ```
 
 ---
 
-## 🎯 Acessar o Dashboard
+## 🔒 Security Groups (Portas Abertas)
 
-Após o deploy, aguarde 2-3 minutos e acesse:
-
-```bash
-# Dashboard
-http://SEU-IP-PUBLICO
-
-# API
-http://SEU-IP-PUBLICO:3000
-
-# Health Check
-http://SEU-IP-PUBLICO/health
-```
+| Porta | Serviço | Origem | Descrição |
+|-------|---------|--------|-----------|
+| 22 | SSH | Seu IP | Acesso SSH restrito |
+| 80 | HTTP | 0.0.0.0/0 | Dashboard público |
+| 443 | HTTPS | 0.0.0.0/0 | SSL (futuro) |
+| 3000 | API | 0.0.0.0/0 | API REST |
 
 ---
 
-## 🔐 Conectar via SSH
+## 📋 User Data Script
 
-```bash
-# Comando será exibido no output
-ssh -i academia-dashboard-key.pem ubuntu@SEU-IP-PUBLICO
+O script `user-data.sh` executa automaticamente na inicialização da EC2:
 
-# Ver informações do sistema
-cat ~/SYSTEM_INFO.txt
-
-# Ver logs de instalação
-tail -f /var/log/user-data.log
-```
+1. ✅ Atualiza o sistema
+2. ✅ Instala Docker + Docker Compose
+3. ✅ Configura firewall (UFW)
+4. ✅ Instala Fail2ban
+5. ✅ Clona repositório GitHub (se fornecido)
+6. ✅ Inicia a aplicação
+7. ✅ Configura backups automáticos
+8. ✅ Cria scripts de gerenciamento
 
 ---
 
-## 🛠️ Comandos Úteis
+## 🔍 Verificar Deploy
 
-### Terraform
-
+### Via Terraform
 ```bash
-# Ver estado atual
+# Ver estado
 terraform show
 
-# Ver outputs
-terraform output
+# Listar recursos
+terraform state list
 
-# Atualizar infraestrutura
-terraform apply
-
-# Destruir infraestrutura
-terraform destroy
-
-# Formatar código
-terraform fmt
-
-# Validar configuração
-terraform validate
-
-# Ver plano sem aplicar
-terraform plan
-
-# Importar recurso existente
-terraform import aws_instance.academia_dashboard i-1234567890abcdef0
+# Ver output específico
+terraform output dashboard_url
 ```
 
-### Docker (no servidor)
-
+### Via AWS CLI
 ```bash
-# SSH no servidor primeiro
-ssh -i academia-dashboard-key.pem ubuntu@SEU-IP-PUBLICO
+# Ver instância
+aws ec2 describe-instances --filters "Name=tag:Name,Values=academia-dashboard-prod"
 
-# Ver containers
+# Ver IP público
+aws ec2 describe-addresses
+```
+
+### Via SSH
+```bash
+# Conectar
+ssh -i sua-chave.pem ubuntu@$(terraform output -raw public_ip)
+
+# Ver status da aplicação
 docker ps
-
-# Ver logs do dashboard
-docker logs -f academia-dashboard-prod
-
-# Ver logs da API
-docker logs -f academia-data-api-prod
-
-# Reiniciar containers
-cd ~/academia-dashboard
-docker-compose -f docker-compose.prod.yml restart
-
-# Parar containers
-docker-compose -f docker-compose.prod.yml stop
-
-# Iniciar containers
-docker-compose -f docker-compose.prod.yml start
-
-# Rebuild containers
-docker-compose -f docker-compose.prod.yml up -d --build
-```
-
-### Scripts Personalizados (no servidor)
-
-```bash
-# Atualizar aplicação do GitHub
-sudo update-academia-dashboard
-
-# Fazer backup
-sudo backup-academia-dashboard
-
-# Ver backups
-ls -lh ~/backups/
-
-# Restaurar backup
-cd ~/academia-dashboard
-tar -xzf ~/backups/backup_YYYYMMDD_HHMMSS.tar.gz
+cat ~/SYSTEM_INFO.txt
 ```
 
 ---
 
-## 🔄 Manutenção
+## 📊 Outputs Disponíveis
 
-### Atualizar Código
+Após o `terraform apply`, você terá:
 
+- `public_ip` - IP público do servidor
+- `dashboard_url` - URL do dashboard
+- `api_url` - URL da API
+- `ssh_command` - Comando para SSH
+- `instance_id` - ID da instância EC2
+- `deployment_summary` - Resumo completo
+- `next_steps` - Próximos passos
+
+---
+
+## 🔄 Atualizar Aplicação
+
+### Método 1: Na instância EC2
 ```bash
-# Método 1: Script automático (no servidor)
-ssh -i academia-dashboard-key.pem ubuntu@SEU-IP-PUBLICO
+# Conecte via SSH
+ssh -i sua-chave.pem ubuntu@SEU-IP
+
+# Execute script de atualização
 sudo update-academia-dashboard
-
-# Método 2: Manual (no servidor)
-cd ~/academia-dashboard
-git pull
-docker-compose -f docker-compose.prod.yml up -d --build
 ```
 
-### Backup Manual
-
+### Método 2: Recriar instância
 ```bash
-# No servidor
-sudo backup-academia-dashboard
+# Marca para recriação
+terraform taint aws_instance.academia_dashboard
 
-# Ou manual
-cd ~/academia-dashboard
-tar -czf ~/backup-$(date +%Y%m%d-%H%M%S).tar.gz data/ logs/
-```
-
-### Monitoramento
-
-```bash
-# Status dos containers
-docker ps
-
-# Uso de recursos
-htop
-
-# Espaço em disco
-df -h
-
-# Logs do sistema
-journalctl -u docker -f
-
-# Logs da aplicação
-tail -f ~/academia-dashboard/logs/*.log
-```
-
-### Atualizar Infraestrutura
-
-```bash
-# 1. Modificar arquivos .tf
-# 2. Ver mudanças
-terraform plan
-
-# 3. Aplicar mudanças
+# Aplica (recria com código novo)
 terraform apply
 ```
 
 ---
 
-## 🐛 Troubleshooting
+## 🚨 Solução de Problemas
 
-### Problema: Terraform não encontra credenciais
-
+### Erro: "No valid credential sources"
 ```bash
-# Verificar credenciais
-aws sts get-caller-identity
-
-# Reconfigurar
+# Configure AWS CLI
 aws configure
 ```
 
-### Problema: Erro ao criar chave SSH
-
+### Erro: "Key pair does not exist"
 ```bash
-# Listar chaves existentes
-aws ec2 describe-key-pairs
-
-# Deletar chave antiga
-aws ec2 delete-key-pair --key-name academia-dashboard-key
-
-# Criar nova
-aws ec2 create-key-pair --key-name academia-dashboard-key --query 'KeyMaterial' --output text > academia-dashboard-key.pem
-chmod 400 academia-dashboard-key.pem
+# Crie key pair na AWS Console:
+# EC2 → Key Pairs → Create key pair
 ```
 
-### Problema: Não consigo acessar via SSH
-
+### Site não carrega
 ```bash
-# Verificar security group
-aws ec2 describe-security-groups --group-ids $(terraform output -raw security_group_id)
+# 1. Aguarde 5 minutos (aplicação inicializando)
 
-# Verificar seu IP atual
+# 2. Verifique logs via SSH
+ssh -i sua-chave.pem ubuntu@$(terraform output -raw public_ip)
+tail -f /var/log/user-data.log
+```
+
+### SSH não conecta
+```bash
+# Verifique se seu IP está correto
 curl ifconfig.me
 
-# Atualizar your_ip no terraform.tfvars e aplicar
+# Atualize terraform.tfvars
+your_ip = "NOVO_IP/32"
+
+# Reaplique
 terraform apply
 ```
 
-### Problema: Dashboard não carrega
+---
 
-```bash
-# SSH no servidor
-ssh -i academia-dashboard-key.pem ubuntu@SEU-IP-PUBLICO
+## 💡 Scripts Auxiliares
 
-# Verificar containers
-docker ps
+A pasta `scripts/` contém scripts úteis:
 
-# Ver logs
-docker logs academia-dashboard-prod
-docker logs academia-data-api-prod
+### `setup.sh`
+Inicialização rápida do Terraform
 
-# Verificar user-data completou
-cat /var/log/user-data-complete
+### `deploy.sh`
+Deploy automatizado
 
-# Ver log de instalação
-tail -100 /var/log/user-data.log
-```
+### `destroy.sh`
+Destruição com confirmação
 
-### Problema: Erro de Free Tier
+### `status.sh`
+Verifica status dos recursos
 
-```bash
-# Verificar limites do Free Tier
-# AWS Console > Billing > Free Tier
+### `health-check.sh`
+Verifica saúde da aplicação
 
-# Ver custos atuais
-aws ce get-cost-and-usage \
-    --time-period Start=2024-01-01,End=2024-01-31 \
-    --granularity MONTHLY \
-    --metrics BlendedCost
-```
+### `connect.sh`
+Conecta via SSH automaticamente
 
-### Problema: Instância não inicia
+### `backup-state.sh`
+Backup do estado do Terraform
 
-```bash
-# Ver logs da instância
-aws ec2 get-console-output --instance-id $(terraform output -raw instance_id)
-
-# Verificar estado
-aws ec2 describe-instance-status --instance-ids $(terraform output -raw instance_id)
-
-# Reiniciar instância
-aws ec2 reboot-instances --instance-ids $(terraform output -raw instance_id)
-```
+### `update.sh`
+Atualiza infraestrutura
 
 ---
 
-## 🧹 Limpeza
+## 📚 Variáveis Importantes
 
-### Destruir Infraestrutura Completa
+### Obrigatórias
+- `key_name` - Nome do key pair na AWS
+- `your_ip` - Seu IP público (/32)
+
+### Opcionais
+- `aws_region` - Região AWS (default: us-east-1)
+- `project_name` - Nome do projeto (default: academia-dashboard)
+- `instance_type` - Tipo EC2 (default: t2.micro)
+- `ebs_volume_size` - Tamanho disco (default: 20GB)
+- `github_repo` - URL do repositório
+- `environment` - Ambiente (default: prod)
+
+---
+
+## 💰 Controle de Custos
+
+### ✅ Mantém no Free Tier
+- Tipo: `t2.micro` (fixo)
+- EBS: 20GB (limite 30GB)
+- Monitoring: desabilitado
+- Elastic IP: 1 anexado
+
+### ⚠️ Evite custos extras
+- ❌ Não mude para t2.small+
+- ❌ Não aumente EBS > 30GB
+- ❌ Não crie múltiplas instâncias
+- ❌ Não ative monitoring detalhado
+
+---
+
+## 🧹 Limpar Recursos
 
 ```bash
-# Ver o que será destruído
-terraform plan -destroy
-
 # Destruir tudo
 terraform destroy
 
-# Ou sem confirmação
-terraform destroy -auto-approve
+# Confirme com: yes
 ```
 
-### Limpeza Parcial
-
-```bash
-# Remover apenas um recurso
-terraform destroy -target=aws_instance.academia_dashboard
-
-# Remover Elastic IP
-terraform destroy -target=aws_eip.academia_dashboard
-```
-
-### Limpeza Manual (AWS Console)
-
-1. EC2 > Instances > Terminar instância
-2. EC2 > Elastic IPs > Liberar endereço
-3. EC2 > Security Groups > Deletar (se não usado)
-4. EC2 > Key Pairs > Deletar (se não usado)
-
-### Limpeza Completa AWS
-
-```bash
-# Listar todos os recursos da região
-aws resourcegroupstaggingapi get-resources \
-    --tag-filters Key=Project,Values="Academia Dashboard"
-
-# Deletar manualmente cada recurso
-```
+**⚠️ Isso remove:**
+- Instância EC2
+- Elastic IP
+- Security Group
+- Volume EBS
+- **Todos os dados!**
 
 ---
 
-## 📚 Referências
+## 📖 Documentação Completa
 
-### Documentação
-
-- [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
-- [AWS Free Tier](https://aws.amazon.com/free/)
-- [EC2 User Data](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html)
-- [Docker Documentation](https://docs.docker.com/)
-
-### Arquivos do Projeto
-
-- `variables.tf` - Variáveis de configuração
-- `provider.tf` - Configuração do provider AWS
-- `security-groups.tf` - Regras de firewall
-- `ec2.tf` - Configuração da instância EC2
-- `user-data.sh` - Script de inicialização
-- `outputs.tf` - Outputs do deployment
-- `terraform.tfvars` - Valores das variáveis (criar)
+- **Guia Deploy AWS**: [../DEPLOY-AWS.md](../DEPLOY-AWS.md)
+- **Guia Deploy Local**: [../DEPLOY-LOCAL.md](../DEPLOY-LOCAL.md)
+- **README Principal**: [../../README.md](../../README.md)
 
 ---
 
-## 🤝 Contribuindo
+## 📞 Suporte
 
-Para contribuir com melhorias:
-
-1. Fork o projeto
-2. Crie uma branch: `git checkout -b feature/melhoria`
-3. Commit: `git commit -m 'Adiciona melhoria X'`
-4. Push: `git push origin feature/melhoria`
-5. Abra um Pull Request
+- **Terraform Docs**: https://www.terraform.io/docs
+- **AWS Free Tier**: https://aws.amazon.com/free/
+- **Issues**: GitHub Issues
 
 ---
 
-## 📝 Licença
+**✅ Terraform configurado para 100% Free Tier da AWS**
 
-Este projeto é fornecido "como está" para fins educacionais.
-
----
-
-## ⚠️ Avisos Importantes
-
-1. **Segurança**: Sempre use seu IP específico para SSH (`your_ip`)
-2. **Custos**: Monitore o AWS Free Tier para evitar cobranças
-3. **Backups**: Configure backups automáticos dos dados
-4. **SSL/HTTPS**: Configure certificado SSL para produção
-5. **Domínio**: Use um domínio personalizado para produção
-6. **Monitoramento**: Configure CloudWatch para alertas
-
----
-
-## 🎯 Próximos Passos
-
-Após o deploy bem-sucedido:
-
-1. ✅ Configure um domínio personalizado
-2. ✅ Configure SSL/HTTPS com Let's Encrypt
-3. ✅ Configure backups automáticos para S3
-4. ✅ Configure CloudWatch para monitoramento
-5. ✅ Configure Auto Scaling (sairá do Free Tier)
-6. ✅ Configure Load Balancer (sairá do Free Tier)
-
----
-
-**Desenvolvido com ❤️ para estudos de DevOps e AWS**
-
-
-
-
+**💰 Custo estimado: $0/mês (primeiros 12 meses)**

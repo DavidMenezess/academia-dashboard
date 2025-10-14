@@ -1,193 +1,275 @@
-# ☁️ Deploy AWS - Academia Dashboard
+# ☁️ Deploy AWS com Terraform - Academia Dashboard
 
-## 🎯 **Objetivo**: Deixar o dashboard acessível para qualquer pessoa na internet via AWS
+Guia completo para fazer deploy na AWS usando Terraform (100% Free Tier).
 
 ---
 
-## 🚀 **Deploy Automatizado (10 minutos)**
-
-### **Passo 1: Upload para GitHub** (3 min)
+## ⚡ Deploy Rápido (5 minutos)
 
 ```bash
-# Na pasta web-site
-cd C:\Users\User\Documents\Estudo\web-site
+# 1. Configure suas credenciais AWS
+aws configure
 
-# Executar script automático
-chmod +x scripts/setup-github.sh
-./scripts/setup-github.sh
+# 2. Entre na pasta do Terraform
+cd academia-dashboard/web-site/terraform
+
+# 3. Configure suas variáveis
+cp terraform.tfvars.example terraform.tfvars
+nano terraform.tfvars  # Edite com suas informações
+
+# 4. Inicialize o Terraform
+terraform init
+
+# 5. Execute o deploy
+terraform apply
+
+# 6. Aguarde 5 minutos e acesse o IP fornecido!
 ```
 
-**O script vai perguntar:**
-- Seu nome completo
-- Seu email do GitHub
-- Seu username do GitHub
+**🎉 Pronto! Seu dashboard está online!**
 
-### **Passo 2: Criar Repositório GitHub** (2 min)
+---
 
-1. **Acesse**: https://github.com/new
-2. **Repository name**: `academia-dashboard`
-3. **Public** ✅
-4. **Create repository**
+## 📋 Pré-requisitos
 
-### **Passo 3: Fazer Push** (1 min)
+### 1. Conta AWS (Free Tier)
+- Crie em: https://aws.amazon.com/free/
+- **Gratuito** por 12 meses
 
+### 2. Instale as Ferramentas
+
+**Terraform:**
 ```bash
-# Execute os comandos que o script mostrará:
-git remote add origin https://github.com/SEU-USERNAME/academia-dashboard.git
-git push -u origin main
+# Windows (Chocolatey)
+choco install terraform
+
+# Mac (Homebrew)
+brew install terraform
+
+# Linux
+wget https://releases.hashicorp.com/terraform/1.6.0/terraform_1.6.0_linux_amd64.zip
+unzip terraform_1.6.0_linux_amd64.zip
+sudo mv terraform /usr/local/bin/
 ```
 
-### **Passo 4: Criar Instância AWS** (3 min)
-
-1. **AWS Console** → EC2 → Launch Instance
-2. **AMI**: Ubuntu Server 22.04 LTS
-3. **Instance Type**: t2.micro (Free Tier)
-4. **Security Group**: 
-   - SSH (22): My IP
-   - HTTP (80): Anywhere (0.0.0.0/0)
-   - HTTPS (443): Anywhere (0.0.0.0/0)
-   - Custom TCP (3000): Anywhere (0.0.0.0/0)
-5. **Launch** → Download key pair (.pem)
-
-### **Passo 5: Deploy Automatizado** (1 min)
-
+**AWS CLI:**
 ```bash
-# Conectar à instância AWS
-ssh -i "sua-chave.pem" ubuntu@SEU-IP-AWS
-
-# Deploy automatizado via GitHub
-curl -sSL https://raw.githubusercontent.com/SEU-USERNAME/academia-dashboard/main/scripts/deploy-github.sh | bash
+# Windows: https://aws.amazon.com/cli/
+# Mac: brew install awscli
+# Linux: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+#        unzip awscliv2.zip && sudo ./aws/install
 ```
 
-**🎉 PRONTO! Dashboard online e acessível para o mundo!**
-
----
-
-## 🌐 **Acessar Dashboard**
-
-- **URL**: http://SEU-IP-PUBLICO
-- **Upload**: Funcional via interface
-- **API**: http://SEU-IP-PUBLICO:3000
-
----
-
-## 💰 **Custos (AWS Free Tier)**
-
-### **Gratuito por 12 meses:**
-- ✅ **750 horas/mês** de t2.micro
-- ✅ **30 GB** de armazenamento
-- ✅ **15 GB** de transferência
-
-### **Se exceder Free Tier:**
-- 💰 **~$5-10/mês** (muito barato!)
-
----
-
-## 🔧 **Comandos Úteis (na instância AWS)**
+### 3. Configure Credenciais AWS
 
 ```bash
-# Ver containers
+aws configure
+```
+
+**Como obter as chaves:**
+1. AWS Console → IAM → Users → Seu usuário
+2. Security credentials → Create access key
+3. Copie Access Key ID e Secret Access Key
+
+### 4. Crie um Par de Chaves SSH
+
+1. AWS Console → EC2 → Key Pairs
+2. Create key pair
+3. Nome: `academia-dashboard`
+4. Format: `.pem`
+5. Download e salve em local seguro
+6. Linux/Mac: `chmod 400 academia-dashboard.pem`
+
+---
+
+## 🚀 Passo a Passo Detalhado
+
+### 1️⃣ Configure as Variáveis
+
+```bash
+cd academia-dashboard/web-site/terraform
+cp terraform.tfvars.example terraform.tfvars
+nano terraform.tfvars
+```
+
+**Edite `terraform.tfvars`:**
+
+```hcl
+# Região AWS
+aws_region = "us-east-1"
+
+# Nome da chave SSH criada
+key_name = "academia-dashboard"
+
+# Seu IP público (curl ifconfig.me)
+your_ip = "203.0.113.0/32"
+
+# Repositório GitHub (opcional)
+github_repo = "https://github.com/seu-usuario/academia-dashboard.git"
+
+# Tamanho do disco (8-30 GB)
+ebs_volume_size = 20
+```
+
+### 2️⃣ Inicialize o Terraform
+
+```bash
+terraform init
+```
+
+### 3️⃣ Veja o Plano
+
+```bash
+terraform plan
+```
+
+### 4️⃣ Execute o Deploy
+
+```bash
+terraform apply
+```
+
+Digite `yes` quando solicitado.
+
+**Tempo:** ~5 minutos
+
+### 5️⃣ Acesse o Dashboard
+
+```
+Outputs:
+dashboard_url = "http://54.123.45.67"
+```
+
+**Acesse:** http://SEU-IP-PUBLICO
+
+⏰ **Aguarde 2-3 minutos** para inicialização completa.
+
+---
+
+## 💰 Custos e Free Tier
+
+### ✅ O que é GRÁTIS (12 meses)
+
+| Recurso | Free Tier | Usado |
+|---------|-----------|-------|
+| EC2 t2.micro | 750h/mês | ✅ |
+| EBS 20GB | 30GB | ✅ |
+| Elastic IP | 1 grátis | ✅ |
+| Transfer | 15GB/mês | ✅ |
+
+### 💰 Após 12 meses
+- **Total:** ~$10-12/mês
+
+---
+
+## 🔧 Comandos Úteis
+
+### Ver Outputs
+```bash
+terraform output
+terraform output public_ip
+```
+
+### Conectar via SSH
+```bash
+ssh -i academia-dashboard.pem ubuntu@SEU-IP
+```
+
+### Atualizar Infraestrutura
+```bash
+terraform apply
+```
+
+### Destruir Tudo
+```bash
+terraform destroy
+```
+
+---
+
+## 📊 Gerenciar a Aplicação
+
+### Ver Containers
+```bash
+ssh -i sua-chave.pem ubuntu@SEU-IP
 docker ps
+```
 
-# Ver logs
-docker logs academia-dashboard-aws
+### Ver Logs
+```bash
+docker logs -f academia-dashboard-prod
+```
 
-# Atualizar projeto
-cd academia-dashboard && git pull && docker-compose -f docker-compose.aws.yml up --build -d
+### Atualizar Aplicação
+```bash
+sudo update-academia-dashboard
+```
 
-# Backup
-/home/ubuntu/backup-dashboard.sh
-
-# Reiniciar
-docker-compose -f docker-compose.aws.yml restart
+### Fazer Backup
+```bash
+sudo backup-academia-dashboard
 ```
 
 ---
 
-## 🔒 **Configurar Domínio (Opcional)**
+## 🚨 Solução de Problemas
 
-### **1. Registrar Domínio**
-- GoDaddy, Namecheap, Registro.br
-- Custo: ~R$ 30/ano
-
-### **2. Configurar DNS**
-- Aponte para IP da EC2
-- Tipo: A Record
-
-### **3. SSL Gratuito**
+### ❌ Erro: "No valid credential sources"
 ```bash
-# Na instância AWS
+aws configure
+```
+
+### ❌ Erro: "Key pair does not exist"
+```bash
+# Crie na AWS Console: EC2 → Key Pairs → Create
+```
+
+### ❌ Site não carrega
+```bash
+# Aguarde 5 minutos, então conecte via SSH
+ssh -i sua-chave.pem ubuntu@SEU-IP
+tail -f /var/log/user-data.log
+docker ps
+```
+
+---
+
+## 🧹 Limpar Recursos
+
+```bash
+terraform destroy
+```
+
+**⚠️ ATENÇÃO:** Todos os dados serão perdidos!
+
+---
+
+## 🎯 Próximos Passos (Opcional)
+
+### 1. Configure um Domínio
+- Compre domínio
+- Configure DNS tipo A para seu IP
+
+### 2. Adicione SSL/HTTPS
+```bash
+ssh -i sua-chave.pem ubuntu@SEU-IP
 sudo apt install certbot python3-certbot-nginx -y
 sudo certbot --nginx -d seu-dominio.com
 ```
 
 ---
 
-## 🚨 **Solução de Problemas**
+## 📚 Recursos
 
-### **Erro: "Git não encontrado"**
-```bash
-# Instalar Git
-sudo apt install git -y
-```
-
-### **Erro: "Docker não encontrado"**
-```bash
-# Instalar Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-```
-
-### **Erro: "Site não carrega"**
-```bash
-# Verificar containers
-docker ps
-
-# Verificar firewall
-sudo ufw status
-
-# Verificar logs
-docker logs academia-dashboard-aws
-```
-
-### **Erro: "GitHub não encontrado"**
-- Verifique se o repositório existe
-- Confirme o username
-- Teste: https://github.com/SEU-USERNAME/academia-dashboard
+- **Terraform**: https://www.terraform.io/docs
+- **AWS Free Tier**: https://aws.amazon.com/free/
+- **README Principal**: [../README.md](../README.md)
 
 ---
 
-## 📊 **Funcionalidades Online**
+**🚀 Seu dashboard está na nuvem!**
 
-✅ **Dashboard Responsivo**: Acessível de qualquer dispositivo  
-✅ **Upload Excel/CSV**: Sistema completo de upload  
-✅ **API RESTful**: Backend robusto  
-✅ **SSL/HTTPS**: Configurável  
-✅ **Monitoramento**: 24/7  
-✅ **Backup**: Automático  
-✅ **Escalável**: Pronto para crescimento  
+**🌍 Compartilhe:** http://SEU-IP-PUBLICO
 
----
-
-## 🎯 **Resultado Final**
-
-**🌍 Qualquer pessoa no mundo pode acessar seu dashboard da academia!**
-
-- **URL**: http://SEU-IP-PUBLICO
-- **Upload**: Excel/CSV funcionando
-- **Mobile**: Responsivo
-- **Gratuito**: Free Tier AWS
-- **Profissional**: Sistema completo
-
----
-
-## 🚀 **Próximos Passos**
-
-1. ✅ **Deploy AWS** (você está aqui!)
-2. 🔄 **Domínio personalizado**
-3. 🔒 **SSL/HTTPS**
-4. 📊 **Monitoramento avançado**
-5. 🔄 **Auto Scaling**
-
-**🎉 Sua academia agora tem um sistema profissional online!**
+**💰 Custo:** $0 (Free Tier por 12 meses)
 

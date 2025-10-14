@@ -1,0 +1,70 @@
+# ========================================
+# .gitignore - Academia Dashboard
+# ========================================
+
+# Dependências Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Dados e Backups
+data/*.backup.*
+data/*.bak
+data/update.log
+backups/
+
+# Terraform
+**/.terraform/
+**/.terraform.lock.hcl
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/terraform.tfvars
+**/*.tfvars
+!terraform.tfvars.example
+
+# Docker
+.dockerignore
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDEs e Editores
+.vscode/
+.idea/
+*.iml
+*.sublime-*
+
+# Temporários
+tmp/
+temp/
+*.tmp
+
+# Uploads
+api/uploads/*
+!api/uploads/.gitkeep
+
+# Chaves e Segredos
+*.pem
+*.key
+*.env
+.env.local
+.env.*.local
+*.secret
+
+# Outros
+coverage/
+.cache/
+dist/
+build/
+
