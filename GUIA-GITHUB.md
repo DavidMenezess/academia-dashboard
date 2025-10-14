@@ -425,6 +425,60 @@ academia-dashboard/
 
 ---
 
+## 🚀 Como Usar o Projeto (Nova Estrutura)
+
+Após fazer o clone do repositório, aqui estão os comandos atualizados para a nova estrutura:
+
+### 🏠 **Deploy Local**
+
+```bash
+# Clone o repositório
+git clone https://github.com/SEU-USUARIO/academia-dashboard.git
+cd academia-dashboard
+
+# Entre na pasta web-site
+cd web-site
+
+# Inicie os containers
+docker-compose up -d
+
+# Acesse o dashboard
+# http://localhost:8080
+```
+
+### ☁️ **Deploy AWS com Terraform**
+
+```bash
+# Clone o repositório
+git clone https://github.com/SEU-USUARIO/academia-dashboard.git
+cd academia-dashboard
+
+# Configure suas credenciais AWS
+aws configure
+
+# Entre na pasta do Terraform
+cd web-site/terraform
+
+# Configure suas variáveis
+cp terraform.tfvars.example terraform.tfvars
+nano terraform.tfvars  # Edite com suas informações
+
+# Execute o deploy
+terraform init
+terraform plan
+terraform apply
+
+# Aguarde 5 minutos e acesse o IP fornecido!
+```
+
+### 📖 **Guias Detalhados**
+
+- **Deploy Local**: Veja `web-site/DEPLOY-LOCAL.md`
+- **Deploy AWS**: Veja `web-site/DEPLOY-AWS.md`
+- **Terraform**: Veja `web-site/terraform/README.md`
+
+---
+
 ## 🤝 Colaboração
 
 ### Convidar Colaboradores

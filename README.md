@@ -11,6 +11,7 @@ Dashboard moderno para gestão de academias com upload de dados via Excel/CSV e 
 ### **Local (no seu computador)** 
 
 ```bash
+git clone https://github.com/SEU-USUARIO/academia-dashboard.git
 cd academia-dashboard/web-site
 docker-compose up -d
 ```
@@ -19,7 +20,10 @@ docker-compose up -d
 ### **AWS (com Terraform - acesso mundial)** 
 
 ```bash
+git clone https://github.com/SEU-USUARIO/academia-dashboard.git
 cd academia-dashboard/web-site/terraform
+cp terraform.tfvars.example terraform.tfvars
+# Edite terraform.tfvars com suas informações
 terraform init
 terraform plan
 terraform apply
@@ -48,17 +52,30 @@ terraform apply
 
 ```
 academia-dashboard/
-├── web-site/
-│   ├── src/              # Frontend (HTML/CSS/JS)
-│   ├── api/              # Backend API (Node.js)
-│   ├── config/           # Nginx configs
-│   ├── terraform/        # Infraestrutura AWS
-│   ├── scripts/          # Scripts de automação
-│   ├── Dockerfile        # Containerização
-│   ├── docker-compose.yml    # Deploy local
-│   └── docker-compose.prod.yml   # Deploy produção
-├── .gitignore
-└── README.md
+├── .gitignore            # Ignora arquivos sensíveis
+├── README.md             # Documentação principal
+├── GUIA-GITHUB.md        # Tutorial para GitHub
+├── ORGANIZACAO-COMPLETA.md # Resumo das melhorias
+│
+└── web-site/             # Aplicação principal
+    ├── DEPLOY-LOCAL.md   # Guia deploy local
+    ├── DEPLOY-AWS.md     # Guia deploy AWS
+    ├── docker-compose.yml    # Deploy local
+    ├── docker-compose.prod.yml # Deploy produção
+    ├── Dockerfile        # Containerização
+    │
+    ├── src/              # Frontend (HTML/CSS/JS)
+    ├── api/              # Backend API (Node.js)
+    ├── config/           # Nginx configs
+    ├── data/             # Dados persistentes
+    ├── logs/             # Logs (ignorado)
+    ├── scripts/          # Scripts de automação
+    │
+    └── terraform/        # Infraestrutura AWS
+        ├── README.md     # Documentação Terraform
+        ├── *.tf          # Arquivos Terraform
+        ├── terraform.tfvars.example
+        └── scripts/      # Scripts auxiliares
 ```
 
 ---
@@ -121,11 +138,15 @@ docker-compose up -d
 ### 2️⃣ Deploy AWS com Terraform
 
 ```bash
+# Clone o repositório
+git clone https://github.com/SEU-USUARIO/academia-dashboard.git
+cd academia-dashboard
+
 # Configure suas credenciais AWS
 aws configure
 
 # Entre na pasta do Terraform
-cd academia-dashboard/web-site/terraform
+cd web-site/terraform
 
 # Crie o arquivo de variáveis
 cp terraform.tfvars.example terraform.tfvars
