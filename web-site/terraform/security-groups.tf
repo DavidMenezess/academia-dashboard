@@ -71,3 +71,4 @@ resource "aws_security_group" "academia_dashboard" {
   }
 }
 
+

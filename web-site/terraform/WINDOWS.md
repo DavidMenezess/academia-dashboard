@@ -550,3 +550,6 @@ Get-Command -Module AWSPowerShell.NetCore
 
 **Desenvolvido e testado no Windows 10/11! 🪟**
 
+
+
+

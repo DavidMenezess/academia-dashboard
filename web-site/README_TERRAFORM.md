@@ -466,3 +466,6 @@ terraform apply
 **Free Tier:** ✅ Otimizado  
 **Documentação:** ✅ Completa em Português
 
+
+
+

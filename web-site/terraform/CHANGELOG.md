@@ -159,3 +159,6 @@ Recursos dentro do Free Tier:
 
 **Versão atual: 1.0.0**
 
+
+
+

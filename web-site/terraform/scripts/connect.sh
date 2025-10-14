@@ -56,3 +56,6 @@ echo ""
 
 ssh -i "${KEY_NAME}.pem" ubuntu@${PUBLIC_IP}
 
+
+
+

@@ -52,3 +52,6 @@ echo ""
 echo "Backups disponíveis:"
 ls -lh $BACKUP_DIR/ | grep terraform.tfstate
 
+
+
+

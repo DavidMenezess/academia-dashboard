@@ -67,3 +67,6 @@ ENDSSH
     echo "Dashboard: http://${PUBLIC_IP}"
 fi
 
+
+
+

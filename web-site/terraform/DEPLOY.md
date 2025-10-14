@@ -500,3 +500,6 @@ terraform output next_steps     # Próximos passos
 
 *Desenvolvido para estudos de DevOps, IaC e AWS*
 
+
+
+

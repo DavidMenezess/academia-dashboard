@@ -123,3 +123,6 @@ echo "  terraform output          - Ver todos os outputs"
 echo "  ./scripts/connect.sh      - Conectar via SSH"
 echo "  terraform show            - Ver estado completo"
 
+
+
+

@@ -185,3 +185,6 @@ quick-destroy:
 	@sleep 3
 	@$(TERRAFORM) destroy -auto-approve
 
+
+
+

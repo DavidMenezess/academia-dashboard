@@ -79,3 +79,4 @@ resource "aws_eip_association" "academia_dashboard" {
   allocation_id = aws_eip.academia_dashboard.id
 }
 
+

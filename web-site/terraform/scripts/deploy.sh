@@ -63,3 +63,6 @@ else
     rm tfplan
 fi
 
+
+
+
