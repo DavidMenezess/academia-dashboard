@@ -1,3 +1,27 @@
+# Sistema
+.DS_Store
+Thumbs.db
+.env
+.env.*
+
+# Node
+node_modules/
+
+# Logs e uploads
+academia-dashboard/web-site/logs/
+academia-dashboard/web-site/uploads/
+academia-dashboard/web-site/api/uploads/
+academia-dashboard/web-site/api/node_modules/
+
+# Terraform state
+academia-dashboard/web-site/terraform/.terraform/
+academia-dashboard/web-site/terraform/*.tfstate*
+academia-dashboard/web-site/terraform/terraform.tfvars
+
+# Docker artefatos locais
+*.pid
+*.log
+
 # ========================================
 # .gitignore - Academia Dashboard
 # ========================================
@@ -67,4 +91,5 @@ coverage/
 .cache/
 dist/
 build/
+
 

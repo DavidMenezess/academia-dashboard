@@ -43,6 +43,7 @@ terraform apply
 ✅ API REST backend (Node.js)  
 ✅ Containerizado com Docker  
 ✅ Deploy automatizado (Terraform)  
+✅ CI/CD com GitHub Actions (build, testes, deploy por OIDC)
 ✅ 100% AWS Free Tier  
 ✅ Monitoramento com health checks  
 
@@ -52,7 +53,8 @@ terraform apply
 
 ```
 academia-dashboard/
-├── .gitignore            # Ignora arquivos sensíveis
+├── .gitignore            # Ignora arquivos sensíveis e artefatos
+├── .github/workflows/    # Pipelines de CI/CD
 ├── README.md             # Documentação principal
 ├── GUIA-GITHUB.md        # Tutorial para GitHub
 ├── ORGANIZACAO-COMPLETA.md # Resumo das melhorias
@@ -76,6 +78,27 @@ academia-dashboard/
         ├── *.tf          # Arquivos Terraform
         ├── terraform.tfvars.example
         └── scripts/      # Scripts auxiliares
+
+---
+
+## 🔄 CI/CD (GitHub Actions)
+
+### CI (automático)
+- Valida Dockerfile e docker-compose
+- Roda smoke test da API (`/health`)
+- Valida Terraform (`fmt` e `validate`)
+
+Arquivo: `.github/workflows/ci.yml`
+
+### CD (manual, seguro e Free Tier)
+- Build e push da imagem para GHCR
+- Assume Role via OIDC e roda `terraform plan/apply/destroy`
+
+Arquivo: `.github/workflows/cd.yml`
+
+### Configuração necessária
+- Secret `AWS_ROLE_ARN` com o ARN do Role da AWS para OIDC
+- GHCR habilitado (utiliza `GITHUB_TOKEN` por padrão)
 ```
 
 ---

@@ -273,3 +273,42 @@ sudo certbot --nginx -d seu-dominio.com
 
 **💰 Custo:** $0 (Free Tier por 12 meses)
 
+---
+
+## 🧩 CI/CD Profissional (GitHub Actions)
+
+### CI (automático em push/PR)
+- Build Docker da imagem do site
+- Validação dos arquivos `docker-compose*.yml`
+- Validação Terraform (`fmt` e `validate` sem backend)
+- Smoke test da API Node (`/health`)
+
+Arquivos:
+- `.github/workflows/ci.yml`
+
+### CD (manual via workflow_dispatch)
+- Build e push da imagem para GHCR (`ghcr.io`)
+- Deploy com Terraform usando OIDC (sem salvar chaves no GitHub)
+
+Arquivos:
+- `.github/workflows/cd.yml`
+
+### Pré-requisitos do CD (OIDC)
+1. Crie um Role na AWS com trust policy para GitHub OIDC e anexe política mínima (EC2, VPC, EIP, SG e ECR/GHCR se necessário)
+2. Salve o ARN do Role como secret `AWS_ROLE_ARN` no repositório
+
+Exemplo de configuração rápida do Role: consulte `README` do Terraform e a documentação oficial `aws-actions/configure-aws-credentials`.
+
+### Mantendo o Free Tier
+- Mantenha `instance_type = t2.micro`
+- Volume EBS ≤ 30GB
+- Monitoring detalhado desabilitado
+- Evite múltiplas instâncias/recursos extras
+
+
+
+
+
+
+
+

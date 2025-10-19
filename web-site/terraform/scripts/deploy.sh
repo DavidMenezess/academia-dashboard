@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ========================================
 # SCRIPT DE DEPLOY - TERRAFORM
 # Academia Dashboard - AWS Free Tier
 # ========================================
 
-set -e
+set -euo pipefail
 
 # Cores
 GREEN='\033[0;32m'
@@ -26,42 +26,44 @@ cat << "EOF"
 EOF
 echo -e "${NC}"
 
-# Verificar se terraform está inicializado
-if [ ! -d ".terraform" ]; then
-    log "Inicializando Terraform..."
-    terraform init
-fi
+ACTION="${1:-apply}"
+export TF_IN_AUTOMATION=1
+
+# Inicializar terraform
+log "Inicializando Terraform..."
+terraform init -input=false
 
 # Validar configuração
 log "Validando configuração..."
-terraform validate
+terraform validate -no-color
 
-# Ver plano
-log "Gerando plano de deployment..."
-terraform plan -out=tfplan
-
-echo ""
-read -p "Deseja aplicar este plano? (s/N): " -n 1 -r
-echo
-
-if [[ $REPLY =~ ^[SsYy]$ ]]; then
-    log "Aplicando infraestrutura..."
-    terraform apply tfplan
-    rm tfplan
-    
-    echo ""
+case "$ACTION" in
+  plan)
+    log "Gerando plano..."
+    terraform plan -input=false -out=tfplan
+    ;;
+  apply)
+    log "Gerando plano e aplicando..."
+    terraform plan -input=false -out=tfplan
+    terraform apply -auto-approve tfplan
+    rm -f tfplan || true
     success "Deploy concluído!"
-    echo ""
-    
-    # Mostrar outputs
-    terraform output deployment_summary
-    
-    echo ""
-    warn "Aguarde 2-3 minutos para inicialização completa"
-else
-    log "Deploy cancelado"
-    rm tfplan
-fi
+    terraform output || true
+    ;;
+  destroy)
+    warn "Destruindo recursos..."
+    terraform destroy -auto-approve
+    ;;
+  *)
+    echo "Ação inválida: $ACTION (use: plan|apply|destroy)" >&2
+    exit 1
+    ;;
+esac
+
+
+
+
+
 
 
 

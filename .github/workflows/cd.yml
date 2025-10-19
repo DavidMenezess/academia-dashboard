@@ -1,0 +1,94 @@
+name: CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Ambiente de deploy"
+        required: true
+        default: "prod"
+      terraform_action:
+        description: "Acao do Terraform (apply/plan/destroy)"
+        required: true
+        default: "apply"
+
+permissions:
+  id-token: write   # OIDC para AWS
+  contents: read
+  packages: write   # push para GHCR
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}/academia-dashboard
+  WORKDIR: academia-dashboard/web-site
+
+jobs:
+  build-and-push:
+    name: Build e Push para GHCR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login no GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Definir tags
+        id: meta
+        run: |
+          SHA_TAG=${GITHUB_SHA::12}
+          echo "sha_tag=$SHA_TAG" >> $GITHUB_OUTPUT
+          echo "date_tag=$(date +%Y%m%d%H%M%S)" >> $GITHUB_OUTPUT
+
+      - name: Build imagem
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          docker build -t $IMAGE_NAME:${{ steps.meta.outputs.sha_tag }} -t $IMAGE_NAME:latest .
+
+      - name: Push imagem
+        run: |
+          docker push $IMAGE_NAME:${{ steps.meta.outputs.sha_tag }}
+          docker push $IMAGE_NAME:latest
+
+  terraform-deploy:
+    name: Terraform Deploy (AWS Free Tier)
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    defaults:
+      run:
+        working-directory: academia-dashboard/web-site/terraform
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar credenciais AWS via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
+
+      - name: terraform init (backend local, sem custos)
+        run: terraform init -input=false
+
+      - name: terraform plan
+        if: inputs.terraform_action != 'destroy'
+        run: terraform plan -input=false -out=tfplan
+
+      - name: terraform apply
+        if: inputs.terraform_action == 'apply'
+        run: terraform apply -auto-approve tfplan
+
+      - name: terraform destroy
+        if: inputs.terraform_action == 'destroy'
+        run: terraform destroy -auto-approve
+
+
+
