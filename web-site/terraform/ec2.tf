@@ -6,16 +6,16 @@
 resource "aws_instance" "academia_dashboard" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
-  key_name      = var.key_name
-  
+  key_name = var.key_name
+
   vpc_security_group_ids = [aws_security_group.academia_dashboard.id]
-  
+
   # Volume EBS (Free Tier: até 30GB)
   root_block_device {
-    volume_type           = "gp2"  # General Purpose SSD
+    volume_type           = "gp2" # General Purpose SSD
     volume_size           = var.ebs_volume_size
     delete_on_termination = true
-    encrypted             = false  # Não criptografado para Free Tier
+    encrypted             = false # Não criptografado para Free Tier
     
     tags = {
       Name = "${var.project_name}-${var.environment}-root-volume"
