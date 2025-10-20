@@ -168,6 +168,28 @@ EOF
     # Executar como usuário ubuntu
     sudo -u ubuntu docker-compose -f docker-compose.prod.yml up -d --build
     
+    # Aguardar containers iniciarem
+    log "Aguardando containers iniciarem..."
+    sleep 10
+    
+    # Verificar se containers estão rodando
+    log "Verificando status dos containers..."
+    if sudo -u ubuntu docker ps | grep -q "academia-dashboard-prod"; then
+        log "✅ Dashboard container está rodando"
+    else
+        warning "⚠️ Dashboard container não está rodando"
+        log "Tentando reiniciar..."
+        sudo -u ubuntu docker-compose -f docker-compose.prod.yml restart academia-dashboard
+    fi
+    
+    if sudo -u ubuntu docker ps | grep -q "academia-data-api-prod"; then
+        log "✅ API container está rodando"
+    else
+        warning "⚠️ API container não está rodando"
+        log "Tentando reiniciar..."
+        sudo -u ubuntu docker-compose -f docker-compose.prod.yml restart data-api
+    fi
+    
     log "Aplicação iniciada com sucesso!"
 else
     warning "Projeto não encontrado ou docker-compose.prod.yml ausente"
