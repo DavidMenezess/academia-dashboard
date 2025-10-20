@@ -16,15 +16,15 @@ resource "aws_instance" "academia_dashboard" {
     volume_size           = var.ebs_volume_size
     delete_on_termination = true
     encrypted             = false # Não criptografado para Free Tier
-    
+
     tags = {
       Name = "${var.project_name}-${var.environment}-root-volume"
     }
   }
-  
+
   # Monitoramento (desabilitado para Free Tier)
   monitoring = var.enable_detailed_monitoring
-  
+
   # User Data - Script de inicialização
   user_data = base64encode(templatefile("${path.module}/user-data.sh", {
     project_name = var.project_name
@@ -32,31 +32,31 @@ resource "aws_instance" "academia_dashboard" {
     api_port     = var.api_port
     environment  = var.environment
   }))
-  
+
   # Metadados da instância
   metadata_options {
     http_endpoint               = "enabled"
-    http_tokens                 = "required"  # IMDSv2 para segurança
+    http_tokens                 = "required" # IMDSv2 para segurança
     http_put_response_hop_limit = 1
     instance_metadata_tags      = "enabled"
   }
-  
+
   # Proteção contra terminação acidental
-  disable_api_termination = false  # false para facilitar testes
-  
+  disable_api_termination = false # false para facilitar testes
+
   tags = {
     Name        = "${var.project_name}-${var.environment}"
     Description = "Servidor EC2 para Academia Dashboard"
     OS          = "Ubuntu 22.04 LTS"
   }
-  
+
   # Aguardar a criação do security group
   depends_on = [aws_security_group.academia_dashboard]
-  
+
   lifecycle {
     ignore_changes = [
-      user_data,  # Evita recriação ao mudar user_data
-      ami         # Evita recriação ao atualizar AMI
+      user_data, # Evita recriação ao mudar user_data
+      ami        # Evita recriação ao atualizar AMI
     ]
   }
 }
@@ -65,11 +65,11 @@ resource "aws_instance" "academia_dashboard" {
 resource "aws_eip" "academia_dashboard" {
   domain   = "vpc"
   instance = aws_instance.academia_dashboard.id
-  
+
   tags = {
     Name = "${var.project_name}-${var.environment}-eip"
   }
-  
+
   depends_on = [aws_instance.academia_dashboard]
 }
 
