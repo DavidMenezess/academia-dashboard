@@ -47,218 +47,41 @@
       background: var(--background-color);
       color: var(--text-primary);
       line-height: 1.6;
-      min-height: 100vh;
+      padding: 24px;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
     }
     
-    .dashboard-container {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      min-height: 100vh;
-      gap: 0;
-    }
-    
-    /* Sidebar */
-    .sidebar {
-      background: var(--card-bg);
-      border-right: 1px solid var(--border-color);
-      padding: 2rem 0;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-    }
-    
-    .sidebar-header {
-      padding: 0 2rem 2rem;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 2rem;
-    }
-    
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-    
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--gradient-primary);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.25rem;
-    }
-    
-    .nav-menu {
-      padding: 0 1rem;
-    }
-    
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      margin: 0.25rem 0;
-      border-radius: 12px;
-      color: var(--text-secondary);
-      text-decoration: none;
-      transition: var(--transition);
-      font-weight: 500;
-    }
-    
-    .nav-item:hover {
-      background: var(--card-bg-light);
-      color: var(--text-primary);
-    }
-    
-    .nav-item.active {
-      background: var(--gradient-primary);
-      color: white;
-    }
-    
-    .nav-item i {
-      width: 20px;
-      text-align: center;
-    }
-    
-    /* Main Content */
-    .main-content {
-      background: var(--background-color);
-      padding: 2rem;
-      overflow-y: auto;
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
     }
     
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem;
       margin-bottom: 2rem;
+      box-shadow: var(--shadow);
     }
     
-    .header-left h1 {
-      font-size: 2rem;
+    .header h1 {
+      font-size: 2.5rem;
       font-weight: 700;
-      color: var(--text-primary);
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin-bottom: 0.5rem;
     }
     
-    .header-left p {
+    .header p {
       color: var(--text-secondary);
       font-size: 1.1rem;
     }
     
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    
-    .search-box {
-      position: relative;
-    }
-    
-    .search-box input {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 0.75rem 1rem 0.75rem 2.5rem;
-      color: var(--text-primary);
-      width: 300px;
-      transition: var(--transition);
-    }
-    
-    .search-box input:focus {
-      outline: none;
-      border-color: var(--secondary-color);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-    
-    .search-box i {
-      position: absolute;
-      left: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-tertiary);
-    }
-    
-    .header-icons {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    
-    .icon-btn {
-      position: relative;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-      transition: var(--transition);
-      cursor: pointer;
-    }
-    
-    .icon-btn:hover {
-      background: var(--card-bg-light);
-      color: var(--text-primary);
-    }
-    
-    .badge {
-      position: absolute;
-      top: -4px;
-      right: -4px;
-      background: var(--danger-color);
-      color: white;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      font-size: 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-    }
-    
-    .user-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: var(--gradient-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      position: relative;
-    }
-    
-    .user-avatar::after {
-      content: '';
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 12px;
-      height: 12px;
-      background: var(--success-color);
-      border-radius: 50%;
-      border: 2px solid var(--card-bg);
-    }
-    
-    /* Stats Grid */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -274,6 +97,7 @@
       position: relative;
       overflow: hidden;
       transition: var(--transition);
+      box-shadow: var(--shadow);
     }
     
     .stat-card:hover {
@@ -345,7 +169,6 @@
       font-size: 0.75rem;
     }
     
-    /* Charts Grid */
     .charts-grid {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -359,6 +182,7 @@
       border-radius: 20px;
       padding: 2rem;
       position: relative;
+      box-shadow: var(--shadow);
     }
     
     .chart-header {
@@ -374,113 +198,328 @@
       color: var(--text-primary);
     }
     
-    .chart-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-    
-    .chart-btn {
-      background: var(--card-bg-light);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 0.5rem;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    
-    .chart-btn:hover {
-      background: var(--border-color);
-      color: var(--text-primary);
-    }
-    
     .chart-container {
       position: relative;
       height: 300px;
     }
     
-    /* Welcome Card */
-    .welcome-card {
-      background: var(--gradient-primary);
+    .upload-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
       border-radius: 20px;
       padding: 2rem;
-      color: white;
       margin-bottom: 2rem;
-      position: relative;
-      overflow: hidden;
+      box-shadow: var(--shadow);
     }
     
-    .welcome-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 200px;
-      height: 200px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
+    .upload-area {
+      border: 2px dashed var(--border-color);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      transition: var(--transition);
+      cursor: pointer;
     }
     
-    .welcome-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: relative;
-      z-index: 1;
+    .upload-area:hover {
+      border-color: var(--secondary-color);
+      background: rgba(59, 130, 246, 0.05);
     }
     
-    .welcome-text h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
+    .upload-area.dragover {
+      border-color: var(--secondary-color);
+      background: rgba(59, 130, 246, 0.1);
+    }
+    
+    .upload-icon {
+      font-size: 3rem;
+      color: var(--text-tertiary);
+      margin-bottom: 1rem;
+    }
+    
+    .upload-text {
+      font-size: 1.1rem;
+      color: var(--text-primary);
       margin-bottom: 0.5rem;
     }
     
-    .welcome-text p {
-      opacity: 0.9;
-      margin-bottom: 1.5rem;
+    .upload-subtext {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
     }
     
-    .welcome-stats {
-      display: flex;
-      gap: 2rem;
+    .btn {
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     
-    .welcome-stat {
-      text-align: center;
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
     }
     
-    .welcome-stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
+    .btn-secondary {
+      background: var(--card-bg-light);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
     }
     
-    .welcome-stat-label {
-      font-size: 0.875rem;
-      opacity: 0.8;
+    .btn-success {
+      background: var(--gradient-success);
     }
     
-    .welcome-illustration {
-      width: 120px;
-      height: 120px;
-      background: rgba(255, 255, 255, 0.1);
+    .btn-warning {
+      background: var(--gradient-warning);
+    }
+    
+    .btn-danger {
+      background: var(--gradient-secondary);
+    }
+    
+    .data-table {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
       border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    
+    .table-header {
+      background: var(--card-bg-light);
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .table-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .table th,
+    .table td {
+      padding: 1rem 2rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .table th {
+      background: var(--card-bg-light);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .table td {
+      color: var(--text-primary);
+    }
+    
+    .table tr:hover {
+      background: var(--card-bg-light);
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .badge-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+    }
+    
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning-color);
+    }
+    
+    .badge-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger-color);
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      backdrop-filter: blur(4px);
+    }
+    
+    .modal.show {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 3rem;
     }
     
-    /* Responsive */
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: var(--card-bg-light);
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+    
+    .alert {
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .alert-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    
+    .alert-warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning-color);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    
+    .alert-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger-color);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-color);
+      border-radius: 50%;
+      border-top-color: var(--secondary-color);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    .text-center {
+      text-align: center;
+    }
+    
+    .text-right {
+      text-align: right;
+    }
+    
+    .mb-1 { margin-bottom: 0.5rem; }
+    .mb-2 { margin-bottom: 1rem; }
+    .mb-3 { margin-bottom: 1.5rem; }
+    .mb-4 { margin-bottom: 2rem; }
+    
+    .mt-1 { margin-top: 0.5rem; }
+    .mt-2 { margin-top: 1rem; }
+    .mt-3 { margin-top: 1.5rem; }
+    .mt-4 { margin-top: 2rem; }
+    
     @media (max-width: 1024px) {
-      .dashboard-container {
-        grid-template-columns: 1fr;
-      }
-      
-      .sidebar {
-        display: none;
-      }
-      
       .charts-grid {
         grid-template-columns: 1fr;
       }
@@ -491,330 +530,646 @@
     }
     
     @media (max-width: 768px) {
-      .main-content {
+      body {
         padding: 1rem;
       }
       
-      .header {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
+      .header h1 {
+        font-size: 2rem;
       }
       
-      .search-box input {
-        width: 100%;
-      }
-      
-      .welcome-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 2rem;
+      .stat-card,
+      .chart-card,
+      .upload-section {
+        padding: 1.5rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="dashboard-container">
-    <!-- Sidebar -->
-    <nav class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo">
-          <div class="logo-icon">
-            <i class="fas fa-dumbbell"></i>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1><i class="fas fa-dumbbell"></i> Academia Força Fitness</h1>
+      <p>Dashboard de Gestão - Controle completo da sua academia</p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Total de Membros</div>
+          <div class="stat-icon" style="background: var(--gradient-primary);">
+            <i class="fas fa-users"></i>
           </div>
-          <span>Academia</span>
+        </div>
+        <div class="stat-value" id="totalMembers">0</div>
+        <div class="stat-change positive">
+          <i class="fas fa-arrow-up"></i>
+          <span>Crescimento constante</span>
         </div>
       </div>
-      
-      <div class="nav-menu">
-        <a href="#" class="nav-item active">
-          <i class="fas fa-chart-pie"></i>
-          <span>Dashboard</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fas fa-users"></i>
-          <span>Membros</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fas fa-calendar"></i>
-          <span>Aulas</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fas fa-chart-line"></i>
-          <span>Relatórios</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fas fa-credit-card"></i>
-          <span>Financeiro</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fas fa-cog"></i>
-          <span>Configurações</span>
-        </a>
-      </div>
-    </nav>
-    
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- Header -->
-      <header class="header">
-        <div class="header-left">
-          <h1>Bem-vindo de volta!</h1>
-          <p>Gerencie sua academia com facilidade</p>
-        </div>
-        
-        <div class="header-actions">
-          <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Pesquisar...">
-          </div>
-          
-          <div class="header-icons">
-            <button class="icon-btn">
-              <i class="fas fa-bell"></i>
-              <span class="badge">5</span>
-            </button>
-            <button class="icon-btn">
-              <i class="fas fa-shopping-cart"></i>
-              <span class="badge">8</span>
-            </button>
-            <div class="user-avatar">
-              <i class="fas fa-user"></i>
-            </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Membros Ativos</div>
+          <div class="stat-icon" style="background: var(--gradient-success);">
+            <i class="fas fa-user-check"></i>
           </div>
         </div>
-      </header>
-      
-      <!-- Welcome Card -->
-      <div class="welcome-card">
-        <div class="welcome-content">
-          <div class="welcome-text">
-            <h2>Bem-vindo de volta, Administrador!</h2>
-            <p>Gerencie sua academia com dados em tempo real</p>
-            <div class="welcome-stats">
-              <div class="welcome-stat">
-                <div class="welcome-stat-value">R$ 65.4K</div>
-                <div class="welcome-stat-label">Vendas Hoje</div>
-              </div>
-              <div class="welcome-stat">
-                <div class="welcome-stat-value">78.4%</div>
-                <div class="welcome-stat-label">Taxa de Crescimento</div>
-              </div>
-            </div>
-          </div>
-          <div class="welcome-illustration">
-            <i class="fas fa-dumbbell"></i>
-          </div>
+        <div class="stat-value" id="activeMembers">0</div>
+        <div class="stat-change positive">
+          <i class="fas fa-arrow-up"></i>
+          <span>Alta retenção</span>
         </div>
       </div>
-      
-      <!-- Stats Grid -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-title">Membros Ativos</div>
-            <div class="stat-icon" style="background: var(--gradient-primary);">
-              <i class="fas fa-users"></i>
-            </div>
-          </div>
-          <div class="stat-value">1,247</div>
-          <div class="stat-change positive">
-            <i class="fas fa-arrow-up"></i>
-            <span>+12.5% este mês</span>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Receita Mensal</div>
+          <div class="stat-icon" style="background: var(--gradient-warning);">
+            <i class="fas fa-dollar-sign"></i>
           </div>
         </div>
-        
-        <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-title">Receita Mensal</div>
-            <div class="stat-icon" style="background: var(--gradient-success);">
-              <i class="fas fa-dollar-sign"></i>
-            </div>
-          </div>
-          <div class="stat-value">R$ 45.2K</div>
-          <div class="stat-change positive">
-            <i class="fas fa-arrow-up"></i>
-            <span>+8.2% este mês</span>
-          </div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-title">Aulas Realizadas</div>
-            <div class="stat-icon" style="background: var(--gradient-warning);">
-              <i class="fas fa-calendar-check"></i>
-            </div>
-          </div>
-          <div class="stat-value">342</div>
-          <div class="stat-change positive">
-            <i class="fas fa-arrow-up"></i>
-            <span>+15.3% esta semana</span>
-          </div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-header">
-            <div class="stat-title">Taxa de Ocupação</div>
-            <div class="stat-icon" style="background: var(--gradient-secondary);">
-              <i class="fas fa-chart-pie"></i>
-            </div>
-          </div>
-          <div class="stat-value">87.4%</div>
-          <div class="stat-change positive">
-            <i class="fas fa-arrow-up"></i>
-            <span>+5.1% este mês</span>
-          </div>
+        <div class="stat-value" id="monthlyRevenue">R$ 0</div>
+        <div class="stat-change positive">
+          <i class="fas fa-arrow-up"></i>
+          <span>Crescimento sustentável</span>
         </div>
       </div>
-      
-      <!-- Charts Grid -->
-      <div class="charts-grid">
-        <div class="chart-card">
-          <div class="chart-header">
-            <div class="chart-title">Receita Mensal</div>
-            <div class="chart-actions">
-              <button class="chart-btn">
-                <i class="fas fa-download"></i>
-              </button>
-              <button class="chart-btn">
-                <i class="fas fa-expand"></i>
-              </button>
-            </div>
-          </div>
-          <div class="chart-container">
-            <canvas id="revenueChart"></canvas>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Aulas Realizadas</div>
+          <div class="stat-icon" style="background: var(--gradient-secondary);">
+            <i class="fas fa-calendar-check"></i>
           </div>
         </div>
-        
-        <div class="chart-card">
-          <div class="chart-header">
-            <div class="chart-title">Tipos de Membros</div>
-            <div class="chart-actions">
-              <button class="chart-btn">
-                <i class="fas fa-download"></i>
-              </button>
-            </div>
-          </div>
-          <div class="chart-container">
-            <canvas id="membersChart"></canvas>
-          </div>
+        <div class="stat-value" id="classesCompleted">0</div>
+        <div class="stat-change positive">
+          <i class="fas fa-arrow-up"></i>
+          <span>Excelente frequência</span>
         </div>
       </div>
-    </main>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Receita Mensal</div>
+        </div>
+        <div class="chart-container">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Distribuição de Membros</div>
+        </div>
+        <div class="chart-container">
+          <canvas id="membersChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="upload-section">
+      <h2 style="margin-bottom: 1.5rem; color: var(--text-primary);">
+        <i class="fas fa-upload"></i> Upload de Dados
+      </h2>
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">
+          <i class="fas fa-cloud-upload-alt"></i>
+        </div>
+        <div class="upload-text">Arraste e solte seu arquivo Excel/CSV aqui</div>
+        <div class="upload-subtext">ou clique para selecionar</div>
+        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;">
+      </div>
+      <div class="form-actions" style="margin-top: 1.5rem;">
+        <button class="btn btn-secondary" onclick="downloadTemplate()">
+          <i class="fas fa-download"></i> Baixar Template
+        </button>
+        <button class="btn" onclick="processData()" id="processBtn" disabled>
+          <i class="fas fa-cog"></i> Processar Dados
+        </button>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="data-table">
+      <div class="table-header">
+        <div class="table-title">Dados dos Membros</div>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Plano</th>
+            <th>Status</th>
+            <th>Data de Início</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="membersTableBody">
+          <tr>
+            <td colspan="7" class="text-center" style="padding: 2rem; color: var(--text-secondary);">
+              Nenhum dado carregado. Faça upload de um arquivo Excel/CSV para começar.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Editar Membro</div>
+        <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+      </div>
+      <form id="editForm">
+        <div class="form-group">
+          <label class="form-label">Nome</label>
+          <input type="text" class="form-input" id="editName" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="editEmail" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefone</label>
+          <input type="tel" class="form-input" id="editPhone" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Plano</label>
+          <select class="form-input" id="editPlan" required>
+            <option value="Mensal">Mensal</option>
+            <option value="Trimestral">Trimestral</option>
+            <option value="Semestral">Semestral</option>
+            <option value="Anual">Anual</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-input" id="editStatus" required>
+            <option value="Ativo">Ativo</option>
+            <option value="Inativo">Inativo</option>
+            <option value="Suspenso">Suspenso</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancelar</button>
+          <button type="submit" class="btn">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="addModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Adicionar Novo Membro</div>
+        <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
+      </div>
+      <form id="addForm">
+        <div class="form-group">
+          <label class="form-label">Nome</label>
+          <input type="text" class="form-input" id="addName" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="addEmail" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefone</label>
+          <input type="tel" class="form-input" id="addPhone" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Plano</label>
+          <select class="form-input" id="addPlan" required>
+            <option value="Mensal">Mensal</option>
+            <option value="Trimestral">Trimestral</option>
+            <option value="Semestral">Semestral</option>
+            <option value="Anual">Anual</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancelar</button>
+          <button type="submit" class="btn">Adicionar Membro</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script>
-    // Revenue Chart
-    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-    new Chart(revenueCtx, {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-        datasets: [{
-          label: 'Receita (R$)',
-          data: [32000, 35000, 38000, 42000, 45000, 48000, 52000, 55000, 58000, 62000, 65000, 68000],
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59, 130, 246, 0.1)',
-          borderWidth: 3,
-          fill: true,
-          tension: 0.4,
-          pointBackgroundColor: '#3b82f6',
-          pointBorderColor: '#ffffff',
-          pointBorderWidth: 2,
-          pointRadius: 6
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
-            },
-            ticks: {
-              color: '#94a3b8',
-              callback: function(value) {
-                return 'R$ ' + value.toLocaleString();
-              }
-            }
-          },
-          x: {
-            grid: {
-              display: false
-            },
-            ticks: {
-              color: '#94a3b8'
-            }
-          }
-        }
-      }
+    // Global variables
+    let membersData = [];
+    let currentEditIndex = -1;
+
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+      loadData();
+      initializeCharts();
+      setupEventListeners();
     });
 
-    // Members Chart
-    const membersCtx = document.getElementById('membersChart').getContext('2d');
-    new Chart(membersCtx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Mensal', 'Trimestral', 'Semestral', 'Anual'],
-        datasets: [{
-          data: [45, 25, 20, 10],
-          backgroundColor: [
-            '#3b82f6',
-            '#10b981',
-            '#f59e0b',
-            '#ef4444'
-          ],
-          borderWidth: 0
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              color: '#cbd5e1',
-              padding: 20,
-              usePointStyle: true
-            }
-          }
+    // Load data from API
+    async function loadData() {
+      try {
+        const response = await fetch('/api/data');
+        const data = await response.json();
+        
+        if (data.members) {
+          membersData = data.members;
+          updateStats();
+          updateTable();
         }
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+        showAlert('Erro ao carregar dados. Verifique se a API está funcionando.', 'danger');
       }
-    });
-
-    // Animate numbers
-    function animateValue(element, start, end, duration) {
-      let startTimestamp = null;
-      const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const current = Math.floor(progress * (end - start) + start);
-        element.textContent = current.toLocaleString();
-        if (progress < 1) {
-          window.requestAnimationFrame(step);
-        }
-      };
-      window.requestAnimationFrame(step);
     }
 
-    // Animate stats on load
-    window.addEventListener('load', () => {
-      const statValues = document.querySelectorAll('.stat-value');
-      statValues.forEach(stat => {
-        const finalValue = parseInt(stat.textContent.replace(/[^\d]/g, ''));
-        if (finalValue) {
-          stat.textContent = '0';
-          animateValue(stat, 0, finalValue, 2000);
+    // Update statistics
+    function updateStats() {
+      const totalMembers = membersData.length;
+      const activeMembers = membersData.filter(m => m.status === 'Ativo').length;
+      const monthlyRevenue = membersData.reduce((sum, m) => {
+        const planValues = { 'Mensal': 100, 'Trimestral': 280, 'Semestral': 500, 'Anual': 900 };
+        return sum + (planValues[m.plan] || 0);
+      }, 0);
+      const classesCompleted = membersData.reduce((sum, m) => sum + (m.classesCompleted || 0), 0);
+
+      document.getElementById('totalMembers').textContent = totalMembers;
+      document.getElementById('activeMembers').textContent = activeMembers;
+      document.getElementById('monthlyRevenue').textContent = `R$ ${monthlyRevenue.toLocaleString()}`;
+      document.getElementById('classesCompleted').textContent = classesCompleted;
+    }
+
+    // Update table
+    function updateTable() {
+      const tbody = document.getElementById('membersTableBody');
+      
+      if (membersData.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center" style="padding: 2rem; color: var(--text-secondary);">
+              Nenhum dado carregado. Faça upload de um arquivo Excel/CSV para começar.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = membersData.map((member, index) => `
+        <tr>
+          <td>${member.nome}</td>
+          <td>${member.email}</td>
+          <td>${member.telefone}</td>
+          <td>${member.plano}</td>
+          <td><span class="badge ${getStatusBadge(member.status)}">${member.status}</span></td>
+          <td>${member.dataInicio}</td>
+          <td>
+            <button class="btn btn-secondary" onclick="editMember(${index})" style="padding: 0.5rem; font-size: 0.875rem;">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-danger" onclick="deleteMember(${index})" style="padding: 0.5rem; font-size: 0.875rem;">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Get status badge class
+    function getStatusBadge(status) {
+      switch(status) {
+        case 'Ativo': return 'badge-success';
+        case 'Inativo': return 'badge-danger';
+        case 'Suspenso': return 'badge-warning';
+        default: return 'badge-warning';
+      }
+    }
+
+    // Initialize charts
+    function initializeCharts() {
+      // Revenue Chart
+      const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+      new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+          datasets: [{
+            label: 'Receita (R$)',
+            data: [32000, 35000, 38000, 42000, 45000, 48000, 52000, 55000, 58000, 62000, 65000, 68000],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#3b82f6',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: '#94a3b8',
+                callback: function(value) {
+                  return 'R$ ' + value.toLocaleString();
+                }
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                color: '#94a3b8'
+              }
+            }
+          }
         }
       });
+
+      // Members Chart
+      const membersCtx = document.getElementById('membersChart').getContext('2d');
+      new Chart(membersCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Mensal', 'Trimestral', 'Semestral', 'Anual'],
+          datasets: [{
+            data: [45, 25, 20, 10],
+            backgroundColor: [
+              '#3b82f6',
+              '#10b981',
+              '#f59e0b',
+              '#ef4444'
+            ],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#cbd5e1',
+                padding: 20,
+                usePointStyle: true
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      const uploadArea = document.getElementById('uploadArea');
+      const fileInput = document.getElementById('fileInput');
+
+      // Upload area click
+      uploadArea.addEventListener('click', () => fileInput.click());
+
+      // File input change
+      fileInput.addEventListener('change', handleFileSelect);
+
+      // Drag and drop
+      uploadArea.addEventListener('dragover', handleDragOver);
+      uploadArea.addEventListener('dragleave', handleDragLeave);
+      uploadArea.addEventListener('drop', handleDrop);
+
+      // Form submissions
+      document.getElementById('editForm').addEventListener('submit', handleEditSubmit);
+      document.getElementById('addForm').addEventListener('submit', handleAddSubmit);
+    }
+
+    // Handle file selection
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        processFile(file);
+      }
+    }
+
+    // Handle drag over
+    function handleDragOver(event) {
+      event.preventDefault();
+      event.currentTarget.classList.add('dragover');
+    }
+
+    // Handle drag leave
+    function handleDragLeave(event) {
+      event.currentTarget.classList.remove('dragover');
+    }
+
+    // Handle drop
+    function handleDrop(event) {
+      event.preventDefault();
+      event.currentTarget.classList.remove('dragover');
+      
+      const files = event.dataTransfer.files;
+      if (files.length > 0) {
+        processFile(files[0]);
+      }
+    }
+
+    // Process file
+    function processFile(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = e.target.result;
+          const workbook = XLSX.read(data, { type: 'binary' });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+          
+          membersData = jsonData.map((row, index) => ({
+            id: index + 1,
+            nome: row.Nome || row.nome || '',
+            email: row.Email || row.email || '',
+            telefone: row.Telefone || row.telefone || '',
+            plano: row.Plano || row.plano || 'Mensal',
+            status: row.Status || row.status || 'Ativo',
+            dataInicio: row['Data de Início'] || row.dataInicio || new Date().toLocaleDateString(),
+            classesCompleted: row['Aulas Completadas'] || row.classesCompleted || 0
+          }));
+          
+          updateStats();
+          updateTable();
+          document.getElementById('processBtn').disabled = false;
+          
+          showAlert('Arquivo carregado com sucesso!', 'success');
+        } catch (error) {
+          console.error('Erro ao processar arquivo:', error);
+          showAlert('Erro ao processar arquivo. Verifique o formato.', 'danger');
+        }
+      };
+      reader.readAsBinaryString(file);
+    }
+
+    // Process data
+    function processData() {
+      if (membersData.length === 0) {
+        showAlert('Nenhum dado para processar.', 'warning');
+        return;
+      }
+
+      // Simulate processing
+      const btn = document.getElementById('processBtn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<div class="loading"></div> Processando...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        showAlert('Dados processados com sucesso!', 'success');
+      }, 2000);
+    }
+
+    // Download template
+    function downloadTemplate() {
+      const templateData = [
+        ['Nome', 'Email', 'Telefone', 'Plano', 'Status', 'Data de Início', 'Aulas Completadas'],
+        ['João Silva', 'joao@email.com', '(11) 99999-9999', 'Mensal', 'Ativo', '01/01/2024', 15],
+        ['Maria Santos', 'maria@email.com', '(11) 88888-8888', 'Trimestral', 'Ativo', '15/01/2024', 8],
+        ['Pedro Costa', 'pedro@email.com', '(11) 77777-7777', 'Anual', 'Ativo', '01/02/2024', 25]
+      ];
+
+      const ws = XLSX.utils.aoa_to_sheet(templateData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Membros');
+      XLSX.writeFile(wb, 'template_membros.xlsx');
+    }
+
+    // Edit member
+    function editMember(index) {
+      const member = membersData[index];
+      currentEditIndex = index;
+      
+      document.getElementById('editName').value = member.nome;
+      document.getElementById('editEmail').value = member.email;
+      document.getElementById('editPhone').value = member.telefone;
+      document.getElementById('editPlan').value = member.plano;
+      document.getElementById('editStatus').value = member.status;
+      
+      showModal('editModal');
+    }
+
+    // Delete member
+    function deleteMember(index) {
+      if (confirm('Tem certeza que deseja excluir este membro?')) {
+        membersData.splice(index, 1);
+        updateStats();
+        updateTable();
+        showAlert('Membro excluído com sucesso!', 'success');
+      }
+    }
+
+    // Handle edit submit
+    function handleEditSubmit(event) {
+      event.preventDefault();
+      
+      const member = membersData[currentEditIndex];
+      member.nome = document.getElementById('editName').value;
+      member.email = document.getElementById('editEmail').value;
+      member.telefone = document.getElementById('editPhone').value;
+      member.plano = document.getElementById('editPlan').value;
+      member.status = document.getElementById('editStatus').value;
+      
+      updateStats();
+      updateTable();
+      closeModal('editModal');
+      showAlert('Membro atualizado com sucesso!', 'success');
+    }
+
+    // Handle add submit
+    function handleAddSubmit(event) {
+      event.preventDefault();
+      
+      const newMember = {
+        id: membersData.length + 1,
+        nome: document.getElementById('addName').value,
+        email: document.getElementById('addEmail').value,
+        telefone: document.getElementById('addPhone').value,
+        plano: document.getElementById('addPlan').value,
+        status: 'Ativo',
+        dataInicio: new Date().toLocaleDateString(),
+        classesCompleted: 0
+      };
+      
+      membersData.push(newMember);
+      updateStats();
+      updateTable();
+      closeModal('addModal');
+      document.getElementById('addForm').reset();
+      showAlert('Membro adicionado com sucesso!', 'success');
+    }
+
+    // Show modal
+    function showModal(modalId) {
+      document.getElementById(modalId).classList.add('show');
+    }
+
+    // Close modal
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('show');
+    }
+
+    // Show alert
+    function showAlert(message, type) {
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type}`;
+      alert.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+        ${message}
+      `;
+      
+      document.body.appendChild(alert);
+      
+      setTimeout(() => {
+        alert.remove();
+      }, 5000);
+    }
+
+    // Add new member button
+    function addNewMember() {
+      showModal('addModal');
+    }
+
+    // Add button to header
+    document.addEventListener('DOMContentLoaded', function() {
+      const header = document.querySelector('.header');
+      const addButton = document.createElement('button');
+      addButton.className = 'btn';
+      addButton.innerHTML = '<i class="fas fa-plus"></i> Adicionar Membro';
+      addButton.onclick = addNewMember;
+      addButton.style.marginTop = '1rem';
+      header.appendChild(addButton);
     });
   </script>
 </body>
