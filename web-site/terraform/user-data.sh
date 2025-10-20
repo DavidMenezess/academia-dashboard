@@ -111,9 +111,23 @@ else
 fi
 
 # Se o projeto foi clonado, fazer deploy
-if [ -d "/home/ubuntu/academia-dashboard" ] && [ -f "/home/ubuntu/academia-dashboard/docker-compose.prod.yml" ]; then
+if [ -d "/home/ubuntu/academia-dashboard" ]; then
+    log "Projeto encontrado, verificando estrutura..."
+    ls -la /home/ubuntu/academia-dashboard/
+    
+    if [ -f "/home/ubuntu/academia-dashboard/web-site/docker-compose.prod.yml" ]; then
+        log "docker-compose.prod.yml encontrado em web-site/"
+        cd /home/ubuntu/academia-dashboard/web-site
+    elif [ -f "/home/ubuntu/academia-dashboard/docker-compose.prod.yml" ]; then
+        log "docker-compose.prod.yml encontrado na raiz"
+        cd /home/ubuntu/academia-dashboard
+    else
+        error "docker-compose.prod.yml não encontrado!"
+        ls -la /home/ubuntu/academia-dashboard/
+        exit 1
+    fi
+    
     log "Iniciando deploy da aplicação..."
-    cd /home/ubuntu/academia-dashboard
     
     # Criar diretórios necessários
     mkdir -p data logs api/uploads
