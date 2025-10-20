@@ -9,31 +9,27 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
-      --primary-color: #1e293b;
-      --primary-light: #334155;
-      --primary-dark: #0f172a;
-      --secondary-color: #3b82f6;
-      --accent-color: #f59e0b;
-      --success-color: #10b981;
-      --warning-color: #f59e0b;
-      --danger-color: #ef4444;
-      --background-color: #0f172a;
-      --card-bg: #1e293b;
-      --card-bg-light: #334155;
-      --text-primary: #f8fafc;
-      --text-secondary: #cbd5e1;
-      --text-tertiary: #94a3b8;
-      --border-color: #334155;
-      --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      --gradient-warning: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      --primary-color: #003D7D;
+      --primary-light: #0057B8;
+      --primary-dark: #002E5F;
+      --secondary-color: #F7941D;
+      --secondary-light: #FFAA33;
+      --secondary-dark: #E57E00;
+      --tertiary-color: #0057B8;
+      --accent-color: #F7941D;
+      --background-color: #F5F7FA;
+      --card-bg: #FFFFFF;
+      --text-primary: #1F2937;
+      --text-secondary: #4B5563;
+      --text-tertiary: #9CA3AF;
+      --border-color: #E5E7EB;
+      --success-color: #10B981;
+      --warning-color: #F59E0B;
+      --danger-color: #EF4444;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+      --transition: all 0.3s ease;
     }
     
     * {
@@ -44,7 +40,7 @@
     }
     
     body {
-      background: var(--background-color);
+      background-color: var(--background-color);
       color: var(--text-primary);
       line-height: 1.6;
       padding: 24px;
@@ -61,7 +57,7 @@
     .header {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 20px;
+      border-radius: 16px;
       padding: 2rem;
       margin-bottom: 2rem;
       box-shadow: var(--shadow);
@@ -70,10 +66,7 @@
     .header h1 {
       font-size: 2.5rem;
       font-weight: 700;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--primary-color);
       margin-bottom: 0.5rem;
     }
     
@@ -92,7 +85,7 @@
     .stat-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 20px;
+      border-radius: 16px;
       padding: 2rem;
       position: relative;
       overflow: hidden;
@@ -101,8 +94,8 @@
     }
     
     .stat-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
     
     .stat-card::before {
@@ -112,7 +105,7 @@
       left: 0;
       right: 0;
       height: 4px;
-      background: var(--gradient-primary);
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
     }
     
     .stat-header {
@@ -133,7 +126,7 @@
     .stat-icon {
       width: 48px;
       height: 48px;
-      border-radius: 16px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -179,7 +172,7 @@
     .chart-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 20px;
+      border-radius: 16px;
       padding: 2rem;
       position: relative;
       box-shadow: var(--shadow);
@@ -206,7 +199,7 @@
     .upload-section {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 20px;
+      border-radius: 16px;
       padding: 2rem;
       margin-bottom: 2rem;
       box-shadow: var(--shadow);
@@ -214,7 +207,7 @@
     
     .upload-area {
       border: 2px dashed var(--border-color);
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 3rem 2rem;
       text-align: center;
       transition: var(--transition);
@@ -222,13 +215,13 @@
     }
     
     .upload-area:hover {
-      border-color: var(--secondary-color);
-      background: rgba(59, 130, 246, 0.05);
+      border-color: var(--primary-color);
+      background: rgba(0, 61, 125, 0.05);
     }
     
     .upload-area.dragover {
-      border-color: var(--secondary-color);
-      background: rgba(59, 130, 246, 0.1);
+      border-color: var(--primary-color);
+      background: rgba(0, 61, 125, 0.1);
     }
     
     .upload-icon {
@@ -249,10 +242,10 @@
     }
     
     .btn {
-      background: var(--gradient-primary);
+      background: var(--primary-color);
       color: white;
       border: none;
-      border-radius: 12px;
+      border-radius: 8px;
       padding: 0.75rem 1.5rem;
       font-weight: 600;
       cursor: pointer;
@@ -263,38 +256,40 @@
     }
     
     .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
+      background: var(--primary-light);
+      transform: translateY(-1px);
     }
     
     .btn-secondary {
-      background: var(--card-bg-light);
-      color: var(--text-primary);
-      border: 1px solid var(--border-color);
+      background: var(--text-secondary);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--text-primary);
     }
     
     .btn-success {
-      background: var(--gradient-success);
+      background: var(--success-color);
     }
     
     .btn-warning {
-      background: var(--gradient-warning);
+      background: var(--warning-color);
     }
     
     .btn-danger {
-      background: var(--gradient-secondary);
+      background: var(--danger-color);
     }
     
     .data-table {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 20px;
+      border-radius: 16px;
       overflow: hidden;
       box-shadow: var(--shadow);
     }
     
     .table-header {
-      background: var(--card-bg-light);
+      background: var(--background-color);
       padding: 1.5rem 2rem;
       border-bottom: 1px solid var(--border-color);
     }
@@ -318,7 +313,7 @@
     }
     
     .table th {
-      background: var(--card-bg-light);
+      background: var(--background-color);
       color: var(--text-secondary);
       font-weight: 600;
       font-size: 0.875rem;
@@ -331,14 +326,14 @@
     }
     
     .table tr:hover {
-      background: var(--card-bg-light);
+      background: var(--background-color);
     }
     
     .badge {
       display: inline-flex;
       align-items: center;
       padding: 0.25rem 0.75rem;
-      border-radius: 8px;
+      border-radius: 6px;
       font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
@@ -367,9 +362,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.5);
       z-index: 1000;
-      backdrop-filter: blur(4px);
     }
     
     .modal.show {
@@ -381,13 +375,13 @@
     .modal-content {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 20px;
+      border-radius: 16px;
       padding: 2rem;
       max-width: 500px;
       width: 90%;
       max-height: 80vh;
       overflow-y: auto;
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow);
     }
     
     .modal-header {
@@ -431,8 +425,8 @@
       width: 100%;
       padding: 0.75rem 1rem;
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      background: var(--card-bg-light);
+      border-radius: 8px;
+      background: var(--card-bg);
       color: var(--text-primary);
       font-size: 1rem;
       transition: var(--transition);
@@ -440,8 +434,8 @@
     
     .form-input:focus {
       outline: none;
-      border-color: var(--secondary-color);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 61, 125, 0.1);
     }
     
     .form-textarea {
@@ -458,7 +452,7 @@
     
     .alert {
       padding: 1rem 1.5rem;
-      border-radius: 12px;
+      border-radius: 8px;
       margin-bottom: 1.5rem;
       display: flex;
       align-items: center;
@@ -489,7 +483,7 @@
       height: 20px;
       border: 2px solid var(--border-color);
       border-radius: 50%;
-      border-top-color: var(--secondary-color);
+      border-top-color: var(--primary-color);
       animation: spin 1s ease-in-out infinite;
     }
     
@@ -550,8 +544,11 @@
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <h1><i class="fas fa-dumbbell"></i> Academia Força Fitness</h1>
+      <h1>🏋️ Academia Força Fitness</h1>
       <p>Dashboard de Gestão - Controle completo da sua academia</p>
+      <button class="btn" onclick="addNewMember()" style="margin-top: 1rem;">
+        ➕ Adicionar Membro
+      </button>
     </div>
 
     <!-- Stats Grid -->
@@ -559,13 +556,13 @@
       <div class="stat-card">
         <div class="stat-header">
           <div class="stat-title">Total de Membros</div>
-          <div class="stat-icon" style="background: var(--gradient-primary);">
-            <i class="fas fa-users"></i>
+          <div class="stat-icon" style="background: var(--primary-color);">
+            👥
           </div>
         </div>
         <div class="stat-value" id="totalMembers">0</div>
         <div class="stat-change positive">
-          <i class="fas fa-arrow-up"></i>
+          <span>↗</span>
           <span>Crescimento constante</span>
         </div>
       </div>
@@ -573,13 +570,13 @@
       <div class="stat-card">
         <div class="stat-header">
           <div class="stat-title">Membros Ativos</div>
-          <div class="stat-icon" style="background: var(--gradient-success);">
-            <i class="fas fa-user-check"></i>
+          <div class="stat-icon" style="background: var(--success-color);">
+            ✅
           </div>
         </div>
         <div class="stat-value" id="activeMembers">0</div>
         <div class="stat-change positive">
-          <i class="fas fa-arrow-up"></i>
+          <span>↗</span>
           <span>Alta retenção</span>
         </div>
       </div>
@@ -587,13 +584,13 @@
       <div class="stat-card">
         <div class="stat-header">
           <div class="stat-title">Receita Mensal</div>
-          <div class="stat-icon" style="background: var(--gradient-warning);">
-            <i class="fas fa-dollar-sign"></i>
+          <div class="stat-icon" style="background: var(--warning-color);">
+            💰
           </div>
         </div>
         <div class="stat-value" id="monthlyRevenue">R$ 0</div>
         <div class="stat-change positive">
-          <i class="fas fa-arrow-up"></i>
+          <span>↗</span>
           <span>Crescimento sustentável</span>
         </div>
       </div>
@@ -601,13 +598,13 @@
       <div class="stat-card">
         <div class="stat-header">
           <div class="stat-title">Aulas Realizadas</div>
-          <div class="stat-icon" style="background: var(--gradient-secondary);">
-            <i class="fas fa-calendar-check"></i>
+          <div class="stat-icon" style="background: var(--secondary-color);">
+            📅
           </div>
         </div>
         <div class="stat-value" id="classesCompleted">0</div>
         <div class="stat-change positive">
-          <i class="fas fa-arrow-up"></i>
+          <span>↗</span>
           <span>Excelente frequência</span>
         </div>
       </div>
@@ -637,22 +634,20 @@
     <!-- Upload Section -->
     <div class="upload-section">
       <h2 style="margin-bottom: 1.5rem; color: var(--text-primary);">
-        <i class="fas fa-upload"></i> Upload de Dados
+        📤 Upload de Dados
       </h2>
       <div class="upload-area" id="uploadArea">
-        <div class="upload-icon">
-          <i class="fas fa-cloud-upload-alt"></i>
-        </div>
+        <div class="upload-icon">📁</div>
         <div class="upload-text">Arraste e solte seu arquivo Excel/CSV aqui</div>
         <div class="upload-subtext">ou clique para selecionar</div>
         <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;">
       </div>
       <div class="form-actions" style="margin-top: 1.5rem;">
         <button class="btn btn-secondary" onclick="downloadTemplate()">
-          <i class="fas fa-download"></i> Baixar Template
+          📥 Baixar Template
         </button>
         <button class="btn" onclick="processData()" id="processBtn" disabled>
-          <i class="fas fa-cog"></i> Processar Dados
+          ⚙️ Processar Dados
         </button>
       </div>
     </div>
@@ -801,7 +796,7 @@
       const activeMembers = membersData.filter(m => m.status === 'Ativo').length;
       const monthlyRevenue = membersData.reduce((sum, m) => {
         const planValues = { 'Mensal': 100, 'Trimestral': 280, 'Semestral': 500, 'Anual': 900 };
-        return sum + (planValues[m.plan] || 0);
+        return sum + (planValues[m.plano] || 0);
       }, 0);
       const classesCompleted = membersData.reduce((sum, m) => sum + (m.classesCompleted || 0), 0);
 
@@ -836,10 +831,10 @@
           <td>${member.dataInicio}</td>
           <td>
             <button class="btn btn-secondary" onclick="editMember(${index})" style="padding: 0.5rem; font-size: 0.875rem;">
-              <i class="fas fa-edit"></i>
+              ✏️
             </button>
             <button class="btn btn-danger" onclick="deleteMember(${index})" style="padding: 0.5rem; font-size: 0.875rem;">
-              <i class="fas fa-trash"></i>
+              🗑️
             </button>
           </td>
         </tr>
@@ -867,12 +862,12 @@
           datasets: [{
             label: 'Receita (R$)',
             data: [32000, 35000, 38000, 42000, 45000, 48000, 52000, 55000, 58000, 62000, 65000, 68000],
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderColor: '#003D7D',
+            backgroundColor: 'rgba(0, 61, 125, 0.1)',
             borderWidth: 3,
             fill: true,
             tension: 0.4,
-            pointBackgroundColor: '#3b82f6',
+            pointBackgroundColor: '#003D7D',
             pointBorderColor: '#ffffff',
             pointBorderWidth: 2,
             pointRadius: 6
@@ -890,10 +885,10 @@
             y: {
               beginAtZero: true,
               grid: {
-                color: 'rgba(255, 255, 255, 0.1)'
+                color: 'rgba(0, 0, 0, 0.1)'
               },
               ticks: {
-                color: '#94a3b8',
+                color: '#4B5563',
                 callback: function(value) {
                   return 'R$ ' + value.toLocaleString();
                 }
@@ -904,7 +899,7 @@
                 display: false
               },
               ticks: {
-                color: '#94a3b8'
+                color: '#4B5563'
               }
             }
           }
@@ -920,10 +915,10 @@
           datasets: [{
             data: [45, 25, 20, 10],
             backgroundColor: [
-              '#3b82f6',
-              '#10b981',
-              '#f59e0b',
-              '#ef4444'
+              '#003D7D',
+              '#10B981',
+              '#F7941D',
+              '#EF4444'
             ],
             borderWidth: 0
           }]
@@ -935,7 +930,7 @@
             legend: {
               position: 'bottom',
               labels: {
-                color: '#cbd5e1',
+                color: '#4B5563',
                 padding: 20,
                 usePointStyle: true
               }
@@ -1145,7 +1140,7 @@
       const alert = document.createElement('div');
       alert.className = `alert alert-${type}`;
       alert.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i>
+        ${type === 'success' ? '✅' : type === 'warning' ? '⚠️' : '❌'}
         ${message}
       `;
       
@@ -1160,17 +1155,6 @@
     function addNewMember() {
       showModal('addModal');
     }
-
-    // Add button to header
-    document.addEventListener('DOMContentLoaded', function() {
-      const header = document.querySelector('.header');
-      const addButton = document.createElement('button');
-      addButton.className = 'btn';
-      addButton.innerHTML = '<i class="fas fa-plus"></i> Adicionar Membro';
-      addButton.onclick = addNewMember;
-      addButton.style.marginTop = '1rem';
-      header.appendChild(addButton);
-    });
   </script>
 </body>
 </html>
