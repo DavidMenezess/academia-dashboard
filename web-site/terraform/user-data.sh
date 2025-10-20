@@ -162,76 +162,76 @@ EOF
     # Fazer build e iniciar containers
     log "Executando docker-compose..."
     
-    # Garantir que o usuário ubuntu está no grupo docker
-    sudo usermod -aG docker ubuntu
-    sudo usermod -aG docker root
-    
-    # Aguardar um momento para o grupo ser aplicado
-    sleep 5
+    # Verificar se estamos no diretório correto
+    pwd
+    ls -la
     
     # Verificar se docker-compose está disponível
     if [ ! -f "docker-compose.prod.yml" ]; then
         error "docker-compose.prod.yml não encontrado!"
+        error "Diretório atual: $(pwd)"
+        error "Arquivos disponíveis:"
+        ls -la
         exit 1
     fi
     
-    # Executar docker-compose como root para garantir permissões
+    # Parar containers existentes
+    log "Parando containers existentes..."
+    docker-compose -f docker-compose.prod.yml down || true
+    
+    # Aguardar um momento
+    sleep 3
+    
+    # Executar docker-compose
     log "Iniciando containers com docker-compose..."
-    docker-compose -f docker-compose.prod.yml down
     docker-compose -f docker-compose.prod.yml up -d --build
     
     # Aguardar containers iniciarem
     log "Aguardando containers iniciarem..."
-    sleep 15
+    sleep 20
     
     # Verificar se containers estão rodando
     log "Verificando status dos containers..."
-    if docker ps | grep -q "academia-dashboard-prod"; then
-        log "✅ Dashboard container está rodando"
-    else
+    docker ps
+    
+    # Verificar logs se containers não estiverem rodando
+    if ! docker ps | grep -q "academia-dashboard-prod"; then
         warning "⚠️ Dashboard container não está rodando"
+        log "Verificando logs do dashboard..."
+        docker logs academia-dashboard-prod || true
         log "Tentando reiniciar..."
         docker-compose -f docker-compose.prod.yml restart academia-dashboard
-        sleep 5
+        sleep 10
+    else
+        log "✅ Dashboard container está rodando"
     fi
     
-    if docker ps | grep -q "academia-data-api-prod"; then
-        log "✅ API container está rodando"
-    else
+    if ! docker ps | grep -q "academia-data-api-prod"; then
         warning "⚠️ API container não está rodando"
+        log "Verificando logs da API..."
+        docker logs academia-data-api-prod || true
         log "Tentando reiniciar..."
         docker-compose -f docker-compose.prod.yml restart data-api
-        sleep 5
+        sleep 10
+    else
+        log "✅ API container está rodando"
     fi
     
     # Verificação final
     log "Status final dos containers:"
     docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
     
-    # Criar script de inicialização para casos de reinicialização
-    log "Criando script de inicialização automática..."
-    cat > /etc/systemd/system/academia-dashboard.service << 'SERVICE_EOF'
-[Unit]
-Description=Academia Dashboard Service
-After=docker.service
-Requires=docker.service
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-WorkingDirectory=/home/ubuntu/academia-dashboard/web-site
-ExecStart=/usr/bin/docker-compose -f docker-compose.prod.yml up -d
-ExecStop=/usr/bin/docker-compose -f docker-compose.prod.yml down
-TimeoutStartSec=0
-
-[Install]
-WantedBy=multi-user.target
-SERVICE_EOF
-
-    # Habilitar o serviço
-    systemctl daemon-reload
-    systemctl enable academia-dashboard.service
-    log "✅ Serviço de inicialização automática configurado"
+    # Criar script de inicialização manual
+    log "Criando script de inicialização manual..."
+    cat > /home/ubuntu/start-dashboard.sh << 'SCRIPT_EOF'
+#!/bin/bash
+cd /home/ubuntu/academia-dashboard/web-site
+docker-compose -f docker-compose.prod.yml up -d --build
+echo "Dashboard iniciado!"
+SCRIPT_EOF
+    
+    chmod +x /home/ubuntu/start-dashboard.sh
+    log "✅ Script de inicialização manual criado: /home/ubuntu/start-dashboard.sh"
     
     log "Aplicação iniciada com sucesso!"
 else
