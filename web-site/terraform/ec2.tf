@@ -6,7 +6,7 @@
 resource "aws_instance" "academia_dashboard" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
-  key_name = var.key_name
+  key_name      = var.key_name
 
   vpc_security_group_ids = [aws_security_group.academia_dashboard.id]
 
@@ -78,5 +78,3 @@ resource "aws_eip_association" "academia_dashboard" {
   instance_id   = aws_instance.academia_dashboard.id
   allocation_id = aws_eip.academia_dashboard.id
 }
-
-

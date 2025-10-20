@@ -68,7 +68,7 @@ variable "tags" {
 variable "ebs_volume_size" {
   description = "Tamanho do volume EBS em GB (Free Tier: até 30GB)"
   type        = number
-  default = 20
+  default     = 20
 
   validation {
     condition     = var.ebs_volume_size >= 8 && var.ebs_volume_size <= 30
@@ -80,7 +80,7 @@ variable "ebs_volume_size" {
 variable "enable_detailed_monitoring" {
   description = "Habilitar monitoramento detalhado CloudWatch (gera custos)"
   type        = bool
-  default = false # false para Free Tier
+  default     = false # false para Free Tier
 }
 
 # Porta da API
@@ -96,5 +96,3 @@ variable "dashboard_port" {
   type        = number
   default     = 80
 }
-
-

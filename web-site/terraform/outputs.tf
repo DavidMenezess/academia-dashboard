@@ -89,8 +89,8 @@ output "free_tier_info" {
 output "deployment_summary" {
   description = "Resumo completo do deployment"
   value = {
-    projeto           = var.project_name
-    ambiente          = var.environment
+    projeto             = var.project_name
+    ambiente           = var.environment
     regiao            = var.aws_region
     ip_publico        = aws_eip.academia_dashboard.public_ip
     dashboard_url     = "http://${aws_eip.academia_dashboard.public_ip}"
@@ -105,38 +105,36 @@ output "deployment_summary" {
 output "next_steps" {
   description = "Próximos passos após o deploy"
   value = <<-EOT
-  
+
   ========================================
   ✅ DEPLOY CONCLUÍDO COM SUCESSO!
   ========================================
-  
+
   📍 IP Público: ${aws_eip.academia_dashboard.public_ip}
-  
+
   🌐 Acesse seu Dashboard:
      ${aws_eip.academia_dashboard.public_ip}
-  
+
   🔌 API disponível em:
      http://${aws_eip.academia_dashboard.public_ip}:${var.api_port}
-  
+
   🔑 Conectar via SSH:
      ssh -i ${var.key_name}.pem ubuntu@${aws_eip.academia_dashboard.public_ip}
-  
+
   📋 Comandos úteis (após conectar SSH):
      • Ver informações: cat ~/SYSTEM_INFO.txt
      • Ver containers: docker ps
      • Ver logs: docker logs -f academia-dashboard-prod
      • Atualizar app: sudo update-academia-dashboard
      • Fazer backup: sudo backup-academia-dashboard
-  
+
   ⏰ Aguarde 2-3 minutos para a aplicação inicializar completamente
-  
+
   💰 Free Tier AWS:
      • 750 horas/mês de t2.micro (GRÁTIS)
      • ${var.ebs_volume_size}GB de armazenamento (30GB GRÁTIS)
      • 1 Elastic IP (GRÁTIS quando anexado)
-  
+
   ========================================
   EOT
 }
-
-
