@@ -6,7 +6,32 @@ Este arquivo documenta as atualizações feitas na documentação para refletir 
 
 ## ✅ Atualizações Realizadas
 
-### **Última Atualização: Deploy Automático 100% Funcional**
+### **Última Atualização: Sistema de Login e Gestão de Usuários - COMPLETO**
+
+**🔐 Credenciais Padrão do Sistema:**
+- **Administrador:** `admin` / `admin123`
+- **Caixa Manhã:** `caixa_manha` / `manha123`
+- **Caixa Tarde:** `caixa_tarde` / `tarde123`
+- **Caixa Noite:** `caixa_noite` / `noite123`
+
+**✨ Funcionalidades Implementadas:**
+- ✅ Sistema de login seguro com autenticação
+- ✅ Painel administrativo para gestão de usuários
+- ✅ Sistema de permissões por categorias (caixa-manhã, tarde, noite)
+- ✅ Páginas específicas para cada caixa com funcionalidades de vendas
+- ✅ Sistema completo de vendas (produtos, mensalidades, diárias, quinzenas)
+- ✅ Formas de pagamento (PIX, dinheiro, débito, crédito)
+- ✅ Sistema de relatórios por categoria, dia, semana e mês
+- ✅ Registro de atividade e controle de acesso
+- ✅ Interface moderna e responsiva
+- ✅ Redirecionamento automático baseado em permissões
+
+**🚀 Como Acessar:**
+1. Acesse `http://IP_PUBLICO/login.html`
+2. Use as credenciais acima
+3. Sistema redireciona automaticamente baseado no tipo de usuário
+
+### **Deploy Automático 100% Funcional**
 
 **Correções aplicadas:**
 - ✅ Security Groups corrigidos (sem acentos)
