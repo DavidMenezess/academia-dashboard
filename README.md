@@ -30,6 +30,8 @@ terraform apply
 ```
 **Aguarde 5 minutos** e acesse o IP fornecido!
 
+> ✅ **Deploy 100% automático** - Containers iniciam automaticamente
+
 📖 **Guias Detalhados:**
 - [Deploy Local](web-site/DEPLOY-LOCAL.md)
 - [Deploy AWS com Terraform](web-site/DEPLOY-AWS.md)

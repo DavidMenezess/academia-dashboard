@@ -1,8 +1,20 @@
 # 📝 Atualizações na Documentação
 
-Este arquivo documenta as atualizações feitas na documentação para refletir a nova estrutura organizada do projeto.
+Este arquivo documenta as atualizações feitas na documentação para refletir a nova estrutura organizada do projeto e as correções de deploy automático.
 
 ---
+
+## ✅ Atualizações Realizadas
+
+### **Última Atualização: Deploy Automático 100% Funcional**
+
+**Correções aplicadas:**
+- ✅ Security Groups corrigidos (sem acentos)
+- ✅ Docker Compose com portas corretas (80, 3000)
+- ✅ Docker Entrypoint sem scripts interativos
+- ✅ User-data.sh com deploy automático
+- ✅ Containers iniciam automaticamente
+- ✅ Deploy 100% funcional sem intervenção manual
 
 ## ✅ Atualizações Realizadas
 

@@ -31,11 +31,11 @@ if [ ! -f "/app/data/academia_data.json" ]; then
 EOF
 fi
 
-# Executar scripts de inicialização se existirem
+# Executar scripts de inicialização se existirem (apenas não-interativos)
 if [ -d "/app/scripts" ]; then
     echo "🔧 Executando scripts de inicialização..."
     for script in /app/scripts/*.sh; do
-        if [ -f "$script" ]; then
+        if [ -f "$script" ] && [ "$(basename "$script")" != "deploy-github.sh" ] && [ "$(basename "$script")" != "setup-github.sh" ]; then
             echo "Executando: $script"
             bash "$script"
         fi

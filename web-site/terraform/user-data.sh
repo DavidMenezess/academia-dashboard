@@ -161,6 +161,11 @@ EOF
     
     # Fazer build e iniciar containers
     log "Executando docker-compose..."
+    # Adicionar usuário ao grupo docker
+    sudo usermod -aG docker ubuntu
+    # Aguardar um momento para o grupo ser aplicado
+    sleep 2
+    # Executar como usuário ubuntu
     sudo -u ubuntu docker-compose -f docker-compose.prod.yml up -d --build
     
     log "Aplicação iniciada com sucesso!"

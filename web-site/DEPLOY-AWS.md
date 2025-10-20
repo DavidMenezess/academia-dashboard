@@ -28,6 +28,8 @@ terraform apply
 
 **🎉 Pronto! Seu dashboard está online!**
 
+> ✅ **Deploy 100% automático** - Containers iniciam automaticamente sem intervenção manual
+
 ---
 
 ## 📋 Pré-requisitos
