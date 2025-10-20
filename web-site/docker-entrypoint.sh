@@ -35,7 +35,7 @@ fi
 if [ -d "/app/scripts" ]; then
     echo "🔧 Executando scripts de inicialização..."
     for script in /app/scripts/*.sh; do
-        if [ -f "$script" ] && [ "$(basename "$script")" != "deploy-github.sh" ] && [ "$(basename "$script")" != "setup-github.sh" ]; then
+        if [ -f "$script" ] && [ "$(basename "$script")" != "deploy-github.sh" ] && [ "$(basename "$script")" != "setup-github.sh" ] && [ "$(basename "$script")" != "setup-ssl.sh" ]; then
             echo "Executando: $script"
             bash "$script"
         fi
