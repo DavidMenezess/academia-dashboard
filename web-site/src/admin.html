@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academia Força Fitness - Painel Administrativo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #003D7D;
+      --primary-light: #0057B8;
+      --primary-dark: #002E5F;
+      --secondary-color: #F7941D;
+      --secondary-light: #FFAA33;
+      --secondary-dark: #E57E00;
+      --background-color: #F5F7FA;
+      --card-bg: #FFFFFF;
+      --text-primary: #1F2937;
+      --text-secondary: #4B5563;
+      --text-tertiary: #9CA3AF;
+      --border-color: #E5E7EB;
+      --success-color: #10B981;
+      --warning-color: #F59E0B;
+      --danger-color: #EF4444;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body {
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+    
+    .header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    .header-user {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    
+    .btn:hover {
+      background: var(--primary-light);
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      background: var(--text-secondary);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--text-primary);
+    }
+    
+    .btn-danger {
+      background: var(--danger-color);
+    }
+    
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+    
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+    
+    .stat-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: white;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-change {
+      font-size: 0.875rem;
+      color: var(--success-color);
+      font-weight: 600;
+    }
+    
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .users-table th,
+    .users-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .users-table th {
+      background: var(--background-color);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .users-table td {
+      color: var(--text-primary);
+    }
+    
+    .users-table tr:hover {
+      background: var(--background-color);
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .badge-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+    }
+    
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning-color);
+    }
+    
+    .badge-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger-color);
+    }
+    
+    .badge-info {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+    
+    .activity-log {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+    
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: white;
+    }
+    
+    .activity-content {
+      flex: 1;
+    }
+    
+    .activity-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    
+    .activity-time {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+    
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--card-bg);
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 61, 125, 0.1);
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+    
+    .alert {
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .alert-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    
+    .alert-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger-color);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    @media (max-width: 1024px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .header {
+        padding: 1rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      <h1 class="header-title">🏋️ Painel Administrativo</h1>
+    </div>
+    <div class="header-user">
+      <span id="currentUserName">Administrador</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="showAddUserModal()">
+        ➕ Novo Usuário
+      </button>
+      <button class="btn btn-secondary" onclick="logout()">
+        🚪 Sair
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Total de Usuários</div>
+          <div class="stat-icon" style="background: var(--primary-color);">
+            👥
+          </div>
+        </div>
+        <div class="stat-value" id="totalUsers">0</div>
+        <div class="stat-change">+12% este mês</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Usuários Ativos</div>
+          <div class="stat-icon" style="background: var(--success-color);">
+            ✅
+          </div>
+        </div>
+        <div class="stat-value" id="activeUsers">0</div>
+        <div class="stat-change">95% ativos</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Caixas Online</div>
+          <div class="stat-icon" style="background: var(--warning-color);">
+            💻
+          </div>
+        </div>
+        <div class="stat-value" id="onlineCashiers">0</div>
+        <div class="stat-change">3/3 online</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Atividade Hoje</div>
+          <div class="stat-icon" style="background: var(--secondary-color);">
+            📊
+          </div>
+        </div>
+        <div class="stat-value" id="todayActivity">0</div>
+        <div class="stat-change">+25% vs ontem</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Users Table -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Usuários do Sistema</h2>
+          <button class="btn" onclick="showAddUserModal()">
+            ➕ Adicionar
+          </button>
+        </div>
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Usuário</th>
+              <th>Categoria</th>
+              <th>Status</th>
+              <th>Último Login</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <!-- Usuários serão carregados aqui -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Activity Log -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Registro de Atividade</h2>
+        </div>
+        <div class="activity-log" id="activityLog">
+          <!-- Atividades serão carregadas aqui -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add User Modal -->
+  <div class="modal" id="addUserModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Adicionar Novo Usuário</div>
+        <button class="modal-close" onclick="closeModal('addUserModal')">&times;</button>
+      </div>
+      <form id="addUserForm">
+        <div class="form-group">
+          <label class="form-label">Nome Completo</label>
+          <input type="text" class="form-input" id="addUserName" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nome de Usuário</label>
+          <input type="text" class="form-input" id="addUserUsername" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Senha</label>
+          <input type="password" class="form-input" id="addUserPassword" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Categoria</label>
+          <select class="form-input" id="addUserCategory" required>
+            <option value="">Selecione uma categoria</option>
+            <option value="admin">Administrador</option>
+            <option value="caixa-manha">Caixa Manhã</option>
+            <option value="caixa-tarde">Caixa Tarde</option>
+            <option value="caixa-noite">Caixa Noite</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Permissões</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <label><input type="checkbox" value="manage_users"> Gerenciar Usuários</label>
+            <label><input type="checkbox" value="add_sales"> Adicionar Vendas</label>
+            <label><input type="checkbox" value="view_reports"> Ver Relatórios</label>
+            <label><input type="checkbox" value="manage_products"> Gerenciar Produtos</label>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('addUserModal')">Cancelar</button>
+          <button type="submit" class="btn">Adicionar Usuário</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Sistema de administração
+    class AdminSystem {
+      constructor() {
+        this.users = this.loadUsers();
+        this.activityLog = this.loadActivityLog();
+        this.currentUser = this.getCurrentUser();
+        this.setupEventListeners();
+        this.loadDashboard();
+      }
+      
+      loadUsers() {
+        const storedUsers = localStorage.getItem('academia_users');
+        return storedUsers ? JSON.parse(storedUsers) : [];
+      }
+      
+      saveUsers() {
+        localStorage.setItem('academia_users', JSON.stringify(this.users));
+      }
+      
+      loadActivityLog() {
+        const stored = localStorage.getItem('academia_activity_log');
+        return stored ? JSON.parse(stored) : [];
+      }
+      
+      saveActivityLog() {
+        localStorage.setItem('academia_activity_log', JSON.stringify(this.activityLog));
+      }
+      
+      getCurrentUser() {
+        const stored = sessionStorage.getItem('current_user');
+        return stored ? JSON.parse(stored) : null;
+      }
+      
+      setupEventListeners() {
+        document.getElementById('addUserForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleAddUser();
+        });
+      }
+      
+      loadDashboard() {
+        this.updateStats();
+        this.loadUsersTable();
+        this.loadActivityLogDisplay();
+        this.updateCurrentUserName();
+      }
+      
+      updateStats() {
+        const totalUsers = this.users.length;
+        const activeUsers = this.users.filter(u => u.isActive).length;
+        const onlineCashiers = this.users.filter(u => 
+          u.role === 'cashier' && u.isActive
+        ).length;
+        
+        // Simular atividade de hoje
+        const todayActivity = this.activityLog.filter(activity => {
+          const activityDate = new Date(activity.timestamp);
+          const today = new Date();
+          return activityDate.toDateString() === today.toDateString();
+        }).length;
+        
+        document.getElementById('totalUsers').textContent = totalUsers;
+        document.getElementById('activeUsers').textContent = activeUsers;
+        document.getElementById('onlineCashiers').textContent = onlineCashiers;
+        document.getElementById('todayActivity').textContent = todayActivity;
+      }
+      
+      loadUsersTable() {
+        const tbody = document.getElementById('usersTableBody');
+        
+        if (this.users.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                Nenhum usuário cadastrado
+              </td>
+            </tr>
+          `;
+          return;
+        }
+        
+        tbody.innerHTML = this.users.map(user => `
+          <tr>
+            <td>${user.name}</td>
+            <td>${user.username}</td>
+            <td><span class="badge ${this.getCategoryBadge(user.category)}">${this.getCategoryName(user.category)}</span></td>
+            <td><span class="badge ${user.isActive ? 'badge-success' : 'badge-danger'}">${user.isActive ? 'Ativo' : 'Inativo'}</span></td>
+            <td>${user.lastLogin ? this.formatDate(user.lastLogin) : 'Nunca'}</td>
+            <td>
+              <button class="btn btn-secondary" onclick="adminSystem.editUser(${user.id})" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
+                ✏️
+              </button>
+              <button class="btn btn-danger" onclick="adminSystem.deleteUser(${user.id})" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
+                🗑️
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+      
+      loadActivityLogDisplay() {
+        const container = document.getElementById('activityLog');
+        
+        if (this.activityLog.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+              Nenhuma atividade registrada
+            </div>
+          `;
+          return;
+        }
+        
+        // Mostrar últimas 10 atividades
+        const recentActivities = this.activityLog.slice(-10).reverse();
+        
+        container.innerHTML = recentActivities.map(activity => `
+          <div class="activity-item">
+            <div class="activity-icon" style="background: ${this.getActivityIconColor(activity.type)};">
+              ${this.getActivityIcon(activity.type)}
+            </div>
+            <div class="activity-content">
+              <div class="activity-title">${activity.title}</div>
+              <div class="activity-time">${this.formatDate(activity.timestamp)}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      getCategoryBadge(category) {
+        switch(category) {
+          case 'admin': return 'badge-info';
+          case 'caixa-manha': return 'badge-success';
+          case 'caixa-tarde': return 'badge-warning';
+          case 'caixa-noite': return 'badge-danger';
+          default: return 'badge-secondary';
+        }
+      }
+      
+      getCategoryName(category) {
+        switch(category) {
+          case 'admin': return 'Administrador';
+          case 'caixa-manha': return 'Caixa Manhã';
+          case 'caixa-tarde': return 'Caixa Tarde';
+          case 'caixa-noite': return 'Caixa Noite';
+          default: return category;
+        }
+      }
+      
+      getActivityIcon(type) {
+        switch(type) {
+          case 'login': return '🔐';
+          case 'user_add': return '➕';
+          case 'user_edit': return '✏️';
+          case 'user_delete': return '🗑️';
+          case 'sale': return '💰';
+          default: return '📝';
+        }
+      }
+      
+      getActivityIconColor(type) {
+        switch(type) {
+          case 'login': return '#10B981';
+          case 'user_add': return '#3B82F6';
+          case 'user_edit': return '#F59E0B';
+          case 'user_delete': return '#EF4444';
+          case 'sale': return '#8B5CF6';
+          default: return '#6B7280';
+        }
+      }
+      
+      formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString('pt-BR');
+      }
+      
+      updateCurrentUserName() {
+        if (this.currentUser) {
+          document.getElementById('currentUserName').textContent = this.currentUser.name;
+        }
+      }
+      
+      handleAddUser() {
+        const name = document.getElementById('addUserName').value;
+        const username = document.getElementById('addUserUsername').value;
+        const password = document.getElementById('addUserPassword').value;
+        const category = document.getElementById('addUserCategory').value;
+        
+        // Coletar permissões
+        const permissions = [];
+        document.querySelectorAll('#addUserForm input[type="checkbox"]:checked').forEach(checkbox => {
+          permissions.push(checkbox.value);
+        });
+        
+        // Verificar se usuário já existe
+        if (this.users.find(u => u.username === username)) {
+          this.showAlert('Nome de usuário já existe!', 'danger');
+          return;
+        }
+        
+        // Criar novo usuário
+        const newUser = {
+          id: Date.now(),
+          username: username,
+          password: password,
+          name: name,
+          role: category === 'admin' ? 'admin' : 'cashier',
+          category: category,
+          permissions: permissions,
+          lastLogin: null,
+          createdAt: new Date().toISOString(),
+          isActive: true
+        };
+        
+        this.users.push(newUser);
+        this.saveUsers();
+        
+        // Adicionar atividade
+        this.addActivity('user_add', `Usuário ${name} foi adicionado ao sistema`);
+        
+        // Atualizar interface
+        this.loadDashboard();
+        this.closeModal('addUserModal');
+        document.getElementById('addUserForm').reset();
+        
+        this.showAlert('Usuário adicionado com sucesso!', 'success');
+      }
+      
+      editUser(userId) {
+        const user = this.users.find(u => u.id === userId);
+        if (user) {
+          // Implementar edição de usuário
+          alert(`Editar usuário: ${user.name}`);
+        }
+      }
+      
+      deleteUser(userId) {
+        const user = this.users.find(u => u.id === userId);
+        if (user && confirm(`Tem certeza que deseja excluir o usuário ${user.name}?`)) {
+          user.isActive = false;
+          this.saveUsers();
+          this.addActivity('user_delete', `Usuário ${user.name} foi removido do sistema`);
+          this.loadDashboard();
+          this.showAlert('Usuário removido com sucesso!', 'success');
+        }
+      }
+      
+      addActivity(type, title) {
+        this.activityLog.push({
+          type: type,
+          title: title,
+          timestamp: new Date().toISOString(),
+          user: this.currentUser ? this.currentUser.name : 'Sistema'
+        });
+        this.saveActivityLog();
+      }
+      
+      showModal(modalId) {
+        document.getElementById(modalId).classList.add('show');
+      }
+      
+      closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('show');
+      }
+      
+      showAlert(message, type) {
+        // Implementar sistema de alertas
+        alert(message);
+      }
+    }
+    
+    // Funções globais
+    function showAddUserModal() {
+      adminSystem.showModal('addUserModal');
+    }
+    
+    function closeModal(modalId) {
+      adminSystem.closeModal(modalId);
+    }
+    
+    function logout() {
+      sessionStorage.removeItem('current_user');
+      window.location.href = 'login.html';
+    }
+    
+    // Verificar autenticação
+    function checkAuth() {
+      const currentUser = sessionStorage.getItem('current_user');
+      if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      const user = JSON.parse(currentUser);
+      if (user.role !== 'admin') {
+        window.location.href = 'login.html';
+        return;
+      }
+    }
+    
+    // Inicializar sistema
+    let adminSystem;
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAuth();
+      adminSystem = new AdminSystem();
+    });
+  </script>
+</body>
+</html>

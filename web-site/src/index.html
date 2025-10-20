@@ -4,6 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Academia Força Fitness - Dashboard</title>
+  <script>
+    // Redirecionar para login se não estiver autenticado
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentUser = sessionStorage.getItem('current_user');
+      if (!currentUser) {
+        window.location.href = 'login.html';
+      } else {
+        const user = JSON.parse(currentUser);
+        if (user.role === 'admin') {
+          window.location.href = 'admin.html';
+        } else if (user.role === 'cashier') {
+          window.location.href = `cashier.html?category=${user.category}`;
+        }
+      }
+    });
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
