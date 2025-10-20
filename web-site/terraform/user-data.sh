@@ -239,6 +239,81 @@ else
     warning "Deploy manual será necessário"
 fi
 
+# FORÇAR INICIALIZAÇÃO DOS CONTAINERS
+log "🔧 FORÇANDO INICIALIZAÇÃO DOS CONTAINERS..."
+cd /home/ubuntu/academia-dashboard/web-site
+
+# Verificar se estamos no diretório correto
+log "Diretório atual: $(pwd)"
+log "Arquivos disponíveis:"
+ls -la
+
+# Verificar se docker-compose.prod.yml existe
+if [ -f "docker-compose.prod.yml" ]; then
+    log "✅ docker-compose.prod.yml encontrado!"
+    
+    # Parar containers existentes
+    log "Parando containers existentes..."
+    docker-compose -f docker-compose.prod.yml down || true
+    
+    # Aguardar um momento
+    sleep 3
+    
+    # Executar docker-compose
+    log "🚀 INICIANDO CONTAINERS COM DOCKER-COMPOSE..."
+    docker-compose -f docker-compose.prod.yml up -d --build
+    
+    # Aguardar containers iniciarem
+    log "Aguardando containers iniciarem..."
+    sleep 20
+    
+    # Verificar se containers estão rodando
+    log "Verificando status dos containers..."
+    docker ps
+    
+    # Verificar logs se containers não estiverem rodando
+    if ! docker ps | grep -q "academia-dashboard-prod"; then
+        warning "⚠️ Dashboard container não está rodando"
+        log "Verificando logs do dashboard..."
+        docker logs academia-dashboard-prod || true
+        log "Tentando reiniciar..."
+        docker-compose -f docker-compose.prod.yml restart academia-dashboard
+        sleep 10
+    else
+        log "✅ Dashboard container está rodando"
+    fi
+    
+    if ! docker ps | grep -q "academia-data-api-prod"; then
+        warning "⚠️ API container não está rodando"
+        log "Verificando logs da API..."
+        docker logs academia-data-api-prod || true
+        log "Tentando reiniciar..."
+        docker-compose -f docker-compose.prod.yml restart data-api
+        sleep 10
+    else
+        log "✅ API container está rodando"
+    fi
+    
+    # Verificação final
+    log "🎯 STATUS FINAL DOS CONTAINERS:"
+    docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+    
+    # Testar se a aplicação está respondendo
+    log "🧪 TESTANDO APLICAÇÃO..."
+    sleep 5
+    if curl -s http://localhost > /dev/null; then
+        log "✅ APLICAÇÃO RESPONDENDO EM http://localhost"
+    else
+        warning "⚠️ Aplicação não está respondendo"
+    fi
+    
+else
+    error "❌ docker-compose.prod.yml NÃO ENCONTRADO!"
+    error "Diretório atual: $(pwd)"
+    error "Arquivos disponíveis:"
+    ls -la
+fi
+
 # Criar script de atualização
 log "Criando script de atualização..."
 cat > /usr/local/bin/update-academia-dashboard << 'SCRIPT_EOF'
