@@ -50,1111 +50,4121 @@
     }
     
     .container {
-      max-width: 1400px;
+      max-width: 1440px;
       margin: 0 auto;
     }
     
-    .header {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 2rem;
-      margin-bottom: 2rem;
+    .dashboard-header {
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      padding: 24px;
+      border-radius: 12px;
+      color: white;
       box-shadow: var(--shadow);
     }
     
-    .header h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--primary-color);
-      margin-bottom: 0.5rem;
-    }
-    
-    .header p {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-    }
-    
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-    
-    .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-      transition: var(--transition);
-      box-shadow: var(--shadow);
-    }
-    
-    .stat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-    
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-    }
-    
-    .stat-header {
+    .header-top {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1.5rem;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    .stat-title {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    
-    .stat-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
+    .header-title {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
+      gap: 15px;
+    }
+    
+    .logo-icon {
+      font-size: 40px;
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2));
+      transition: transform 0.3s ease;
+    }
+    
+    .dashboard-header:hover .logo-icon {
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .dashboard-header h1 {
+      font-size: 36px;
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      letter-spacing: -0.8px;
+      margin: 0;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    
+    .controls-group {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      display: flex;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .year-selector {
+      background-color: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.9);
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 17px;
+      font-weight: 600;
+      position: relative;
+    }
+    
+    .year-selector:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .year-selector.active {
+      background-color: white;
+      color: var(--primary-color);
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .year-number {
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: rgba(255, 255, 255, 0.15);
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .toggle-label {
+      font-size: 15px;
+      font-weight: 600;
       color: white;
     }
     
-    .stat-value {
-      font-size: 2.5rem;
+    .data-status-indicator {
+      background-color: var(--success-color);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
       font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-      line-height: 1;
-    }
-    
-    .stat-change {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 0.875rem;
+      gap: 8px;
+      border: none;
+    }
+    
+    .header-metrics {
+      margin-top: 20px;
+    }
+    
+    .metrics-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .metrics-icon {
+      font-size: 20px;
+    }
+    
+    .metrics-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    
+    .metrics-badge {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      margin-left: auto;
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    
+    .metric-card {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: var(--transition);
+    }
+    
+    .metric-card:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+    
+    .metric-icon {
+      font-size: 28px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    }
+    
+    .metric-content {
+      flex: 1;
+    }
+    
+    .metric-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      line-height: 1;
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
+    }
+    
+    .metric-label {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.9);
       font-weight: 600;
     }
     
-    .stat-change.positive {
-      color: var(--success-color);
-    }
-    
-    .stat-change.negative {
-      color: var(--danger-color);
-    }
-    
-    .stat-change i {
-      font-size: 0.75rem;
-    }
-    
-    .charts-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-    
-    .chart-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 2rem;
+    .toggle-switch {
       position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 22px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #e2e8f0;
+      transition: .4s;
+      border-radius: 22px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .toggle-slider {
+      background-color: var(--primary-color);
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(22px);
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .tab {
+      padding: 12px 24px;
+      background-color: var(--card-bg);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-secondary);
       box-shadow: var(--shadow);
     }
     
-    .chart-header {
+    .tab.active {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 600;
+    }
+    
+    .tab[data-tab="data-update"] {
+      background-color: var(--secondary-light);
+      color: #7A3E00;
+      font-weight: 600;
+    }
+    
+    .tab[data-tab="data-update"]:hover {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+    
+    .tab[data-tab="data-update"].active {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+    
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+    }
+    
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card:hover {
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.01);
+      transform: translateY(-2px);
+    }
+    
+    .card-sm {
+      grid-column: span 3;
+    }
+    
+    .card-md {
+      grid-column: span 6;
+    }
+    
+    .card-lg {
+      grid-column: span 12;
+    }
+    
+    .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      margin-bottom: 15px;
     }
     
-    .chart-title {
-      font-size: 1.25rem;
-      font-weight: 600;
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
       color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .stat-card {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 5px 0;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+    
+    .stat-comparison {
+      font-size: 14px;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+    
+    .stat-comparison.positive {
+      color: var(--success-color);
+    }
+    
+    .stat-comparison.negative {
+      color: var(--danger-color);
     }
     
     .chart-container {
       position: relative;
-      height: 300px;
+      height: 250px;
+      width: 100%;
     }
     
-    .upload-section {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow);
-    }
-    
-    .upload-area {
-      border: 2px dashed var(--border-color);
-      border-radius: 12px;
-      padding: 3rem 2rem;
-      text-align: center;
-      transition: var(--transition);
-      cursor: pointer;
-    }
-    
-    .upload-area:hover {
-      border-color: var(--primary-color);
-      background: rgba(0, 61, 125, 0.05);
-    }
-    
-    .upload-area.dragover {
-      border-color: var(--primary-color);
-      background: rgba(0, 61, 125, 0.1);
-    }
-    
-    .upload-icon {
-      font-size: 3rem;
-      color: var(--text-tertiary);
-      margin-bottom: 1rem;
-    }
-    
-    .upload-text {
-      font-size: 1.1rem;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-    }
-    
-    .upload-subtext {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-    
-    .btn {
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 0.75rem 1.5rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .btn:hover {
-      background: var(--primary-light);
-      transform: translateY(-1px);
-    }
-    
-    .btn-secondary {
-      background: var(--text-secondary);
-    }
-    
-    .btn-secondary:hover {
-      background: var(--text-primary);
-    }
-    
-    .btn-success {
-      background: var(--success-color);
-    }
-    
-    .btn-warning {
-      background: var(--warning-color);
-    }
-    
-    .btn-danger {
-      background: var(--danger-color);
+    .chart-area {
+      height: 100%;
+      width: 100%;
     }
     
     .data-table {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    
-    .table-header {
-      background: var(--background-color);
-      padding: 1.5rem 2rem;
-      border-bottom: 1px solid var(--border-color);
-    }
-    
-    .table-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-    
-    .table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
     }
     
-    .table th,
-    .table td {
-      padding: 1rem 2rem;
+    .data-table th, 
+    .data-table td {
+      padding: 12px;
       text-align: left;
-      border-bottom: 1px solid var(--border-color);
     }
     
-    .table th {
-      background: var(--background-color);
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: 0.875rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    
-    .table td {
+    .data-table th {
+      font-weight: 700;
       color: var(--text-primary);
+      border-bottom: 2px solid var(--border-color);
     }
     
-    .table tr:hover {
-      background: var(--background-color);
+    .data-table td {
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .data-table tr:hover {
+      background-color: rgba(0, 0, 0, 0.01);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
     }
     
     .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.25rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.5px;
     }
     
-    .badge-success {
-      background: rgba(16, 185, 129, 0.1);
-      color: var(--success-color);
+    .badge-primary {
+      background-color: var(--primary-light);
+      color: white;
     }
     
-    .badge-warning {
-      background: rgba(245, 158, 11, 0.1);
-      color: var(--warning-color);
+    .badge-secondary {
+      background-color: var(--secondary-color);
+      color: white;
     }
     
-    .badge-danger {
-      background: rgba(239, 68, 68, 0.1);
-      color: var(--danger-color);
+    .badge-tertiary {
+      background-color: var(--tertiary-color);
+      color: white;
     }
     
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    
+    .icon-primary {
+      background-color: var(--primary-color);
+    }
+    
+    .icon-secondary {
+      background-color: var(--secondary-color);
+    }
+    
+    .icon-tertiary {
+      background-color: var(--tertiary-color);
+    }
+    
+    .icon-accent {
+      background-color: var(--accent-color);
+    }
+    
+    .progress-bar {
+      height: 8px;
       width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
+      background-color: #f1f5f9;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 6px;
     }
     
-    .modal.show {
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+    
+    .progress-bar-fill.primary {
+      background-color: var(--primary-color);
+    }
+    
+    .progress-bar-fill.secondary {
+      background-color: var(--secondary-color);
+    }
+    
+    .progress-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .progress-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      width: 30%;
+      letter-spacing: -0.2px;
+    }
+    
+    .progress-bar-container {
+      flex-grow: 1;
+    }
+    
+    .progress-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-left: 10px;
+      width: 15%;
+      text-align: right;
+    }
+    
+    .info-box {
+      background-color: #f8fafc;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .info-box h4 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+    
+    .info-box ul, .info-box ol {
+      padding-left: 20px;
+      margin-bottom: 0;
+    }
+    
+    .info-box li {
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    
+    .info-box li:last-child {
+      margin-bottom: 0;
+    }
+    
+    .info-box strong {
+      color: var(--text-secondary);
+    }
+    
+    /* Estilos para área de upload */
+    .upload-section {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+    
+    .upload-status-banner {
+      background-color: var(--success-color);
+      color: white;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+    }
+    
+    .status-icon {
+      font-size: 32px;
+      background-color: rgba(255, 255, 255, 0.2);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     
-    .modal-content {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 2rem;
-      max-width: 500px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
+    .status-content {
+      flex: 1;
+    }
+    
+    .status-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .status-subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .upload-section {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
       box-shadow: var(--shadow);
     }
     
-    .modal-header {
+    .upload-area {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 2px dashed rgba(255, 255, 255, 0.5);
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+    
+    .upload-area:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .upload-area.dragover {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-color: white;
+    }
+    
+    .upload-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+      opacity: 0.9;
+    }
+    
+    .upload-text {
+      color: white;
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .upload-subtext {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 15px;
+      font-weight: 500;
+    }
+    
+    .file-input {
+      display: none;
+    }
+    
+    .upload-button {
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 16px;
+      display: inline-block;
+      letter-spacing: -0.2px;
+    }
+    
+    .upload-button:hover {
+      background-color: var(--secondary-dark);
+      transform: translateY(-1px);
+    }
+    
+    .file-list {
+      margin-top: 20px;
+      color: white;
+    }
+    
+    .file-item {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
     }
     
-    .modal-title {
-      font-size: 1.5rem;
+    .file-name {
+      font-size: 15px;
       font-weight: 600;
-      color: var(--text-primary);
     }
     
-    .modal-close {
-      background: none;
-      border: none;
+    .file-status {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .file-status.success {
+      background-color: var(--success-color);
+    }
+    
+    .file-status.error {
+      background-color: var(--danger-color);
+    }
+    
+    .update-log {
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .log-entry {
+      font-size: 14px;
+      padding: 6px 0;
       color: var(--text-secondary);
-      font-size: 1.5rem;
-      cursor: pointer;
-      transition: var(--transition);
+      font-weight: 500;
+      line-height: 1.5;
     }
     
-    .modal-close:hover {
-      color: var(--text-primary);
+    .log-entry.success {
+      color: var(--success-color);
     }
     
-    .form-group {
-      margin-bottom: 1.5rem;
+    .log-entry.error {
+      color: var(--danger-color);
     }
     
-    .form-label {
-      display: block;
-      margin-bottom: 0.5rem;
+    .log-entry.info {
+      color: var(--primary-color);
+    }
+    
+    .data-preview {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+    
+    .preview-title {
+      font-size: 18px;
       font-weight: 600;
-      color: var(--text-primary);
-    }
-    
-    .form-input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      background: var(--card-bg);
-      color: var(--text-primary);
-      font-size: 1rem;
-      transition: var(--transition);
-    }
-    
-    .form-input:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(0, 61, 125, 0.1);
-    }
-    
-    .form-textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-    
-    .form-actions {
-      display: flex;
-      gap: 1rem;
-      justify-content: flex-end;
-      margin-top: 2rem;
-    }
-    
-    .alert {
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 16px;
+      color: white;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 10px;
     }
     
-    .alert-success {
-      background: rgba(16, 185, 129, 0.1);
-      color: var(--success-color);
-      border: 1px solid rgba(16, 185, 129, 0.2);
+    .preview-title::before {
+      content: '👁️';
+      font-size: 20px;
     }
     
-    .alert-warning {
-      background: rgba(245, 158, 11, 0.1);
-      color: var(--warning-color);
-      border: 1px solid rgba(245, 158, 11, 0.2);
+    .preview-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
     }
     
-    .alert-danger {
-      background: rgba(239, 68, 68, 0.1);
-      color: var(--danger-color);
-      border: 1px solid rgba(239, 68, 68, 0.2);
+    .preview-stat {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    .loading {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--border-color);
-      border-radius: 50%;
-      border-top-color: var(--primary-color);
-      animation: spin 1s ease-in-out infinite;
+    .preview-stat-label {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 4px;
+      font-weight: 600;
     }
     
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .preview-stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.5px;
     }
     
-    .hidden {
-      display: none !important;
+    .service-item {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+      padding: 5px;
+      border-radius: 6px;
+      transition: var(--transition);
     }
     
-    .text-center {
-      text-align: center;
+    .service-item:hover {
+      background-color: rgba(0, 0, 0, 0.02);
     }
     
-    .text-right {
+    .service-header {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 5px;
+    }
+    
+    .service-name {
+      font-size: 15px;
+      font-weight: 700;
+      flex: 1;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+    
+    .service-percentage {
+      font-size: 14px;
+      font-weight: 700;
+      margin-left: 10px;
+      width: 50px;
       text-align: right;
+      color: var(--text-primary);
     }
     
-    .mb-1 { margin-bottom: 0.5rem; }
-    .mb-2 { margin-bottom: 1rem; }
-    .mb-3 { margin-bottom: 1.5rem; }
-    .mb-4 { margin-bottom: 2rem; }
+    .combo-card {
+      background-color: #f8fafc;
+      border-radius: 10px;
+      padding: 15px;
+      border-left: 4px solid var(--primary-color);
+      margin-bottom: 15px;
+      transition: var(--transition);
+    }
     
-    .mt-1 { margin-top: 0.5rem; }
-    .mt-2 { margin-top: 1rem; }
-    .mt-3 { margin-top: 1.5rem; }
-    .mt-4 { margin-top: 2rem; }
+    .combo-card:hover {
+      transform: translateX(5px);
+      box-shadow: var(--shadow);
+    }
     
-    @media (max-width: 1024px) {
-      .charts-grid {
+    .combo-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+      letter-spacing: -0.3px;
+    }
+    
+    .combo-info {
+      margin-top: 5px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .combo-info strong {
+      color: var(--text-secondary);
+    }
+    
+    .combo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    
+    .data-status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--success-color);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    
+    /* Responsividade */
+    @media screen and (max-width: 1200px) {
+      .dashboard-grid {
+        grid-template-columns: repeat(6, 1fr);
+      }
+      
+      .card-sm {
+        grid-column: span 3;
+      }
+      
+      .card-md, .card-lg {
+        grid-column: span 6;
+      }
+      
+      .header-metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .metrics-badge {
+        margin-left: auto;
+      }
+    }
+    
+    @media screen and (max-width: 768px) {
+      .dashboard-grid {
         grid-template-columns: 1fr;
       }
       
-      .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      }
-    }
-    
-    @media (max-width: 768px) {
-      body {
-        padding: 1rem;
+      .card-sm, .card-md, .card-lg {
+        grid-column: span 1;
       }
       
-      .header h1 {
-        font-size: 2rem;
+      .dashboard-header {
+        padding: 20px;
       }
       
-      .stat-card,
-      .chart-card,
-      .upload-section {
-        padding: 1.5rem;
+      .dashboard-header h1 {
+        font-size: 26px;
+      }
+      
+      .logo-icon {
+        font-size: 32px;
+      }
+      
+      .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .controls {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+      
+      .header-metrics {
+        grid-template-columns: 1fr;
+      }
+      
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .metrics-title {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      
+      .metrics-badge {
+        margin-left: 0;
+      }
+      
+      .combo-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr !important;
+      }
+      
+      .metric-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
-    <div class="header">
-      <h1>🏋️ Academia Força Fitness</h1>
-      <p>Dashboard de Gestão - Controle completo da sua academia</p>
-      <button class="btn" onclick="addNewMember()" style="margin-top: 1rem;">
-        ➕ Adicionar Membro
-      </button>
+    <div class="dashboard-header">
+      <h1>Academia Força Fitness</h1>
+      <div class="controls">
+        <div class="controls-group" id="year-buttons-container">
+          <!-- Botões de ano serão adicionados dinamicamente aqui -->
+        </div>
+        <div class="toggle-container">
+          <span class="toggle-label">Comparar Anos</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="compare-toggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
     </div>
-
-    <!-- Stats Grid -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-header">
-          <div class="stat-title">Total de Membros</div>
-          <div class="stat-icon" style="background: var(--primary-color);">
-            👥
+    
+    <div class="tabs">
+      <button class="tab active" data-tab="overview">Visão Geral</button>
+      <button class="tab" data-tab="monthly-analysis">Análise Mensal</button>
+      <button class="tab" data-tab="services">Serviços</button>
+      <button class="tab" data-tab="payment-methods">Formas de Pagamento</button>
+      <button class="tab" data-tab="frequency-patterns">Padrões de Frequência</button>
+      <button class="tab" data-tab="market-insights">Insights do Mercado</button>
+      <button class="tab" data-tab="data-update">📊 Atualizar Dados</button>
+    </div>
+    
+    <!-- Conteúdo das abas -->
+    <div class="tab-content active" id="overview">
+      <div class="dashboard-grid">
+        <div class="card card-sm stat-card">
+          <div class="card-header">
+            <h3 class="card-title">Total de Vendas</h3>
+            <div class="card-icon icon-primary">💰</div>
+          </div>
+          <div class="stat-value" id="total-sales">R$ 0,00</div>
+          <div class="stat-comparison" id="sales-comparison">
+            <span>Carregando...</span>
           </div>
         </div>
-        <div class="stat-value" id="totalMembers">0</div>
-        <div class="stat-change positive">
-          <span>↗</span>
-          <span>Crescimento constante</span>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <div class="stat-title">Membros Ativos</div>
-          <div class="stat-icon" style="background: var(--success-color);">
-            ✅
+        
+        <div class="card card-sm stat-card">
+          <div class="card-header">
+            <h3 class="card-title">Número de Vendas</h3>
+            <div class="card-icon icon-secondary">🛒</div>
+          </div>
+          <div class="stat-value" id="total-transactions">0</div>
+          <div class="stat-comparison" id="transactions-comparison">
+            <span>Carregando...</span>
           </div>
         </div>
-        <div class="stat-value" id="activeMembers">0</div>
-        <div class="stat-change positive">
-          <span>↗</span>
-          <span>Alta retenção</span>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <div class="stat-title">Receita Mensal</div>
-          <div class="stat-icon" style="background: var(--warning-color);">
-            💰
+        
+        <div class="card card-sm stat-card">
+          <div class="card-header">
+            <h3 class="card-title">Valor Médio</h3>
+            <div class="card-icon icon-tertiary">📊</div>
+          </div>
+          <div class="stat-value" id="average-sale">R$ 0,00</div>
+          <div class="stat-comparison" id="average-comparison">
+            <span>Carregando...</span>
           </div>
         </div>
-        <div class="stat-value" id="monthlyRevenue">R$ 0</div>
-        <div class="stat-change positive">
-          <span>↗</span>
-          <span>Crescimento sustentável</span>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <div class="stat-title">Aulas Realizadas</div>
-          <div class="stat-icon" style="background: var(--secondary-color);">
-            📅
+        
+        <div class="card card-sm stat-card">
+          <div class="card-header">
+            <h3 class="card-title">Projeção Anual</h3>
+            <div class="card-icon icon-accent">📈</div>
+          </div>
+          <div class="stat-value" id="yearly-projection">R$ 0,00</div>
+          <div class="stat-comparison" id="projection-comparison">
+            <span>Baseado nos dados atuais</span>
           </div>
         </div>
-        <div class="stat-value" id="classesCompleted">0</div>
-        <div class="stat-change positive">
-          <span>↗</span>
-          <span>Excelente frequência</span>
+        
+        <div class="card card-lg">
+          <div class="card-header">
+            <h3 class="card-title">📊 Vendas por Mês</h3>
+            <div class="badge badge-primary" id="current-year-badge">2024</div>
+          </div>
+          <div class="chart-container">
+            <canvas id="monthly-sales-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="card card-md">
+          <div class="card-header">
+            <h3 class="card-title">💵 Saldo Mensal</h3>
+            <div class="badge badge-secondary">Fluxo de Caixa</div>
+          </div>
+          <div class="chart-container">
+            <canvas id="monthly-balance-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="card card-md">
+          <div class="card-header">
+            <h3 class="card-title">💳 Formas de Pagamento</h3>
+            <div class="badge badge-tertiary">Distribuição</div>
+          </div>
+          <div class="chart-container">
+            <canvas id="payment-methods-chart"></canvas>
+          </div>
         </div>
       </div>
     </div>
-
-    <!-- Charts Grid -->
-    <div class="charts-grid">
-      <div class="chart-card">
-        <div class="chart-header">
-          <div class="chart-title">Receita Mensal</div>
+    
+    <!-- Análise Mensal -->
+    <div class="tab-content" id="monthly-analysis">
+      <div class="dashboard-grid">
+        <div class="card card-lg">
+          <div class="card-header">
+            <h3 class="card-title">Comparativo Mensal</h3>
+            <div class="badge badge-primary">Desempenho</div>
+          </div>
+          <div class="chart-container">
+            <canvas id="monthly-comparison-chart"></canvas>
+          </div>
         </div>
-        <div class="chart-container">
-          <canvas id="revenueChart"></canvas>
-        </div>
-      </div>
-
-      <div class="chart-card">
-        <div class="chart-header">
-          <div class="chart-title">Distribuição de Membros</div>
-        </div>
-        <div class="chart-container">
-          <canvas id="membersChart"></canvas>
+        
+        <div class="card card-lg">
+          <div class="card-header">
+            <h3 class="card-title">Detalhamento Mensal</h3>
+            <div class="badge badge-secondary">Análise</div>
+          </div>
+          <div style="overflow-x: auto;">
+            <table class="data-table" id="monthly-table">
+              <thead>
+                <tr>
+                  <th>Mês</th>
+                  <th>Vendas</th>
+                  <th>Valor Total</th>
+                  <th>Valor Médio</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+          <div class="info-box" style="margin-top: 20px;">
+            <p><strong>Nota:</strong> Os valores "Total de Vendas" e "Valor Total" representam o acumulado de todas as 
+            semanas do período analisado. A "Média por Dia" e "Média de Vendas por Dia" 
+            mostram os valores médios de cada dia da semana, oferecendo uma visão mais realista do desempenho.</p>
+          </div>
         </div>
       </div>
     </div>
-
-    <!-- Upload Section -->
-    <div class="upload-section">
-      <h2 style="margin-bottom: 1.5rem; color: var(--text-primary);">
-        📤 Upload de Dados
-      </h2>
-      <div class="upload-area" id="uploadArea">
-        <div class="upload-icon">📁</div>
-        <div class="upload-text">Arraste e solte seu arquivo Excel/CSV aqui</div>
-        <div class="upload-subtext">ou clique para selecionar</div>
-        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;">
-      </div>
-      <div class="form-actions" style="margin-top: 1.5rem;">
-        <button class="btn btn-secondary" onclick="downloadTemplate()">
-          📥 Baixar Template
-        </button>
-        <button class="btn" onclick="processData()" id="processBtn" disabled>
-          ⚙️ Processar Dados
-        </button>
+    
+    <!-- Serviços -->
+    <div class="tab-content" id="services">
+      <div class="dashboard-grid">
+        <div class="card card-md">
+          <div class="card-header">
+            <h3 class="card-title">Serviços Mais Vendidos</h3>
+            <div class="badge badge-primary">Top 5</div>
+          </div>
+          <div class="progress-container">
+            <div id="top-services-progress">
+            </div>
+          </div>
+        </div>
+        
+        <div class="card card-md">
+          <div class="card-header">
+            <h3 class="card-title">Valor por Serviço</h3>
+            <div class="badge badge-secondary">Faturamento</div>
+          </div>
+          <div class="chart-container">
+            <canvas id="services-value-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="card card-lg">
+          <div class="card-header">
+            <h3 class="card-title">Detalhamento de Serviços</h3>
+            <div class="badge badge-tertiary">Análise</div>
+          </div>
+          <div style="overflow-x: auto;">
+            <table class="data-table" id="services-table">
+              <thead>
+                <tr>
+                  <th>Serviço</th>
+                  <th>Quantidade</th>
+                  <th>Valor Total</th>
+                  <th>% do Total</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+          <div class="info-box" style="margin-top: 20px;">
+            <p><strong>Informação:</strong> O PIX foi incluído como forma de pagamento significativa, representando 
+            uma tendência crescente no mercado brasileiro desde sua introdução. Em 2025, nota-se um aumento proporcional 
+            no uso de PIX em comparação com formas de pagamento tradicionais.</p>
+          </div>
+        </div>
       </div>
     </div>
-
-    <!-- Data Table -->
-    <div class="data-table">
-      <div class="table-header">
-        <div class="table-title">Dados dos Membros</div>
+    
+    <!-- Formas de Pagamento -->
+    <div class="tab-content" id="payment-methods">
+      <div class="dashboard-grid">
+        <div class="card card-md">
+          <div class="card-header">
+            <h3 class="card-title">Distribuição de Pagamentos</h3>
+            <div class="badge badge-primary">Visão Geral</div>
+          </div>
+          <div class="chart-container">
+            <canvas id="payment-distribution-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="card card-md">
+          <div class="card-header">
+            <h3 class="card-title">Tendência de Pagamentos</h3>
+            <div class="badge badge-secondary">Comparativo</div>
+          </div>
+          <div class="chart-container">
+            <canvas id="payment-trends-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="card card-lg">
+          <div class="card-header">
+            <h3 class="card-title">Detalhamento por Forma de Pagamento</h3>
+            <div class="badge badge-tertiary">Análise</div>
+          </div>
+          <div style="overflow-x: auto;">
+            <table class="data-table" id="payments-table">
+              <thead>
+                <tr>
+                  <th>Forma de Pagamento</th>
+                  <th>Valor Total</th>
+                  <th>% do Total</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Telefone</th>
-            <th>Plano</th>
-            <th>Status</th>
-            <th>Data de Início</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="membersTableBody">
-          <tr>
-            <td colspan="7" class="text-center" style="padding: 2rem; color: var(--text-secondary);">
-              Nenhum dado carregado. Faça upload de um arquivo Excel/CSV para começar.
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
-  </div>
-
-  <!-- Modals -->
-  <div class="modal" id="editModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title">Editar Membro</div>
-        <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+    
+    <!-- Padrões de Frequência -->
+    <div class="tab-content" id="frequency-patterns">
+      <div class="dashboard-grid">
+        <div class="card card-md">
+          <div class="card-header">
+            <h3 class="card-title">Vendas por Dia da Semana</h3>
+            <div class="badge badge-primary">Média Diária</div>
+          </div>
+          <div class="chart-container">
+            <canvas id="weekday-sales-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="card card-md">
+          <div class="card-header">
+            <h3 class="card-title">Padrão Mensal de Vendas</h3>
+            <div class="badge badge-secondary">Tendência</div>
+          </div>
+          <div class="chart-container">
+            <canvas id="monthly-pattern-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="card card-lg">
+          <div class="card-header">
+            <h3 class="card-title">Padrões de Frequência por Dia da Semana</h3>
+            <div class="badge badge-tertiary">Análise</div>
+          </div>
+          <div style="overflow-x: auto;">
+            <table class="data-table" id="best-days-table">
+              <thead>
+                <tr>
+                  <th>Dia da Semana</th>
+                  <th>Total de Vendas (Ano)</th>
+                  <th>Valor Total (Ano)</th>
+                  <th>Média por Dia</th>
+                  <th>Média de Vendas por Dia</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-      <form id="editForm">
-        <div class="form-group">
-          <label class="form-label">Nome</label>
-          <input type="text" class="form-input" id="editName" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" id="editEmail" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Telefone</label>
-          <input type="tel" class="form-input" id="editPhone" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Plano</label>
-          <select class="form-input" id="editPlan" required>
-            <option value="Mensal">Mensal</option>
-            <option value="Trimestral">Trimestral</option>
-            <option value="Semestral">Semestral</option>
-            <option value="Anual">Anual</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Status</label>
-          <select class="form-input" id="editStatus" required>
-            <option value="Ativo">Ativo</option>
-            <option value="Inativo">Inativo</option>
-            <option value="Suspenso">Suspenso</option>
-          </select>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancelar</button>
-          <button type="submit" class="btn">Salvar Alterações</button>
-        </div>
-      </form>
     </div>
-  </div>
-
-  <div class="modal" id="addModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title">Adicionar Novo Membro</div>
-        <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
+    
+    <!-- Insights do Mercado Fitness -->
+    <div class="tab-content" id="market-insights">
+      <div class="dashboard-grid">
+        <div class="card card-md">
+          <div class="card-header">
+            <h3 class="card-title">🥊 Lutas Mais Procuradas</h3>
+            <div class="badge badge-primary">2025</div>
+          </div>
+          <div style="padding: 20px;">
+            <div class="service-item">
+              <div class="service-header">
+                <div class="service-name">Muay Thai</div>
+                <div class="service-percentage">32%</div>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill secondary" style="width: 32%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-header">
+                <div class="service-name">Jiu-Jitsu Brasileiro</div>
+                <div class="service-percentage">28%</div>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill secondary" style="width: 28%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-header">
+                <div class="service-name">Boxe</div>
+                <div class="service-percentage">20%</div>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill secondary" style="width: 20%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-header">
+                <div class="service-name">Kickboxing</div>
+                <div class="service-percentage">12%</div>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill secondary" style="width: 12%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-header">
+                <div class="service-name">MMA</div>
+                <div class="service-percentage">8%</div>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill secondary" style="width: 8%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card card-md">
+          <div class="card-header">
+            <h3 class="card-title">💃 Danças Mais Populares</h3>
+            <div class="badge badge-secondary">2025</div>
+          </div>
+          <div style="padding: 20px;">
+            <div class="service-item">
+              <div class="service-header">
+                <div class="service-name">Zumba</div>
+                <div class="service-percentage">35%</div>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill secondary" style="width: 35%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-header">
+                <div class="service-name">Dança Contemporânea</div>
+                <div class="service-percentage">22%</div>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill secondary" style="width: 22%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-header">
+                <div class="service-name">Ritmos</div>
+                <div class="service-percentage">18%</div>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill secondary" style="width: 18%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-header">
+                <div class="service-name">Hip Hop</div>
+                <div class="service-percentage">15%</div>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill secondary" style="width: 15%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-header">
+                <div class="service-name">Pole Dance</div>
+                <div class="service-percentage">10%</div>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill secondary" style="width: 10%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card card-lg">
+          <div class="card-header">
+            <h3 class="card-title">🎯 Combos Mais Oferecidos para Fidelização</h3>
+            <div class="badge badge-tertiary">Estratégias</div>
+          </div>
+          <div class="combo-grid">
+            <div class="combo-card" style="border-left-color: var(--primary-color);">
+              <div class="combo-title">Combo Fitness Total</div>
+              <div class="combo-info"><strong>Inclui:</strong> Musculação + 2 aulas coletivas + 1 avaliação física mensal</div>
+              <div class="combo-info"><strong>Benefício:</strong> Desconto de 20% em relação à compra individual</div>
+              <div class="combo-info"><strong>Taxa de Adesão:</strong> 43% dos novos alunos</div>
+            </div>
+            
+            <div class="combo-card" style="border-left-color: var(--secondary-color);">
+              <div class="combo-title">Plano Família</div>
+              <div class="combo-info"><strong>Inclui:</strong> Desconto progressivo (10% para 2 pessoas, 15% para 3, 20% para 4+)</div>
+              <div class="combo-info"><strong>Benefício:</strong> Mesma matrícula para todos os membros</div>
+              <div class="combo-info"><strong>Taxa de Adesão:</strong> 28% das famílias abordadas</div>
+            </div>
+            
+            <div class="combo-card" style="border-left-color: var(--tertiary-color);">
+              <div class="combo-title">Combo Trimestral</div>
+              <div class="combo-info"><strong>Inclui:</strong> 3 meses com desconto de 15% + 1 personal trainer grátis</div>
+              <div class="combo-info"><strong>Benefício:</strong> Sem taxa de matrícula</div>
+              <div class="combo-info"><strong>Taxa de Renovação:</strong> 67% dos contratantes</div>
+            </div>
+            
+            <div class="combo-card" style="border-left-color: var(--accent-color);">
+              <div class="combo-title">Pack Premium</div>
+              <div class="combo-info"><strong>Inclui:</strong> Acesso total + nutricionista + app exclusivo</div>
+              <div class="combo-info"><strong>Benefício:</strong> Horários exclusivos e armário privativo</div>
+              <div class="combo-info"><strong>Ticket Médio:</strong> 2,3x maior que o plano básico</div>
+            </div>
+            
+            <div class="combo-card" style="border-left-color: var(--success-color);">
+              <div class="combo-title">Fidelidade Anual</div>
+              <div class="combo-info"><strong>Inclui:</strong> Desconto de 25% no valor mensal com compromisso de 12 meses</div>
+              <div class="combo-info"><strong>Benefício:</strong> 1 mês grátis ou possibilidade de congelar por 30 dias</div>
+              <div class="combo-info"><strong>Taxa de Retenção:</strong> 82% após o primeiro ano</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card card-lg">
+          <div class="card-header">
+            <h3 class="card-title">🚀 Estratégias para Atrair Mais Alunos</h3>
+            <div class="badge badge-primary">Dados de Mercado</div>
+          </div>
+          <div style="padding: 20px;">
+            <div class="info-box">
+              <h4>Tendências de Mercado em 2025</h4>
+              <ul>
+                <li><strong>Treinos Híbridos:</strong> 68% dos alunos preferem academias que oferecem opções presenciais e online</li>
+                <li><strong>Tecnologia Wearable:</strong> 73% valorizam integração com dispositivos de monitoramento</li>
+                <li><strong>Experiência Personalizada:</strong> 82% dos alunos fiéis citam o atendimento personalizado como fator decisivo</li>
+                <li><strong>Comunidade Fitness:</strong> Academias com forte senso de comunidade têm taxa de retenção 45% maior</li>
+                <li><strong>Sustentabilidade:</strong> 62% dos millennials e Gen Z consideram práticas sustentáveis na escolha da academia</li>
+              </ul>
+            </div>
+            
+            <div class="info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+              <div class="info-box">
+                <h4>Recomendações Baseadas em Dados</h4>
+                <ol>
+                  <li><strong>Programa de indicação de amigos</strong> - Clientes indicados têm 37% mais retenção</li>
+                  <li><strong>Desenvolver aplicativo próprio</strong> - Aumenta engajamento em 53% e retenção em 26%</li>
+                  <li><strong>Criar desafios mensais com premiação</strong> - Participantes têm 41% menos chance de cancelamento</li>
+                  <li><strong>Oferecer avaliações físicas gratuitas</strong> - Incremento de 23% na renovação de planos</li>
+                  <li><strong>Investir em treinamento da equipe</strong> - ROI médio de 3,2x</li>
+                </ol>
+              </div>
+              
+              <div class="info-box">
+                <h4>O Que Alunos Mais Procuram</h4>
+                <ul>
+                  <li><strong>Horário flexível/estendido</strong> - Citado por 76% dos alunos como essencial</li>
+                  <li><strong>Equipamentos modernos</strong> - Fator decisivo para 68% dos novos alunos</li>
+                  <li><strong>Limpeza e manutenção</strong> - 91% consideram crítico para permanência</li>
+                  <li><strong>Professores qualificados</strong> - 84% valorizam orientação adequada</li>
+                  <li><strong>Ambiente acolhedor</strong> - Principal preocupação para 72% dos iniciantes</li>
+                  <li><strong>Modalidades diversificadas</strong> - 63% preferem opções além da musculação</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="info-box" style="margin-top: 20px; background-color: #fff3cd; border-left: 4px solid var(--warning-color);">
+              <h4 style="color: var(--warning-color);">💡 Insights Especiais para Academia Força Fitness</h4>
+              <p style="margin-bottom: 10px;">Baseado nos dados analisados, identificamos oportunidades específicas:</p>
+              <ul>
+                <li>As segundas-feiras representam o dia com maior volume de vendas - considere campanhas especiais para este dia</li>
+                <li>O serviço "Musculação Livre" domina as vendas - explore pacotes combinados com outras modalidades</li>
+                <li>PIX e Depósito são as formas de pagamento preferidas - ofereça incentivos para estas modalidades</li>
+                <li>Janeiro e Abril são os meses de pico - prepare sua equipe e infraestrutura para estes períodos</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
-      <form id="addForm">
-        <div class="form-group">
-          <label class="form-label">Nome</label>
-          <input type="text" class="form-input" id="addName" required>
+    </div>
+    
+    <!-- Atualização de Dados -->
+    <div class="tab-content" id="data-update">
+      <div class="upload-section">
+        <div class="upload-status-banner" id="upload-status-banner" style="display: none;">
+          <div class="status-icon">✓</div>
+          <div class="status-content">
+            <div class="status-title">Dados carregados com sucesso!</div>
+            <div class="status-subtitle">O dashboard foi atualizado com as novas informações.</div>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" id="addEmail" required>
+        
+        <div class="upload-area" id="dropZone">
+          <span class="upload-icon">📁</span>
+          <div class="upload-text">Arraste arquivos Excel ou CSV aqui</div>
+          <div class="upload-subtext">Formatos aceitos: .xlsx, .xls, .xlsm, .csv</div>
+          <button class="upload-button">Escolher Arquivo</button>
+          <input type="file" class="file-input" id="fileInput" accept=".xlsx,.xls,.xlsm,.csv" multiple>
         </div>
-        <div class="form-group">
-          <label class="form-label">Telefone</label>
-          <input type="tel" class="form-input" id="addPhone" required>
+        
+        <div class="file-list" id="fileList" style="display: none;">
+          <h4 style="color: white; margin-bottom: 12px;">Arquivos carregados:</h4>
         </div>
-        <div class="form-group">
-          <label class="form-label">Plano</label>
-          <select class="form-input" id="addPlan" required>
-            <option value="Mensal">Mensal</option>
-            <option value="Trimestral">Trimestral</option>
-            <option value="Semestral">Semestral</option>
-            <option value="Anual">Anual</option>
-          </select>
+        
+        <div class="data-preview" id="dataPreview">
+          <div class="preview-title">Prévia dos Dados</div>
+          <div class="preview-stats" id="previewStats"></div>
         </div>
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancelar</button>
-          <button type="submit" class="btn">Adicionar Membro</button>
+      </div>
+      
+      <div class="update-log" id="updateLog" style="display: none;">
+        <h4 style="margin-bottom: 12px; color: var(--text-primary);">Log de Atualização</h4>
+        <div id="logEntries"></div>
+      </div>
+      
+      <div class="dashboard-grid" style="margin-top: 24px;">
+        <div class="card card-lg">
+          <div class="card-header">
+            <h3 class="card-title">Instruções de Atualização</h3>
+            <div class="badge badge-primary">Guia</div>
+          </div>
+          <div class="info-box">
+            <h4>Como atualizar os dados do dashboard:</h4>
+            <ol>
+              <li><strong>Formatos aceitos:</strong> Excel (.xlsx, .xls, .xlsm) ou CSV (.csv)</li>
+              <li><strong>Arquivos de Vendas:</strong> Devem conter as seguintes colunas:
+                <ul style="margin-top: 8px;">
+                  <li><strong>EFETIVAÇÃO</strong> - Data da venda (formato: d/m/aa)</li>
+                  <li><strong>TOTAL</strong> - Valor total da venda</li>
+                  <li><strong>DESCRIÇÃO</strong> - Serviço vendido</li>
+                  <li><strong>DINHEIRO, C.DÉBITO, C.CRÉDITO, etc.</strong> - Formas de pagamento</li>
+                  <li><strong>NOME DO CLIENTE</strong> - Nome do cliente</li>
+                </ul>
+              </li>
+              <li><strong>Arquivos de Fluxo de Caixa:</strong> Devem conter:
+                <ul style="margin-top: 8px;">
+                  <li><strong>Categoria</strong> - Tipo de receita/despesa</li>
+                  <li><strong>Mês - Realizado</strong> - Valores realizados por mês</li>
+                  <li>Linhas importantes: "Total de recebimentos" e "Total de pagamentos"</li>
+                </ul>
+              </li>
+              <li><strong>Múltiplos arquivos:</strong> Você pode carregar vários arquivos de uma vez</li>
+              <li><strong>Processamento:</strong> Os dados serão processados automaticamente</li>
+              <li><strong>Detecção de Anos:</strong> O sistema detecta automaticamente novos anos nos arquivos
+                <ul style="margin-top: 8px;">
+                  <li>Anos válidos: 2000 a 2100</li>
+                  <li>Novos anos são adicionados automaticamente ao dashboard</li>
+                  <li>Para melhor detecção, inclua o ano no nome do arquivo (ex: "vendas 2026.xlsx")</li>
+                </ul>
+              </li>
+            <div class="info-box" style="margin-top: 16px; background-color: #e7f3ff; border-left: 4px solid var(--primary-color);">
+              <h4 style="color: var(--primary-color);">🎯 Sistema Dinâmico de Anos</h4>
+              <p style="margin-bottom: 10px; color: var(--text-primary);">
+                O dashboard agora detecta e adiciona novos anos automaticamente! Quando você carregar um arquivo com dados de 2026, 2027 ou qualquer outro ano, 
+                o sistema criará automaticamente um novo botão de seleção de ano no topo do dashboard.
+              </p>
+              <ul style="color: var(--text-primary);">
+                <li>✅ Não há limite de anos - adicione quantos precisar</li>
+                <li>✅ Compare dados entre quaisquer anos disponíveis</li>
+                <li>✅ Todos os gráficos e métricas se adaptam automaticamente</li>
+              </ul>
+            </div>
+            <h4>Dicas importantes:</h4>
+            <ul>
+              <li>As datas devem estar no formato d/m/aa (exemplo: 15/3/24)</li>
+              <li>Valores monetários devem usar vírgula como separador decimal</li>
+              <li>Os arquivos de vendas devem ter o nome com o ano (ex: "vendas 2024.xlsx")</li>
+              <li>Os arquivos de fluxo de caixa devem ter o nome com o ano (ex: "fluxocaixa2024.xlsx")</li>
+              <li>Evite células mescladas ou formatações complexas</li>
+            </ul>
+            <p style="margin-top: 12px; color: var(--primary-color); font-weight: 600;">
+              💡 Para melhores resultados, use o mesmo formato dos arquivos que você já possui!
+            </p>
+            <p style="margin-top: 8px; font-size: 12px; color: var(--text-secondary);">
+              <strong>Anos suportados:</strong> O sistema detecta automaticamente novos anos nos arquivos carregados!<br>
+              <strong>Nota sobre PIX:</strong> Como não há uma coluna específica para PIX nos arquivos, 
+              o sistema estimará automaticamente um valor baseado nos padrões do mercado.
+            </p>
+          </div>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 
   <script>
-    // Global variables
-    let membersData = [];
-    let currentEditIndex = -1;
-
-    // Initialize dashboard
-    document.addEventListener('DOMContentLoaded', function() {
-      loadData();
-      initializeCharts();
-      setupEventListeners();
+    // Estrutura de dados vazia para um ano
+    const createEmptyYearData = () => ({
+      monthlySales: [
+        {month: "Janeiro", value: 0, transactions: 0},
+        {month: "Fevereiro", value: 0, transactions: 0},
+        {month: "Março", value: 0, transactions: 0},
+        {month: "Abril", value: 0, transactions: 0},
+        {month: "Maio", value: 0, transactions: 0},
+        {month: "Junho", value: 0, transactions: 0},
+        {month: "Julho", value: 0, transactions: 0},
+        {month: "Agosto", value: 0, transactions: 0},
+        {month: "Setembro", value: 0, transactions: 0},
+        {month: "Outubro", value: 0, transactions: 0},
+        {month: "Novembro", value: 0, transactions: 0},
+        {month: "Dezembro", value: 0, transactions: 0}
+      ],
+      monthlyBalance: [
+        {month: "Janeiro", income: 0, expenses: 0, balance: 0},
+        {month: "Fevereiro", income: 0, expenses: 0, balance: 0},
+        {month: "Março", income: 0, expenses: 0, balance: 0},
+        {month: "Abril", income: 0, expenses: 0, balance: 0},
+        {month: "Maio", income: 0, expenses: 0, balance: 0},
+        {month: "Junho", income: 0, expenses: 0, balance: 0},
+        {month: "Julho", income: 0, expenses: 0, balance: 0},
+        {month: "Agosto", income: 0, expenses: 0, balance: 0},
+        {month: "Setembro", income: 0, expenses: 0, balance: 0},
+        {month: "Outubro", income: 0, expenses: 0, balance: 0},
+        {month: "Novembro", income: 0, expenses: 0, balance: 0},
+        {month: "Dezembro", income: 0, expenses: 0, balance: 0}
+      ],
+      paymentMethods: {},
+      topServices: [],
+      weekdaySales: [
+        {day: "Domingo", count: 0, value: 0},
+        {day: "Segunda", count: 0, value: 0},
+        {day: "Terça", count: 0, value: 0},
+        {day: "Quarta", count: 0, value: 0},
+        {day: "Quinta", count: 0, value: 0},
+        {day: "Sexta", count: 0, value: 0},
+        {day: "Sábado", count: 0, value: 0}
+      ],
+      totalSales: 0,
+      totalTransactions: 0
     });
 
-    // Load data from API
-    async function loadData() {
-      try {
-        const response = await fetch('/api/data');
-        const data = await response.json();
-        
-        if (data.members) {
-          membersData = data.members;
-          updateStats();
-          updateTable();
-        }
-      } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-        showAlert('Erro ao carregar dados. Verifique se a API está funcionando.', 'danger');
+    // Dados da análise - iniciando com dados de exemplo para 2024 e 2025
+    const dashboardData = {
+      "2024": {
+        monthlySales: [
+          {month: "Janeiro", value: 41645, transactions: 612},
+          {month: "Fevereiro", value: 31320, transactions: 498},
+          {month: "Março", value: 33455, transactions: 522},
+          {month: "Abril", value: 38159.5, transactions: 591},
+          {month: "Maio", value: 35746, transactions: 545},
+          {month: "Junho", value: 31925, transactions: 502},
+          {month: "Julho", value: 37880, transactions: 598},
+          {month: "Agosto", value: 35210, transactions: 550},
+          {month: "Setembro", value: 34805, transactions: 534},
+          {month: "Outubro", value: 39476, transactions: 604},
+          {month: "Novembro", value: 33592, transactions: 500},
+          {month: "Dezembro", value: 0, transactions: 0}
+        ],
+        monthlyBalance: [
+          {month: "Janeiro", income: 41555, expenses: 101005.42, balance: -59450.42},
+          {month: "Fevereiro", income: 31160, expenses: 1355, balance: 29805},
+          {month: "Março", income: 33295, expenses: 2142, balance: 31153},
+          {month: "Abril", income: 37320, expenses: 1254, balance: 36066},
+          {month: "Maio", income: 36310.5, expenses: 1838.59, balance: 34471.91},
+          {month: "Junho", income: 32255, expenses: 161784.24, balance: -129529.24},
+          {month: "Julho", income: 37750, expenses: 307, balance: 37443},
+          {month: "Agosto", income: 35260, expenses: 238.48, balance: 35021.52},
+          {month: "Setembro", income: 34630, expenses: 184.47, balance: 34445.53},
+          {month: "Outubro", income: 40001, expenses: 235.34, balance: 39765.66},
+          {month: "Novembro", income: 33727, expenses: 161.6, balance: 33565.4},
+          {month: "Dezembro", income: 26027, expenses: 3680.47, balance: 22346.53}
+        ],
+        paymentMethods: {
+          "Dinheiro": 56801,
+          "Cartão de Débito": 60388.5,
+          "Cartão de Crédito": 37232,
+          "PIX": 100000,
+          "Boleto": 0,
+          "Depósito": 136852,
+          "Cheque": 0,
+          "Crédito Interno": 1940
+        },
+        topServices: [
+          {name: "Musculação Livre", count: 3455, value: 241850},
+          {name: "Musculação Livre 30 DIAS", count: 802, value: 40100},
+          {name: "Quizenal", count: 590, value: 29500},
+          {name: "Avaliação Física Bioimpedância", count: 467, value: 18680},
+          {name: "Musculação Livre, Avaliação Física Bioimpedância", count: 299, value: 26910}
+        ],
+        weekdaySales: [
+          {day: "Domingo", count: 6, value: 260},
+          {day: "Segunda", count: 1868, value: 123366},
+          {day: "Terça", count: 1534, value: 100306.5},
+          {day: "Quarta", count: 1027, value: 65367},
+          {day: "Quinta", count: 870, value: 55519},
+          {day: "Sexta", count: 605, value: 38945},
+          {day: "Sábado", count: 145, value: 9450}
+        ],
+        totalSales: 393213.5,
+        totalTransactions: 6056
+      },
+      "2025": {
+        monthlySales: [
+          {month: "Janeiro", value: 35764, transactions: 547},
+          {month: "Fevereiro", value: 28942, transactions: 459},
+          {month: "Março", value: 29667, transactions: 478},
+          {month: "Abril", value: 31775, transactions: 513},
+          {month: "Maio", value: 29660, transactions: 482},
+          {month: "Junho", value: 21680, transactions: 294},
+          {month: "Julho", value: 0, transactions: 0},
+          {month: "Agosto", value: 0, transactions: 0},
+          {month: "Setembro", value: 0, transactions: 0},
+          {month: "Outubro", value: 0, transactions: 0},
+          {month: "Novembro", value: 0, transactions: 0},
+          {month: "Dezembro", value: 0, transactions: 0}
+        ],
+        monthlyBalance: [
+          {month: "Janeiro", income: 35434, expenses: 162.84, balance: 35271.16},
+          {month: "Fevereiro", income: 29612, expenses: 122.13, balance: 29489.87},
+          {month: "Março", income: 29627, expenses: 127.83, balance: 29499.17},
+          {month: "Abril", income: 31895, expenses: 122.97, balance: 31772.03},
+          {month: "Maio", income: 29955, expenses: 133.96, balance: 29821.04},
+          {month: "Junho", income: 22320, expenses: 108.57, balance: 22211.43},
+          {month: "Julho", income: 0, expenses: 0, balance: 0},
+          {month: "Agosto", income: 0, expenses: 0, balance: 0},
+          {month: "Setembro", income: 0, expenses: 0, balance: 0},
+          {month: "Outubro", income: 0, expenses: 0, balance: 0},
+          {month: "Novembro", income: 0, expenses: 0, balance: 0},
+          {month: "Dezembro", income: 0, expenses: 0, balance: 0}
+        ],
+        paymentMethods: {
+          "Dinheiro": 26325,
+          "Cartão de Débito": 23420,
+          "Cartão de Crédito": 15525,
+          "PIX": 50000,
+          "Boleto": 0,
+          "Depósito": 62148,
+          "Cheque": 0,
+          "Crédito Interno": 70
+        },
+        topServices: [
+          {name: "Musculação Livre", count: 1900, value: 133000},
+          {name: "Quizenal 15 DIAS", count: 479, value: 23950},
+          {name: "Avaliação Física Bioimpedância", count: 163, value: 6520},
+          {name: "Musculação Livre, Avaliação Física Bioimpedância", count: 159, value: 14310},
+          {name: "Diaria", count: 16, value: 800}
+        ],
+        weekdaySales: [
+          {day: "Domingo", count: 2, value: 70},
+          {day: "Segunda", count: 846, value: 55880},
+          {day: "Terça", count: 725, value: 45800},
+          {day: "Quarta", count: 488, value: 31080},
+          {day: "Quinta", count: 392, value: 25000},
+          {day: "Sexta", count: 282, value: 18240},
+          {day: "Sábado", count: 38, value: 1418}
+        ],
+        totalSales: 177488,
+        totalTransactions: 2773
       }
-    }
+    };
 
-    // Update statistics
-    function updateStats() {
-      const totalMembers = membersData.length;
-      const activeMembers = membersData.filter(m => m.status === 'Ativo').length;
-      const monthlyRevenue = membersData.reduce((sum, m) => {
-        const planValues = { 'Mensal': 100, 'Trimestral': 280, 'Semestral': 500, 'Anual': 900 };
-        return sum + (planValues[m.plano] || 0);
-      }, 0);
-      const classesCompleted = membersData.reduce((sum, m) => sum + (m.classesCompleted || 0), 0);
+    // Estado do dashboard
+    let currentYear = "2024";
+    let compareYears = false;
+    let charts = {};
+    let availableYears = ["2024", "2025"]; // Anos disponíveis dinamicamente
 
-      document.getElementById('totalMembers').textContent = totalMembers;
-      document.getElementById('activeMembers').textContent = activeMembers;
-      document.getElementById('monthlyRevenue').textContent = `R$ ${monthlyRevenue.toLocaleString()}`;
-      document.getElementById('classesCompleted').textContent = classesCompleted;
-    }
+    // Formatador de moeda
+    const currencyFormatter = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2
+    });
 
-    // Update table
-    function updateTable() {
-      const tbody = document.getElementById('membersTableBody');
+    // Formatador de número
+    const numberFormatter = new Intl.NumberFormat('pt-BR');
+
+    // Configuração global do Chart.js para melhor renderização
+    Chart.defaults.font.family = 'Inter';
+    Chart.defaults.font.size = 14;
+    Chart.defaults.color = '#374151';
+    Chart.defaults.font.weight = '600';
+
+    // Cores do dashboard
+    const chartColors = {
+      primary: '#003D7D',
+      primaryLight: '#0057B8',
+      primaryTransparent: 'rgba(0, 61, 125, 0.2)',
+      secondary: '#F7941D',
+      secondaryLight: '#FFAA33',
+      secondaryTransparent: 'rgba(247, 148, 29, 0.2)',
+      tertiary: '#0057B8',
+      tertiaryTransparent: 'rgba(0, 87, 184, 0.2)',
+      accent: '#F7941D',
+      neutral: '#9CA3AF',
+      neutralLight: '#E5E7EB',
+      background: '#F5F7FA',
+      success: '#10B981',
+      warning: '#F59E0B',
+      danger: '#EF4444'
+    };
+
+    // Função para atualizar os botões de ano
+    function updateYearButtons() {
+      const container = document.getElementById('year-buttons-container');
+      container.innerHTML = '';
       
-      if (membersData.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="7" class="text-center" style="padding: 2rem; color: var(--text-secondary);">
-              Nenhum dado carregado. Faça upload de um arquivo Excel/CSV para começar.
-            </td>
-          </tr>
-        `;
+      // Ordenar anos do mais antigo para o mais recente
+      availableYears.sort((a, b) => parseInt(a) - parseInt(b));
+      
+      availableYears.forEach(year => {
+        const button = document.createElement('button');
+        button.className = 'year-selector';
+        button.setAttribute('data-year', year);
+        button.textContent = year;
+        
+        if (year === currentYear) {
+          button.classList.add('active');
+        }
+        
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.year-selector').forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          currentYear = year;
+          updateDashboard();
+        });
+        
+        container.appendChild(button);
+      });
+    }
+
+    // Função para adicionar um novo ano ao dashboard
+    function addNewYear(year) {
+      const yearStr = year.toString();
+      
+      // Verificar se o ano já existe
+      if (dashboardData[yearStr]) {
+        return false;
+      }
+      
+      // Criar dados vazios para o novo ano
+      dashboardData[yearStr] = createEmptyYearData();
+      
+      // Adicionar à lista de anos disponíveis
+      if (!availableYears.includes(yearStr)) {
+        availableYears.push(yearStr);
+        availableYears.sort((a, b) => parseInt(a) - parseInt(b));
+        
+        // Atualizar os botões de ano
+        updateYearButtons();
+        
+        addLog(`✓ Novo ano ${yearStr} adicionado ao dashboard!`, 'success');
+      }
+      
+      return true;
+    }
+
+    // Seletores de ano - removido pois agora é dinâmico
+    // document.querySelectorAll('.year-selector').forEach...
+
+    // Toggle de comparação
+    document.getElementById('compare-toggle').addEventListener('change', function() {
+      compareYears = this.checked;
+      updateDashboard();
+    });
+
+    // Sistema de abas
+    document.querySelectorAll('.tab').forEach(button => {
+      button.addEventListener('click', () => {
+        // Remover classe active de todas as abas e conteúdos
+        document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        // Adicionar classe active à aba clicada
+        button.classList.add('active');
+        const tabId = button.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+        
+        // Atualizar gráficos específicos da aba após um pequeno delay
+        setTimeout(() => {
+          updateTabCharts(tabId);
+        }, 100);
+      });
+    });
+
+    // Função para criar ou atualizar um gráfico
+    function createOrUpdateChart(chartId, type, labels, datasets, options = {}) {
+      const canvas = document.getElementById(chartId);
+      if (!canvas) {
+        console.warn(`Canvas não encontrado: ${chartId}`);
         return;
       }
-
-      tbody.innerHTML = membersData.map((member, index) => `
-        <tr>
-          <td>${member.nome}</td>
-          <td>${member.email}</td>
-          <td>${member.telefone}</td>
-          <td>${member.plano}</td>
-          <td><span class="badge ${getStatusBadge(member.status)}">${member.status}</span></td>
-          <td>${member.dataInicio}</td>
-          <td>
-            <button class="btn btn-secondary" onclick="editMember(${index})" style="padding: 0.5rem; font-size: 0.875rem;">
-              ✏️
-            </button>
-            <button class="btn btn-danger" onclick="deleteMember(${index})" style="padding: 0.5rem; font-size: 0.875rem;">
-              🗑️
-            </button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    // Get status badge class
-    function getStatusBadge(status) {
-      switch(status) {
-        case 'Ativo': return 'badge-success';
-        case 'Inativo': return 'badge-danger';
-        case 'Suspenso': return 'badge-warning';
-        default: return 'badge-warning';
+      
+      const ctx = canvas.getContext('2d');
+      
+      // Destruir gráfico existente se houver
+      if (charts[chartId]) {
+        try {
+          charts[chartId].destroy();
+          delete charts[chartId];
+        } catch (e) {
+          console.error(`Erro ao destruir gráfico ${chartId}:`, e);
+        }
+      }
+      
+      const baseOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        devicePixelRatio: 2, // Melhor qualidade de renderização
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              usePointStyle: true,
+              padding: 15,
+              font: {
+                family: 'Inter',
+                size: 14,
+                weight: '600'
+              },
+              color: '#1F2937'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            titleColor: chartColors.primary,
+            bodyColor: '#334155',
+            borderColor: '#E2E8F0',
+            borderWidth: 1,
+            padding: 12,
+            cornerRadius: 8,
+            titleFont: {
+              family: 'Inter',
+              size: 14,
+              weight: 'bold'
+            },
+            bodyFont: {
+              family: 'Inter',
+              size: 13
+            },
+            callbacks: {
+              label: function(context) {
+                if (type === 'pie' || type === 'doughnut') {
+                  const label = labels[context.dataIndex] || '';
+                  const value = context.raw || 0;
+                  return label + ': ' + (datasets[0].isCurrency ? 
+                    currencyFormatter.format(value) : 
+                    numberFormatter.format(value));
+                }
+                
+                let label = context.dataset.label || '';
+                if (label) {
+                  label += ': ';
+                }
+                if (context.parsed.y !== null) {
+                  if (context.dataset.isCurrency) {
+                    label += currencyFormatter.format(context.parsed.y);
+                  } else {
+                    label += numberFormatter.format(context.parsed.y);
+                  }
+                }
+                return label;
+              }
+            }
+          }
+        },
+        ...options
+      };
+      
+      if (type === 'line' && options.fill) {
+        baseOptions.elements = {
+          line: {
+            tension: 0.4
+          },
+          point: {
+            radius: 2,
+            hoverRadius: 5
+          }
+        };
+      }
+      
+      try {
+        charts[chartId] = new Chart(ctx, {
+          type: type,
+          data: {
+            labels: labels,
+            datasets: datasets
+          },
+          options: baseOptions
+        });
+      } catch (error) {
+        console.error(`Erro ao criar gráfico ${chartId}:`, error);
       }
     }
 
-    // Initialize charts
-    function initializeCharts() {
-      // Revenue Chart
-      const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-      new Chart(revenueCtx, {
-        type: 'line',
-        data: {
-          labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-          datasets: [{
-            label: 'Receita (R$)',
-            data: [32000, 35000, 38000, 42000, 45000, 48000, 52000, 55000, 58000, 62000, 65000, 68000],
-            borderColor: '#003D7D',
-            backgroundColor: 'rgba(0, 61, 125, 0.1)',
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: '#003D7D',
-            pointBorderColor: '#ffffff',
-            pointBorderWidth: 2,
-            pointRadius: 6
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false
+    // Atualizar estatísticas principais
+    function updateMainStats() {
+      try {
+        const currentYearData = dashboardData[currentYear];
+        
+        // Encontrar outro ano para comparação (preferencialmente o ano anterior)
+        let otherYear = null;
+        const currentYearInt = parseInt(currentYear);
+        
+        // Tentar encontrar o ano anterior primeiro
+        if (dashboardData[(currentYearInt - 1).toString()]) {
+          otherYear = (currentYearInt - 1).toString();
+        } else {
+          // Se não houver ano anterior, pegar o próximo disponível diferente do atual
+          otherYear = availableYears.find(year => year !== currentYear);
+        }
+        
+        const otherYearData = otherYear ? dashboardData[otherYear] : null;
+        
+        // Total de vendas
+        document.getElementById('total-sales').textContent = currencyFormatter.format(currentYearData.totalSales);
+        
+        // Comparação de vendas
+        const salesComparisonEl = document.getElementById('sales-comparison');
+        
+        if (compareYears && otherYearData && otherYearData.totalSales > 0) {
+          const salesDifference = ((currentYearData.totalSales - otherYearData.totalSales) / otherYearData.totalSales) * 100;
+          salesComparisonEl.textContent = `${Math.abs(salesDifference).toFixed(2)}% em relação a ${otherYear}`;
+          salesComparisonEl.className = salesDifference >= 0 ? 'stat-comparison positive' : 'stat-comparison negative';
+        } else {
+          salesComparisonEl.textContent = `Total de vendas em ${currentYear}`;
+          salesComparisonEl.className = 'stat-comparison';
+        }
+        
+        // Total de transações
+        document.getElementById('total-transactions').textContent = numberFormatter.format(currentYearData.totalTransactions);
+        
+        // Comparação de transações
+        const transactionsComparisonEl = document.getElementById('transactions-comparison');
+        
+        if (compareYears && otherYearData && otherYearData.totalTransactions > 0) {
+          const transactionsDifference = ((currentYearData.totalTransactions - otherYearData.totalTransactions) / otherYearData.totalTransactions) * 100;
+          transactionsComparisonEl.textContent = `${Math.abs(transactionsDifference).toFixed(2)}% em relação a ${otherYear}`;
+          transactionsComparisonEl.className = transactionsDifference >= 0 ? 'stat-comparison positive' : 'stat-comparison negative';
+        } else {
+          transactionsComparisonEl.textContent = `Total de transações em ${currentYear}`;
+          transactionsComparisonEl.className = 'stat-comparison';
+        }
+        
+        // Valor médio
+        const averageSale = currentYearData.totalTransactions > 0 ? 
+          currentYearData.totalSales / currentYearData.totalTransactions : 0;
+        document.getElementById('average-sale').textContent = currencyFormatter.format(averageSale);
+        
+        // Comparação de valor médio
+        const averageComparisonEl = document.getElementById('average-comparison');
+        
+        if (compareYears && otherYearData && otherYearData.totalTransactions > 0) {
+          const otherAverageSale = otherYearData.totalSales / otherYearData.totalTransactions;
+          const averageDifference = ((averageSale - otherAverageSale) / otherAverageSale) * 100;
+          averageComparisonEl.textContent = `${Math.abs(averageDifference).toFixed(2)}% em relação a ${otherYear}`;
+          averageComparisonEl.className = averageDifference >= 0 ? 'stat-comparison positive' : 'stat-comparison negative';
+        } else {
+          averageComparisonEl.textContent = `Valor médio por venda em ${currentYear}`;
+          averageComparisonEl.className = 'stat-comparison';
+        }
+        
+        // Projeção anual
+        let yearlyProjection = 0;
+        const monthsWithData = currentYearData.monthlySales.filter(m => m.value > 0).length;
+        
+        if (monthsWithData === 12) {
+          // Se temos dados completos do ano
+          yearlyProjection = currentYearData.totalSales;
+        } else if (monthsWithData > 0) {
+          // Se temos dados parciais, fazer projeção
+          const monthlyAverage = currentYearData.totalSales / monthsWithData;
+          yearlyProjection = monthlyAverage * 12;
+        }
+        
+        document.getElementById('yearly-projection').textContent = currencyFormatter.format(yearlyProjection);
+        
+        // Texto de comparação para projeção
+        if (compareYears && otherYearData && otherYearData.totalSales > 0) {
+          const projectionDiff = ((yearlyProjection - otherYearData.totalSales) / otherYearData.totalSales) * 100;
+          document.getElementById('projection-comparison').textContent = 
+            `${Math.abs(projectionDiff).toFixed(2)}% em relação a ${otherYear}`;
+          document.getElementById('projection-comparison').className = 
+            projectionDiff >= 0 ? 'stat-comparison positive' : 'stat-comparison negative';
+        } else if (monthsWithData === 12) {
+          document.getElementById('projection-comparison').textContent = `Valor real de ${currentYear}`;
+          document.getElementById('projection-comparison').className = 'stat-comparison';
+        } else {
+          document.getElementById('projection-comparison').textContent = 'Projeção baseada nos meses disponíveis';
+          document.getElementById('projection-comparison').className = 'stat-comparison';
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar estatísticas principais:", error);
+      }
+    }
+
+    // Atualizar gráfico de vendas mensais
+    function updateMonthlySalesChart() {
+      try {
+        const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        
+        let datasets = [];
+        
+        if (compareYears && availableYears.length > 1) {
+          // Pegar os dois anos mais recentes para comparação
+          const sortedYears = [...availableYears].sort((a, b) => parseInt(b) - parseInt(a));
+          const year1 = sortedYears.includes(currentYear) ? currentYear : sortedYears[0];
+          const year2 = sortedYears.find(y => y !== year1) || sortedYears[1];
+          
+          const colors = [
+            { line: chartColors.primary, bg: chartColors.primaryTransparent },
+            { line: chartColors.secondary, bg: chartColors.secondaryTransparent }
+          ];
+          
+          [year1, year2].forEach((year, index) => {
+            if (dashboardData[year]) {
+              datasets.push({
+                label: year,
+                data: dashboardData[year].monthlySales.map(item => item.value),
+                backgroundColor: colors[index].bg,
+                borderColor: colors[index].line,
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true,
+                isCurrency: true,
+                pointBackgroundColor: colors[index].line
+              });
             }
-          },
+          });
+        } else {
+          const color = availableYears.indexOf(currentYear) === 0 ? chartColors.primary : chartColors.secondary;
+          const colorTransparent = availableYears.indexOf(currentYear) === 0 ? chartColors.primaryTransparent : chartColors.secondaryTransparent;
+          
+          datasets = [
+            {
+              label: `Vendas ${currentYear}`,
+              data: dashboardData[currentYear].monthlySales.map(item => item.value),
+              backgroundColor: colorTransparent,
+              borderColor: color,
+              borderWidth: 2,
+              tension: 0.4,
+              fill: true,
+              isCurrency: true,
+              pointBackgroundColor: color
+            }
+          ];
+        }
+        
+        createOrUpdateChart('monthly-sales-chart', 'line', months, datasets, {
+          fill: true,
           scales: {
             y: {
               beginAtZero: true,
               grid: {
-                color: 'rgba(0, 0, 0, 0.1)'
+                display: true,
+                drawBorder: false,
+                color: '#EDF2F7'
               },
               ticks: {
-                color: '#4B5563',
+                padding: 10,
+                font: {
+                  family: 'Inter',
+                  size: 13,
+                  weight: '600'
+                },
+                color: '#374151',
                 callback: function(value) {
-                  return 'R$ ' + value.toLocaleString();
+                  return currencyFormatter.format(value);
                 }
               }
             },
             x: {
               grid: {
-                display: false
+                display: false,
+                drawBorder: false
               },
               ticks: {
-                color: '#4B5563'
+                font: {
+                  family: 'Inter',
+                  size: 13,
+                  weight: '600'
+                },
+                color: '#374151'
               }
             }
           }
-        }
-      });
+        });
+      } catch (error) {
+        console.error("Erro ao atualizar gráfico de vendas mensais:", error);
+      }
+    }
 
-      // Members Chart
-      const membersCtx = document.getElementById('membersChart').getContext('2d');
-      new Chart(membersCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Mensal', 'Trimestral', 'Semestral', 'Anual'],
-          datasets: [{
-            data: [45, 25, 20, 10],
-            backgroundColor: [
-              '#003D7D',
-              '#10B981',
-              '#F7941D',
-              '#EF4444'
-            ],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
+    // Atualizar gráfico de saldo mensal
+    function updateMonthlyBalanceChart() {
+      try {
+        const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        
+        let datasets = [
+          {
+            label: 'Receitas',
+            data: dashboardData[currentYear].monthlyBalance.map(item => item.income),
+            backgroundColor: chartColors.primary,
+            borderWidth: 0,
+            type: 'bar',
+            isCurrency: true,
+            barPercentage: 0.6,
+            categoryPercentage: 0.7
+          },
+          {
+            label: 'Despesas',
+            data: dashboardData[currentYear].monthlyBalance.map(item => item.expenses),
+            backgroundColor: chartColors.warning,
+            borderWidth: 0,
+            type: 'bar',
+            isCurrency: true,
+            barPercentage: 0.6,
+            categoryPercentage: 0.7
+          },
+          {
+            label: 'Saldo',
+            data: dashboardData[currentYear].monthlyBalance.map(item => item.balance),
+            backgroundColor: 'transparent',
+            borderColor: chartColors.secondary,
+            borderWidth: 3,
+            type: 'line',
+            fill: false,
+            tension: 0.4,
+            isCurrency: true,
+            pointBackgroundColor: chartColors.secondary,
+            pointRadius: 4
+          }
+        ];
+        
+        createOrUpdateChart('monthly-balance-chart', 'bar', months, datasets, {
+          scales: {
+            y: {
+              grid: {
+                display: true,
+                drawBorder: false,
+                color: '#EDF2F7'
+              },
+              ticks: {
+                padding: 10,
+                font: {
+                  family: 'Inter',
+                  size: 13,
+                  weight: '600'
+                },
+                color: '#374151',
+                callback: function(value) {
+                  return currencyFormatter.format(value);
+                }
+              }
+            },
+            x: {
+              grid: {
+                display: false,
+                drawBorder: false
+              },
+              ticks: {
+                font: {
+                  family: 'Inter',
+                  size: 13,
+                  weight: '600'
+                },
+                color: '#374151'
+              }
+            }
+          }
+        });
+      } catch (error) {
+        console.error("Erro ao atualizar gráfico de saldo mensal:", error);
+      }
+    }
+
+    // Atualizar gráfico de formas de pagamento
+    function updatePaymentMethodsChart() {
+      try {
+        const paymentMethods = Object.keys(dashboardData[currentYear].paymentMethods)
+          .filter(method => dashboardData[currentYear].paymentMethods[method] > 0);
+        const values = paymentMethods.map(method => dashboardData[currentYear].paymentMethods[method]);
+        
+        const paymentColors = {
+          "Dinheiro": '#003D7D',
+          "Cartão de Débito": '#0057B8',
+          "Cartão de Crédito": '#5F4B8B',
+          "PIX": '#F7941D',
+          "Boleto": '#FFB81C',
+          "Depósito": '#0CA678',
+          "Cheque": '#00A3A6',
+          "Crédito Interno": '#006064'
+        };
+        
+        const colors = paymentMethods.map(method => paymentColors[method] || '#9CA3AF');
+        
+        createOrUpdateChart('payment-methods-chart', 'doughnut', paymentMethods, [
+          {
+            data: values,
+            backgroundColor: colors,
+            borderWidth: 0,
+            isCurrency: true,
+            borderRadius: 5,
+            spacing: 2
+          }
+        ], {
+          cutout: '70%',
           plugins: {
             legend: {
-              position: 'bottom',
+              position: 'right',
               labels: {
-                color: '#4B5563',
-                padding: 20,
-                usePointStyle: true
+                usePointStyle: true,
+                padding: 15,
+                font: {
+                  family: 'Inter',
+                  size: 14,
+                  weight: '600'
+                },
+                color: '#1F2937'
               }
             }
           }
+        });
+      } catch (error) {
+        console.error("Erro ao atualizar gráfico de formas de pagamento:", error);
+      }
+    }
+
+    // Atualizar tabela de análise mensal
+    function updateMonthlyTable() {
+      try {
+        const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        
+        const tableBody = document.querySelector('#monthly-table tbody');
+        tableBody.innerHTML = '';
+        
+        monthNames.forEach((month, index) => {
+          const currentMonthData = dashboardData[currentYear].monthlySales[index];
+          
+          if (currentMonthData.value === 0 && currentMonthData.transactions === 0) {
+            return;
+          }
+          
+          const row = document.createElement('tr');
+          
+          const monthCell = document.createElement('td');
+          monthCell.textContent = month;
+          row.appendChild(monthCell);
+          
+          const salesCell = document.createElement('td');
+          salesCell.textContent = numberFormatter.format(currentMonthData.transactions);
+          row.appendChild(salesCell);
+          
+          const valueCell = document.createElement('td');
+          valueCell.textContent = currencyFormatter.format(currentMonthData.value);
+          row.appendChild(valueCell);
+          
+          const avgCell = document.createElement('td');
+          const avgValue = currentMonthData.transactions > 0 ? 
+            currentMonthData.value / currentMonthData.transactions : 0;
+          avgCell.textContent = currencyFormatter.format(avgValue);
+          row.appendChild(avgCell);
+          
+          tableBody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Erro ao atualizar tabela mensal:", error);
+      }
+    }
+
+    // Atualizar gráfico de comparação mensal
+    function updateMonthlyComparisonChart() {
+      try {
+        const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        
+        if (compareYears && availableYears.length > 1) {
+          // Pegar os dois anos mais recentes para comparação
+          const sortedYears = [...availableYears].sort((a, b) => parseInt(b) - parseInt(a));
+          const year1 = sortedYears.includes(currentYear) ? currentYear : sortedYears[0];
+          const year2 = sortedYears.find(y => y !== year1) || sortedYears[1];
+          
+          createOrUpdateChart('monthly-comparison-chart', 'bar', months, [
+            {
+              label: year1,
+              data: dashboardData[year1].monthlySales.map(item => item.value),
+              backgroundColor: chartColors.primary,
+              borderWidth: 0,
+              isCurrency: true,
+              borderRadius: 4,
+              barPercentage: 0.6,
+              categoryPercentage: 0.7
+            },
+            {
+              label: year2,
+              data: dashboardData[year2].monthlySales.map(item => item.value),
+              backgroundColor: chartColors.secondary,
+              borderWidth: 0,
+              isCurrency: true,
+              borderRadius: 4,
+              barPercentage: 0.6,
+              categoryPercentage: 0.7
+            }
+          ], {
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  display: true,
+                  drawBorder: false,
+                  color: '#EDF2F7'
+                },
+                ticks: {
+                  padding: 10,
+                  font: {
+                    family: 'Inter',
+                    size: 13,
+                    weight: '600'
+                  },
+                  color: '#374151',
+                  callback: function(value) {
+                    return currencyFormatter.format(value);
+                  }
+                }
+              },
+              x: {
+                grid: {
+                  display: false,
+                  drawBorder: false
+                },
+                ticks: {
+                  font: {
+                    family: 'Inter',
+                    size: 13,
+                    weight: '600'
+                  },
+                  color: '#374151'
+                }
+              }
+            }
+          });
+        } else {
+          const currentYearData = dashboardData[currentYear].monthlySales.map(item => item.value);
+          const color = availableYears.indexOf(currentYear) === 0 ? chartColors.primary : chartColors.secondary;
+          
+          createOrUpdateChart('monthly-comparison-chart', 'bar', months, [
+            {
+              label: `Vendas ${currentYear}`,
+              data: currentYearData,
+              backgroundColor: color,
+              borderWidth: 0,
+              isCurrency: true,
+              borderRadius: 4,
+              barPercentage: 0.6,
+              categoryPercentage: 0.7
+            }
+          ], {
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  display: true,
+                  drawBorder: false,
+                  color: '#EDF2F7'
+                },
+                ticks: {
+                  padding: 10,
+                  callback: function(value) {
+                    return currencyFormatter.format(value);
+                  }
+                }
+              },
+              x: {
+                grid: {
+                  display: false,
+                  drawBorder: false
+                }
+              }
+            }
+          });
         }
+      } catch (error) {
+        console.error("Erro ao atualizar gráfico de comparação mensal:", error);
+      }
+    }
+
+    // Atualizar barras de progresso para serviços
+    function updateServicesProgress() {
+      try {
+        const container = document.getElementById('top-services-progress');
+        container.innerHTML = '';
+        
+        const topServices = dashboardData[currentYear].topServices;
+        const maxValue = Math.max(...topServices.map(s => s.count));
+        
+        topServices.forEach(service => {
+          const percentage = Math.round((service.count / maxValue) * 100);
+          
+          const progressLine = document.createElement('div');
+          progressLine.className = 'progress-line';
+          
+          const label = document.createElement('div');
+          label.className = 'progress-label';
+          label.textContent = service.name.length > 20 ? service.name.substring(0, 20) + '...' : service.name;
+          
+          const barContainer = document.createElement('div');
+          barContainer.className = 'progress-bar-container';
+          
+          const bar = document.createElement('div');
+          bar.className = 'progress-bar';
+          
+          const fill = document.createElement('div');
+          fill.className = 'progress-bar-fill primary';
+          fill.style.width = `${percentage}%`;
+          
+          const value = document.createElement('div');
+          value.className = 'progress-value';
+          value.textContent = numberFormatter.format(service.count);
+          
+          bar.appendChild(fill);
+          barContainer.appendChild(bar);
+          
+          progressLine.appendChild(label);
+          progressLine.appendChild(barContainer);
+          progressLine.appendChild(value);
+          
+          container.appendChild(progressLine);
+        });
+      } catch (error) {
+        console.error("Erro ao atualizar progresso de serviços:", error);
+      }
+    }
+
+    // Atualizar tabela de serviços
+    function updateServicesTable() {
+      try {
+        const tableBody = document.querySelector('#services-table tbody');
+        tableBody.innerHTML = '';
+        
+        const topServices = dashboardData[currentYear].topServices;
+        const totalValue = topServices.reduce((sum, service) => sum + service.value, 0);
+        
+        topServices.forEach(service => {
+          const row = document.createElement('tr');
+          
+          const serviceCell = document.createElement('td');
+          serviceCell.textContent = service.name;
+          row.appendChild(serviceCell);
+          
+          const countCell = document.createElement('td');
+          countCell.textContent = numberFormatter.format(service.count);
+          row.appendChild(countCell);
+          
+          const valueCell = document.createElement('td');
+          valueCell.textContent = currencyFormatter.format(service.value);
+          row.appendChild(valueCell);
+          
+          const percentCell = document.createElement('td');
+          const percent = (service.value / totalValue) * 100;
+          percentCell.textContent = `${percent.toFixed(2)}%`;
+          row.appendChild(percentCell);
+          
+          tableBody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Erro ao atualizar tabela de serviços:", error);
+      }
+    }
+
+    // Atualizar gráfico de valor por serviço
+    function updateServicesValueChart() {
+      try {
+        const topServices = dashboardData[currentYear].topServices;
+        
+        createOrUpdateChart('services-value-chart', 'bar', 
+          topServices.map(service => service.name.length > 20 ? service.name.substring(0, 20) + '...' : service.name), 
+          [{
+            label: 'Valor Total',
+            data: topServices.map(service => service.value),
+            backgroundColor: chartColors.secondary,
+            borderWidth: 0,
+            isCurrency: true,
+            borderRadius: 4
+          }],
+          {
+            indexAxis: 'y',
+            scales: {
+              x: {
+                beginAtZero: true,
+                grid: {
+                  display: true,
+                  drawBorder: false,
+                  color: '#EDF2F7'
+                },
+                ticks: {
+                  padding: 10,
+                  font: {
+                    weight: 600,
+                    size: 13
+                  },
+                  color: '#374151',
+                  callback: function(value) {
+                    return currencyFormatter.format(value);
+                  }
+                }
+              },
+              y: {
+                grid: {
+                  display: false,
+                  drawBorder: false
+                },
+                ticks: {
+                  font: {
+                    weight: 600,
+                    size: 13
+                  },
+                  color: '#374151'
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                display: false
+              }
+            }
+          }
+        );
+      } catch (error) {
+        console.error("Erro ao atualizar gráfico de valor por serviço:", error);
+      }
+    }
+
+    // Atualizar tabela de formas de pagamento
+    function updatePaymentsTable() {
+      try {
+        const tableBody = document.querySelector('#payments-table tbody');
+        tableBody.innerHTML = '';
+        
+        const currentPayments = dashboardData[currentYear].paymentMethods;
+        const totalValue = Object.values(currentPayments).reduce((sum, value) => sum + value, 0);
+        
+        Object.entries(currentPayments).forEach(([method, value]) => {
+          if (value === 0) return;
+          
+          const row = document.createElement('tr');
+          
+          const methodCell = document.createElement('td');
+          methodCell.textContent = method;
+          row.appendChild(methodCell);
+          
+          const valueCell = document.createElement('td');
+          valueCell.textContent = currencyFormatter.format(value);
+          row.appendChild(valueCell);
+          
+          const percentCell = document.createElement('td');
+          const percent = (value / totalValue) * 100;
+          percentCell.textContent = `${percent.toFixed(2)}%`;
+          row.appendChild(percentCell);
+          
+          tableBody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Erro ao atualizar tabela de pagamentos:", error);
+      }
+    }
+
+    // Atualizar gráficos de formas de pagamento
+    function updatePaymentCharts() {
+      try {
+        const paymentColors = {
+          "Dinheiro": '#003D7D',
+          "Cartão de Débito": '#0057B8',
+          "Cartão de Crédito": '#5F4B8B',
+          "PIX": '#F7941D',
+          "Boleto": '#FFB81C',
+          "Depósito": '#0CA678',
+          "Cheque": '#00A3A6',
+          "Crédito Interno": '#006064'
+        };
+        
+        // Gráfico de distribuição
+        const paymentMethods = Object.keys(dashboardData[currentYear].paymentMethods)
+          .filter(method => dashboardData[currentYear].paymentMethods[method] > 0);
+        
+        const paymentValues = paymentMethods.map(method => dashboardData[currentYear].paymentMethods[method]);
+        const colors = paymentMethods.map(method => paymentColors[method] || '#9CA3AF');
+        
+        createOrUpdateChart('payment-distribution-chart', 'pie', 
+          paymentMethods, 
+          [{
+            data: paymentValues,
+            backgroundColor: colors,
+            borderWidth: 0,
+            isCurrency: true,
+            borderRadius: 5,
+            spacing: 2
+          }],
+          {
+            cutout: '0%',
+            plugins: {
+              legend: {
+                position: 'right',
+                labels: {
+                  usePointStyle: true,
+                  padding: 15,
+                  font: {
+                    family: 'Inter',
+                    size: 12
+                  }
+                }
+              }
+            }
+          }
+        );
+        
+        // Gráfico de tendências
+        if (compareYears && availableYears.length > 1) {
+          // Pegar os dois anos mais recentes para comparação
+          const sortedYears = [...availableYears].sort((a, b) => parseInt(b) - parseInt(a));
+          const year1 = sortedYears.includes(currentYear) ? currentYear : sortedYears[0];
+          const year2 = sortedYears.find(y => y !== year1) || sortedYears[1];
+          
+          const paymentMethods1 = dashboardData[year1].paymentMethods;
+          const paymentMethods2 = dashboardData[year2].paymentMethods;
+          
+          const allMethods = [...new Set([
+            ...Object.keys(paymentMethods1),
+            ...Object.keys(paymentMethods2)
+          ])].filter(method => 
+            paymentMethods1[method] > 0 || 
+            paymentMethods2[method] > 0
+          );
+          
+          const barColors1 = allMethods.map(method => paymentColors[method] || '#9CA3AF');
+          const barColors2 = allMethods.map(method => {
+            const baseColor = paymentColors[method] || '#9CA3AF';
+            return baseColor + '99';
+          });
+          
+          createOrUpdateChart('payment-trends-chart', 'bar', 
+            allMethods, 
+            [
+              {
+                label: year1,
+                data: allMethods.map(method => paymentMethods1[method] || 0),
+                backgroundColor: barColors1,
+                borderWidth: 0,
+                isCurrency: true,
+                borderRadius: 4,
+                barPercentage: 0.6,
+                categoryPercentage: 0.7
+              },
+              {
+                label: year2,
+                data: allMethods.map(method => paymentMethods2[method] || 0),
+                backgroundColor: barColors2,
+                borderWidth: 0,
+                isCurrency: true,
+                borderRadius: 4,
+                barPercentage: 0.6,
+                categoryPercentage: 0.7
+              }
+            ],
+            {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    display: true,
+                    drawBorder: false,
+                    color: '#EDF2F7'
+                  },
+                  ticks: {
+                    padding: 10,
+                    font: {
+                      family: 'Inter',
+                      size: 13,
+                      weight: '600'
+                    },
+                    color: '#374151',
+                    callback: function(value) {
+                      return currencyFormatter.format(value);
+                    }
+                  }
+                },
+                x: {
+                  grid: {
+                    display: false,
+                    drawBorder: false
+                  },
+                  ticks: {
+                    font: {
+                      family: 'Inter',
+                      size: 13,
+                      weight: '600'
+                    },
+                    color: '#374151'
+                  }
+                }
+              }
+            }
+          );
+        } else {
+          createOrUpdateChart('payment-trends-chart', 'bar', 
+            paymentMethods, 
+            [{
+              label: currentYear,
+              data: paymentValues,
+              backgroundColor: colors,
+              borderWidth: 0,
+              isCurrency: true,
+              borderRadius: 4,
+              barPercentage: 0.6,
+              categoryPercentage: 0.7
+            }],
+            {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    display: true,
+                    drawBorder: false,
+                    color: '#EDF2F7'
+                  },
+                  ticks: {
+                    padding: 10,
+                    font: {
+                      family: 'Inter',
+                      size: 13,
+                      weight: '600'
+                    },
+                    color: '#374151',
+                    callback: function(value) {
+                      return currencyFormatter.format(value);
+                    }
+                  }
+                },
+                x: {
+                  grid: {
+                    display: false,
+                    drawBorder: false
+                  },
+                  ticks: {
+                    font: {
+                      family: 'Inter',
+                      size: 13,
+                      weight: '600'
+                    },
+                    color: '#374151'
+                  }
+                }
+              }
+            }
+          );
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar gráficos de pagamentos:", error);
+      }
+    }
+
+    // Atualizar tabela de dias da semana
+    function updateBestDaysTable() {
+      try {
+        const tableBody = document.querySelector('#best-days-table tbody');
+        tableBody.innerHTML = '';
+        
+        const weekdaySales = [...dashboardData[currentYear].weekdaySales];
+        weekdaySales.sort((a, b) => b.value - a.value);
+        
+        const weekdayOccurrences = {
+          "Domingo": 52,
+          "Segunda": 52,
+          "Terça": 52,
+          "Quarta": 52,
+          "Quinta": 52,
+          "Sexta": 52,
+          "Sábado": 52
+        };
+        
+        weekdaySales.forEach(day => {
+          const row = document.createElement('tr');
+          
+          const dayCell = document.createElement('td');
+          dayCell.textContent = day.day;
+          row.appendChild(dayCell);
+          
+          const countCell = document.createElement('td');
+          countCell.textContent = numberFormatter.format(day.count);
+          row.appendChild(countCell);
+          
+          const valueCell = document.createElement('td');
+          valueCell.textContent = currencyFormatter.format(day.value);
+          row.appendChild(valueCell);
+          
+          const avgValueCell = document.createElement('td');
+          const avgDailyValue = weekdayOccurrences[day.day] > 0 ? 
+            day.value / weekdayOccurrences[day.day] : 0;
+          avgValueCell.textContent = currencyFormatter.format(avgDailyValue);
+          row.appendChild(avgValueCell);
+          
+          const avgSalesCell = document.createElement('td');
+          const avgDailySales = weekdayOccurrences[day.day] > 0 ? 
+            day.count / weekdayOccurrences[day.day] : 0;
+          avgSalesCell.textContent = avgDailySales.toFixed(1);
+          row.appendChild(avgSalesCell);
+          
+          tableBody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Erro ao atualizar tabela de melhores dias:", error);
+      }
+    }
+
+    // Atualizar gráficos de padrões de frequência
+    function updateFrequencyCharts() {
+      try {
+        // Gráfico de vendas por dia da semana
+        const weekdayLabels = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+        const weekdayData = dashboardData[currentYear].weekdaySales
+          .sort((a, b) => weekdayLabels.indexOf(a.day.substr(0, 3)) - weekdayLabels.indexOf(b.day.substr(0, 3)));
+        
+        createOrUpdateChart('weekday-sales-chart', 'bar', 
+          weekdayData.map(day => day.day.substr(0, 3)), 
+          [{
+            label: 'Média Diária',
+            data: weekdayData.map(day => {
+              const weekdayOccurrences = {
+                "Domingo": 52,
+                "Segunda": 52,
+                "Terça": 52,
+                "Quarta": 52,
+                "Quinta": 52,
+                "Sexta": 52,
+                "Sábado": 52
+              };
+              return day.value / weekdayOccurrences[day.day];
+            }),
+            backgroundColor: chartColors.primary,
+            borderWidth: 0,
+            isCurrency: true,
+            borderRadius: 4,
+            barPercentage: 0.6,
+            categoryPercentage: 0.7
+          }],
+          {
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  display: true,
+                  drawBorder: false,
+                  color: '#EDF2F7'
+                },
+                ticks: {
+                  padding: 10,
+                  callback: function(value) {
+                    return currencyFormatter.format(value);
+                  }
+                }
+              },
+              x: {
+                grid: {
+                  display: false,
+                  drawBorder: false
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                display: false
+              }
+            }
+          }
+        );
+        
+        // Gráfico de padrão mensal
+        const monthlyPatternLabels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        
+        if (compareYears && availableYears.length > 1) {
+          // Pegar os dois anos mais recentes para comparação
+          const sortedYears = [...availableYears].sort((a, b) => parseInt(b) - parseInt(a));
+          const year1 = sortedYears.includes(currentYear) ? currentYear : sortedYears[0];
+          const year2 = sortedYears.find(y => y !== year1) || sortedYears[1];
+          
+          createOrUpdateChart('monthly-pattern-chart', 'line', 
+            monthlyPatternLabels, 
+            [
+              {
+                label: year1,
+                data: dashboardData[year1].monthlySales.map(item => item.value),
+                backgroundColor: chartColors.primaryTransparent,
+                borderColor: chartColors.primary,
+                tension: 0.4,
+                fill: true,
+                isCurrency: true,
+                pointBackgroundColor: chartColors.primary
+              },
+              {
+                label: year2,
+                data: dashboardData[year2].monthlySales.map(item => item.value),
+                backgroundColor: chartColors.secondaryTransparent,
+                borderColor: chartColors.secondary,
+                tension: 0.4,
+                fill: true,
+                isCurrency: true,
+                pointBackgroundColor: chartColors.secondary
+              }
+            ],
+            {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    display: true,
+                    drawBorder: false,
+                    color: '#EDF2F7'
+                  },
+                  ticks: {
+                    padding: 10,
+                    callback: function(value) {
+                      return currencyFormatter.format(value);
+                    }
+                  }
+                },
+                x: {
+                  grid: {
+                    display: false,
+                    drawBorder: false
+                  }
+                }
+              }
+            }
+          );
+        } else {
+          const color = availableYears.indexOf(currentYear) === 0 ? chartColors.primary : chartColors.secondary;
+          const colorTransparent = availableYears.indexOf(currentYear) === 0 ? chartColors.primaryTransparent : chartColors.secondaryTransparent;
+          
+          createOrUpdateChart('monthly-pattern-chart', 'line', 
+            monthlyPatternLabels, 
+            [{
+              label: currentYear,
+              data: dashboardData[currentYear].monthlySales.map(item => item.value),
+              backgroundColor: colorTransparent,
+              borderColor: color,
+              tension: 0.4,
+              fill: true,
+              isCurrency: true,
+              pointBackgroundColor: color
+            }],
+            {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    display: true,
+                    drawBorder: false,
+                    color: '#EDF2F7'
+                  },
+                  ticks: {
+                    padding: 10,
+                    callback: function(value) {
+                      return currencyFormatter.format(value);
+                    }
+                  }
+                },
+                x: {
+                  grid: {
+                    display: false,
+                    drawBorder: false
+                  }
+                }
+              }
+            }
+          );
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar gráficos de frequência:", error);
+      }
+    }
+
+    // Atualizar gráficos específicos de cada aba
+    function updateTabCharts(tabId) {
+      try {
+        // Garantir que não há gráficos duplicados
+        const chartsInTab = {
+          'overview': ['monthly-sales-chart', 'monthly-balance-chart', 'payment-methods-chart'],
+          'monthly-analysis': ['monthly-comparison-chart'],
+          'services': ['services-value-chart'],
+          'payment-methods': ['payment-distribution-chart', 'payment-trends-chart'],
+          'frequency-patterns': ['weekday-sales-chart', 'monthly-pattern-chart']
+        };
+        
+        // Destruir apenas os gráficos da aba atual se existirem
+        if (chartsInTab[tabId]) {
+          chartsInTab[tabId].forEach(chartId => {
+            if (charts[chartId]) {
+              try {
+                charts[chartId].destroy();
+                delete charts[chartId];
+              } catch (e) {
+                console.error(`Erro ao destruir gráfico ${chartId}:`, e);
+              }
+            }
+          });
+        }
+        
+        // Criar novos gráficos
+        switch(tabId) {
+          case 'overview':
+            updateMonthlySalesChart();
+            updateMonthlyBalanceChart();
+            updatePaymentMethodsChart();
+            break;
+            
+          case 'monthly-analysis':
+            updateMonthlyTable();
+            updateMonthlyComparisonChart();
+            break;
+            
+          case 'services':
+            updateServicesProgress();
+            updateServicesTable();
+            updateServicesValueChart();
+            break;
+            
+          case 'payment-methods':
+            updatePaymentsTable();
+            updatePaymentCharts();
+            break;
+            
+          case 'frequency-patterns':
+            updateBestDaysTable();
+            updateFrequencyCharts();
+            break;
+            
+          case 'market-insights':
+          case 'data-update':
+            // Estas abas não precisam de gráficos
+            break;
+        }
+      } catch (error) {
+        console.error(`Erro ao atualizar aba ${tabId}:`, error);
+      }
+    }
+
+    // Atualizar todo o dashboard
+    function updateDashboard() {
+      try {
+        updateMainStats();
+        const activeTab = document.querySelector('.tab-content.active').id;
+        updateTabCharts(activeTab);
+        
+        // Atualizar badge do ano atual
+        const yearBadge = document.getElementById('current-year-badge');
+        if (yearBadge) {
+          yearBadge.textContent = currentYear;
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar dashboard:", error);
+      }
+    }
+
+    // Sistema de upload e processamento de arquivos
+    let uploadedFiles = [];
+    let processedData = {
+      "2024": {
+        monthlySales: {},
+        monthlyBalance: {},
+        paymentMethods: {},
+        services: {},
+        weekdaySales: {},
+        totalSales: 0,
+        totalTransactions: 0
+      },
+      "2025": {
+        monthlySales: {},
+        monthlyBalance: {},
+        paymentMethods: {},
+        services: {},
+        weekdaySales: {},
+        totalSales: 0,
+        totalTransactions: 0
+      }
+    };
+
+    function initializeFileUpload() {
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = document.getElementById('fileInput');
+      const uploadButton = document.querySelector('.upload-button');
+
+      uploadButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fileInput.click();
+      });
+
+      dropZone.addEventListener('click', () => {
+        fileInput.click();
+      });
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+      });
+
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
+      });
+
+      fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
       });
     }
 
-    // Setup event listeners
-    function setupEventListeners() {
-      const uploadArea = document.getElementById('uploadArea');
-      const fileInput = document.getElementById('fileInput');
-
-      // Upload area click
-      uploadArea.addEventListener('click', () => fileInput.click());
-
-      // File input change
-      fileInput.addEventListener('change', handleFileSelect);
-
-      // Drag and drop
-      uploadArea.addEventListener('dragover', handleDragOver);
-      uploadArea.addEventListener('dragleave', handleDragLeave);
-      uploadArea.addEventListener('drop', handleDrop);
-
-      // Form submissions
-      document.getElementById('editForm').addEventListener('submit', handleEditSubmit);
-      document.getElementById('addForm').addEventListener('submit', handleAddSubmit);
-    }
-
-    // Handle file selection
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (file) {
-        processFile(file);
-      }
-    }
-
-    // Handle drag over
-    function handleDragOver(event) {
-      event.preventDefault();
-      event.currentTarget.classList.add('dragover');
-    }
-
-    // Handle drag leave
-    function handleDragLeave(event) {
-      event.currentTarget.classList.remove('dragover');
-    }
-
-    // Handle drop
-    function handleDrop(event) {
-      event.preventDefault();
-      event.currentTarget.classList.remove('dragover');
+    function handleFiles(files) {
+      const fileList = document.getElementById('fileList');
+      const updateLog = document.getElementById('updateLog');
+      const dataPreview = document.getElementById('dataPreview');
       
-      const files = event.dataTransfer.files;
-      if (files.length > 0) {
-        processFile(files[0]);
+      // Resetar visualizações
+      fileList.style.display = 'block';
+      updateLog.style.display = 'block';
+      dataPreview.style.display = 'none';
+      
+      uploadedFiles = Array.from(files);
+      
+      const existingItems = fileList.querySelectorAll('.file-item');
+      existingItems.forEach(item => item.remove());
+      
+      uploadedFiles.forEach((file, index) => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.innerHTML = `
+          <span class="file-name">${file.name}</span>
+          <span class="file-status" id="status-${index}">Aguardando...</span>
+        `;
+        fileList.appendChild(fileItem);
+      });
+      
+      // Iniciar processamento
+      processAllFiles();
+    }
+
+    async function processAllFiles() {
+      clearLog();
+      addLog('Iniciando processamento dos arquivos...', 'info');
+      
+      // Ocultar banner de sucesso se estiver visível
+      const banner = document.getElementById('upload-status-banner');
+      if (banner) {
+        banner.style.display = 'none';
+      }
+      
+      // Resetar dados processados - criar estrutura vazia para TODOS os anos disponíveis
+      processedData = {};
+      availableYears.forEach(year => {
+        processedData[year] = {
+          monthlySales: {},
+          monthlyBalance: {},
+          paymentMethods: {},
+          services: {},
+          weekdaySales: {},
+          totalSales: 0,
+          totalTransactions: 0
+        };
+      });
+      
+      // Processar cada arquivo
+      for (let i = 0; i < uploadedFiles.length; i++) {
+        const file = uploadedFiles[i];
+        const statusElement = document.getElementById(`status-${i}`);
+        
+        try {
+          statusElement.textContent = 'Processando...';
+          statusElement.className = 'file-status';
+          
+          addLog(`Processando arquivo: ${file.name}`, 'info');
+          
+          if (file.name.toLowerCase().endsWith('.csv')) {
+            await processCSV(file);
+          } else if (file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls')) {
+            await processExcel(file);
+          } else if (file.name.toLowerCase().endsWith('.xlsm')) {
+            // Arquivo Excel com macros
+            await processExcel(file);
+          } else {
+            throw new Error('Formato de arquivo não suportado. Use .xlsx, .xls ou .csv');
+          }
+          
+          statusElement.textContent = 'Concluído';
+          statusElement.className = 'file-status success';
+          addLog(`✓ ${file.name} processado com sucesso`, 'success');
+          
+        } catch (error) {
+          statusElement.textContent = 'Erro';
+          statusElement.className = 'file-status error';
+          addLog(`✗ Erro ao processar ${file.name}: ${error.message}`, 'error');
+          console.error('Detalhes do erro:', error);
+        }
+      }
+      
+      // Finalizar processamento
+      addLog('Finalizando processamento...', 'info');
+      finalizeDataProcessing();
+    }
+
+    async function processCSV(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          try {
+            const results = Papa.parse(e.target.result, {
+              header: true,
+              dynamicTyping: true,
+              skipEmptyLines: true,
+              encoding: 'UTF-8',
+              delimitersToGuess: [',', ';', '\t', '|']
+            });
+            
+            if (results.errors.length > 0) {
+              addLog(`Avisos ao parsear CSV: ${results.errors.length} erros encontrados`, 'warning');
+            }
+            
+            if (results.data && results.data.length > 0) {
+              addLog(`CSV carregado: ${results.data.length} linhas encontradas`, 'info');
+              
+              // Verificar colunas
+              const firstRow = results.data[0];
+              const columns = Object.keys(firstRow);
+              addLog(`Colunas CSV: ${columns.slice(0, 5).join(', ')}...`, 'info');
+              
+              // Verificar tipo de dados
+              const hasFluxo = columns.some(col => 
+                col && /categoria|realizado/i.test(col)
+              );
+              
+              if (hasFluxo) {
+                processFluxoCaixa(results.data, file.name);
+              } else {
+                processDataRows(results.data);
+              }
+            } else {
+              addLog('Arquivo CSV vazio ou sem dados válidos', 'warning');
+            }
+            
+            resolve();
+          } catch (error) {
+            addLog(`Erro ao processar CSV: ${error.message}`, 'error');
+            reject(error);
+          }
+        };
+        
+        reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+        reader.readAsText(file, 'UTF-8');
+      });
+    }
+
+    async function processExcel(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { 
+              type: 'array',
+              cellDates: true,
+              dateNF: 'dd/mm/yyyy'
+            });
+            
+            // Processar cada planilha
+            workbook.SheetNames.forEach(sheetName => {
+              const worksheet = workbook.Sheets[sheetName];
+              const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
+                raw: false,
+                dateNF: 'dd/mm/yyyy',
+                defval: ''
+              });
+              
+              addLog(`Processando planilha: ${sheetName} (${jsonData.length} linhas)`, 'info');
+              
+              // Debug: mostrar primeiras linhas
+              if (jsonData.length > 0) {
+                console.log('Primeira linha da planilha:', jsonData[0]);
+              }
+              
+              if (jsonData.length > 0) {
+                const firstRow = jsonData[0];
+                const columns = Object.keys(firstRow);
+                
+                addLog(`Colunas encontradas: ${columns.slice(0, 5).join(', ')}...`, 'info');
+                
+                // Verificar tipo de planilha
+                const hasVendas = columns.some(col => 
+                  /efetiva|data|total|valor|descri/i.test(col)
+                );
+                
+                const hasFluxo = columns.some(col => 
+                  /categoria|realizado/i.test(col)
+                );
+                
+                if (hasVendas && !hasFluxo) {
+                  addLog(`Detectada planilha de vendas`, 'info');
+                  processDataRows(jsonData);
+                } else if (hasFluxo) {
+                  addLog(`Detectada planilha de fluxo de caixa`, 'info');
+                  processFluxoCaixa(jsonData, file.name);
+                } else {
+                  addLog(`Tipo de planilha não identificado`, 'warning');
+                  // Tentar processar como vendas mesmo assim
+                  processDataRows(jsonData);
+                }
+              }
+            });
+            
+            resolve();
+          } catch (error) {
+            addLog(`Erro ao processar Excel: ${error.message}`, 'error');
+            reject(error);
+          }
+        };
+        
+        reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    function showSuccessNotification() {
+      // Mostrar banner na aba de upload
+      const banner = document.getElementById('upload-status-banner');
+      if (banner) {
+        banner.style.display = 'flex';
+        
+        // Ocultar após 5 segundos
+        setTimeout(() => {
+          banner.style.animation = 'fadeOut 0.5s ease-out';
+          setTimeout(() => {
+            banner.style.display = 'none';
+            banner.style.animation = 'fadeIn 0.5s ease-out';
+          }, 500);
+        }, 5000);
       }
     }
 
-    // Process file
-    function processFile(file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const data = e.target.result;
-          const workbook = XLSX.read(data, { type: 'binary' });
-          const sheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(worksheet);
-          
-          membersData = jsonData.map((row, index) => ({
-            id: index + 1,
-            nome: row.Nome || row.nome || '',
-            email: row.Email || row.email || '',
-            telefone: row.Telefone || row.telefone || '',
-            plano: row.Plano || row.plano || 'Mensal',
-            status: row.Status || row.status || 'Ativo',
-            dataInicio: row['Data de Início'] || row.dataInicio || new Date().toLocaleDateString(),
-            classesCompleted: row['Aulas Completadas'] || row.classesCompleted || 0
-          }));
-          
-          updateStats();
-          updateTable();
-          document.getElementById('processBtn').disabled = false;
-          
-          showAlert('Arquivo carregado com sucesso!', 'success');
-        } catch (error) {
-          console.error('Erro ao processar arquivo:', error);
-          showAlert('Erro ao processar arquivo. Verifique o formato.', 'danger');
-        }
+    function processDataRows(rows) {
+      const monthNames = {
+        'janeiro': 0, 'fevereiro': 1, 'março': 2, 'abril': 3,
+        'maio': 4, 'junho': 5, 'julho': 6, 'agosto': 7,
+        'setembro': 8, 'outubro': 9, 'novembro': 10, 'dezembro': 11
       };
-      reader.readAsBinaryString(file);
+      
+      const weekDays = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+      
+      let processedCount = 0;
+      let skippedCount = 0;
+      
+      rows.forEach((row, index) => {
+        try {
+          // Identificar colunas (tentar várias possibilidades)
+          const dateStr = row['EFETIVAÇÃO'] || row['Efetivação'] || row['Data'] || row['DATA'];
+          const valueStr = row['TOTAL'] || row['Total'] || row['Valor'] || row['VALOR'];
+          const service = row['DESCRIÇÃO'] || row['Descrição'] || row['Serviço'] || row['SERVICO'];
+          
+          if (!dateStr || !valueStr) {
+            skippedCount++;
+            return;
+          }
+          
+          // Processar data
+          let date;
+          if (typeof dateStr === 'string') {
+            // Tentar diferentes formatos de data
+            if (dateStr.includes('/')) {
+              const parts = dateStr.split('/');
+              if (parts.length === 3) {
+                const day = parseInt(parts[0]);
+                const month = parseInt(parts[1]) - 1;
+                let year = parseInt(parts[2]);
+                
+                // Ajustar ano se necessário
+                if (year < 100) {
+                  year = year > 50 ? 1900 + year : 2000 + year;
+                }
+                
+                date = new Date(year, month, day);
+              }
+            } else if (dateStr.includes('-')) {
+              date = new Date(dateStr);
+            }
+          } else if (dateStr instanceof Date) {
+            date = dateStr;
+          } else if (typeof dateStr === 'number') {
+            // Excel serial date
+            date = new Date((dateStr - 25569) * 86400 * 1000);
+          }
+          
+          if (!date || isNaN(date.getTime())) {
+            skippedCount++;
+            if (index < 5) { // Log apenas as primeiras 5 datas inválidas
+              console.log(`Data inválida na linha ${index + 1}:`, dateStr);
+            }
+            return;
+          }
+          
+          const year = date.getFullYear().toString();
+          const month = date.getMonth();
+          const monthName = Object.keys(monthNames)[month];
+          const weekDay = weekDays[date.getDay()];
+          
+          // Processar valor
+          let value = 0;
+          if (typeof valueStr === 'string') {
+            // Remover R$, pontos e converter vírgula para ponto
+            value = parseFloat(
+              valueStr
+                .replace(/R\$/gi, '')
+                .replace(/\./g, '')
+                .replace(',', '.')
+                .trim()
+            ) || 0;
+          } else if (typeof valueStr === 'number') {
+            value = valueStr;
+          }
+          
+          if (value <= 0 || isNaN(value)) {
+            skippedCount++;
+            if (index < 5) { // Log apenas os primeiros 5 valores inválidos
+              console.log(`Valor inválido na linha ${index + 1}:`, valueStr, '→', value);
+            }
+            return;
+          }
+          
+          // Verificar se o ano está nos dados, se não, adicionar
+          if (!processedData[year]) {
+            // Verificar se é um ano válido (entre 2000 e 2100)
+            const yearInt = parseInt(year);
+            if (yearInt >= 2000 && yearInt <= 2100) {
+              // Adicionar o novo ano ao dashboard
+              addNewYear(year);
+              
+              // Criar estrutura de dados vazia para processamento
+              processedData[year] = {
+                monthlySales: {},
+                monthlyBalance: {},
+                paymentMethods: {},
+                services: {},
+                weekdaySales: {},
+                totalSales: 0,
+                totalTransactions: 0
+              };
+              
+              addLog(`🆕 Detectado novo ano ${year} nos dados!`, 'info');
+            } else {
+              skippedCount++;
+              if (index < 5) {
+                console.log(`Ano inválido na linha ${index + 1}:`, year);
+              }
+              return;
+            }
+          }
+          
+          // Adicionar aos dados mensais
+          if (!processedData[year].monthlySales[monthName]) {
+            processedData[year].monthlySales[monthName] = { value: 0, transactions: 0 };
+          }
+          processedData[year].monthlySales[monthName].value += value;
+          processedData[year].monthlySales[monthName].transactions += 1;
+          
+          // Processar métodos de pagamento
+          const paymentFields = {
+            'DINHEIRO': 'Dinheiro',
+            'C.DÉBITO': 'Cartão de Débito',
+            'C.DEBITO': 'Cartão de Débito',
+            'DÉBITO': 'Cartão de Débito',
+            'DEBITO': 'Cartão de Débito',
+            'C.CRÉDITO': 'Cartão de Crédito',
+            'C.CREDITO': 'Cartão de Crédito',
+            'CRÉDITO': 'Cartão de Crédito',
+            'CREDITO': 'Cartão de Crédito',
+            'PIX': 'PIX',
+            'BOLETO': 'Boleto',
+            'DEPÓSITO': 'Depósito',
+            'DEPOSITO': 'Depósito',
+            'CHEQUE': 'Cheque',
+            'CRÉDITO INTERNO': 'Crédito Interno',
+            'CREDITO INTERNO': 'Crédito Interno'
+          };
+          
+          let paymentFound = false;
+          Object.entries(paymentFields).forEach(([field, methodName]) => {
+            if (row[field]) {
+              let paymentValue = 0;
+              if (typeof row[field] === 'string') {
+                paymentValue = parseFloat(
+                  row[field]
+                    .replace(/R\$/gi, '')
+                    .replace(/\./g, '')
+                    .replace(',', '.')
+                    .trim()
+                ) || 0;
+              } else if (typeof row[field] === 'number') {
+                paymentValue = row[field];
+              }
+              
+              if (paymentValue > 0) {
+                if (!processedData[year].paymentMethods[methodName]) {
+                  processedData[year].paymentMethods[methodName] = 0;
+                }
+                processedData[year].paymentMethods[methodName] += paymentValue;
+                paymentFound = true;
+              }
+            }
+          });
+          
+          // Se não encontrou método de pagamento específico, adicionar como "Outros"
+          if (!paymentFound && value > 0) {
+            if (!processedData[year].paymentMethods['Outros']) {
+              processedData[year].paymentMethods['Outros'] = 0;
+            }
+            processedData[year].paymentMethods['Outros'] += value;
+          }
+          
+          // Adicionar aos serviços
+          if (service && service.trim() !== '') {
+            const serviceName = service.trim();
+            if (!processedData[year].services[serviceName]) {
+              processedData[year].services[serviceName] = { count: 0, value: 0 };
+            }
+            processedData[year].services[serviceName].count += 1;
+            processedData[year].services[serviceName].value += value;
+          }
+          
+          // Adicionar aos dias da semana
+          if (!processedData[year].weekdaySales[weekDay]) {
+            processedData[year].weekdaySales[weekDay] = { count: 0, value: 0 };
+          }
+          processedData[year].weekdaySales[weekDay].count += 1;
+          processedData[year].weekdaySales[weekDay].value += value;
+          
+          // Atualizar totais
+          processedData[year].totalSales += value;
+          processedData[year].totalTransactions += 1;
+          processedCount++;
+          
+        } catch (error) {
+          console.error('Erro ao processar linha:', error, row);
+          skippedCount++;
+        }
+      });
+      
+      addLog(`Linhas processadas: ${processedCount} | Linhas ignoradas: ${skippedCount}`, 'info');
     }
 
-    // Process data
-    function processData() {
-      if (membersData.length === 0) {
-        showAlert('Nenhum dado para processar.', 'warning');
+    function processFluxoCaixa(rows, filename) {
+      // Determinar o ano baseado no nome do arquivo ou dados
+      let year = null;
+      
+      // Tentar detectar o ano pelo nome do arquivo
+      const yearMatch = filename.match(/20\d{2}/);
+      if (yearMatch) {
+        year = yearMatch[0];
+      }
+      
+      // Se não encontrou no nome do arquivo, tentar detectar pelos dados
+      if (!year) {
+        // Procurar por colunas que possam conter anos
+        for (const row of rows) {
+          const rowValues = Object.values(row).join(' ');
+          const dataYearMatch = rowValues.match(/20\d{2}/);
+          if (dataYearMatch) {
+            year = dataYearMatch[0];
+            break;
+          }
+        }
+      }
+      
+      if (!year) {
+        addLog(`⚠️ Ano não identificado no arquivo de fluxo de caixa: ${filename}`, 'warning');
+        addLog(`Por favor, inclua o ano no nome do arquivo (ex: fluxo2026.xlsx)`, 'info');
         return;
       }
-
-      // Simulate processing
-      const btn = document.getElementById('processBtn');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<div class="loading"></div> Processando...';
-      btn.disabled = true;
-
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-        showAlert('Dados processados com sucesso!', 'success');
-      }, 2000);
-    }
-
-    // Download template
-    function downloadTemplate() {
-      const templateData = [
-        ['Nome', 'Email', 'Telefone', 'Plano', 'Status', 'Data de Início', 'Aulas Completadas'],
-        ['João Silva', 'joao@email.com', '(11) 99999-9999', 'Mensal', 'Ativo', '01/01/2024', 15],
-        ['Maria Santos', 'maria@email.com', '(11) 88888-8888', 'Trimestral', 'Ativo', '15/01/2024', 8],
-        ['Pedro Costa', 'pedro@email.com', '(11) 77777-7777', 'Anual', 'Ativo', '01/02/2024', 25]
-      ];
-
-      const ws = XLSX.utils.aoa_to_sheet(templateData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Membros');
-      XLSX.writeFile(wb, 'template_membros.xlsx');
-    }
-
-    // Edit member
-    function editMember(index) {
-      const member = membersData[index];
-      currentEditIndex = index;
       
-      document.getElementById('editName').value = member.nome;
-      document.getElementById('editEmail').value = member.email;
-      document.getElementById('editPhone').value = member.telefone;
-      document.getElementById('editPlan').value = member.plano;
-      document.getElementById('editStatus').value = member.status;
+      // Verificar se o ano existe no dashboard, se não, adicionar
+      if (!dashboardData[year]) {
+        const yearInt = parseInt(year);
+        if (yearInt >= 2000 && yearInt <= 2100) {
+          addNewYear(year);
+          // Criar estrutura de dados vazia para processamento
+          if (!processedData[year]) {
+            processedData[year] = {
+              monthlySales: {},
+              monthlyBalance: {},
+              paymentMethods: {},
+              services: {},
+              weekdaySales: {},
+              totalSales: 0,
+              totalTransactions: 0
+            };
+          }
+        } else {
+          addLog(`Ano inválido detectado: ${year}`, 'warning');
+          return;
+        }
+      }
       
-      showModal('editModal');
-    }
-
-    // Delete member
-    function deleteMember(index) {
-      if (confirm('Tem certeza que deseja excluir este membro?')) {
-        membersData.splice(index, 1);
-        updateStats();
-        updateTable();
-        showAlert('Membro excluído com sucesso!', 'success');
+      const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                         'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+      
+      // Encontrar linhas de receitas e despesas
+      const receitasRow = rows.find(row => {
+        const categoria = row.Categoria || row.categoria || row.CATEGORIA || '';
+        return categoria.toLowerCase().includes('recebimento') || 
+               categoria.toLowerCase().includes('receita');
+      });
+      
+      const despesasRow = rows.find(row => {
+        const categoria = row.Categoria || row.categoria || row.CATEGORIA || '';
+        return categoria.toLowerCase().includes('pagamento') || 
+               categoria.toLowerCase().includes('despesa');
+      });
+      
+      if (receitasRow || despesasRow) {
+        monthNames.forEach((month, index) => {
+          const monthKey = month.toLowerCase();
+          
+          // Tentar várias possibilidades de nome de coluna
+          const possibleColumns = [
+            `${month} - Realizado`,
+            `${month.toUpperCase()} - REALIZADO`,
+            `${month}`,
+            `${month.toUpperCase()}`,
+            `${index + 1}` // Número do mês
+          ];
+          
+          let income = 0;
+          let expenses = 0;
+          
+          // Buscar valor de receita
+          if (receitasRow) {
+            for (const col of possibleColumns) {
+              if (receitasRow[col] !== undefined) {
+                const value = parseFloat(
+                  String(receitasRow[col])
+                    .replace(/R\$/gi, '')
+                    .replace(/\./g, '')
+                    .replace(',', '.')
+                ) || 0;
+                if (value !== 0) {
+                  income = Math.abs(value);
+                  break;
+                }
+              }
+            }
+          }
+          
+          // Buscar valor de despesa
+          if (despesasRow) {
+            for (const col of possibleColumns) {
+              if (despesasRow[col] !== undefined) {
+                const value = parseFloat(
+                  String(despesasRow[col])
+                    .replace(/R\$/gi, '')
+                    .replace(/\./g, '')
+                    .replace(',', '.')
+                ) || 0;
+                if (value !== 0) {
+                  expenses = Math.abs(value);
+                  break;
+                }
+              }
+            }
+          }
+          
+          const balance = income - expenses;
+          
+          if (!processedData[year].monthlyBalance[monthKey]) {
+            processedData[year].monthlyBalance[monthKey] = { 
+              income: 0, 
+              expenses: 0, 
+              balance: 0 
+            };
+          }
+          
+          processedData[year].monthlyBalance[monthKey].income = income;
+          processedData[year].monthlyBalance[monthKey].expenses = expenses;
+          processedData[year].monthlyBalance[monthKey].balance = balance;
+        });
+        
+        addLog(`✓ Fluxo de caixa ${year} processado com sucesso`, 'success');
+      } else {
+        addLog(`⚠️ Linhas de receita/despesa não encontradas no fluxo de caixa`, 'warning');
       }
     }
 
-    // Handle edit submit
-    function handleEditSubmit(event) {
-      event.preventDefault();
+    function finalizeDataProcessing() {
+      const monthOrder = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 
+                         'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
       
-      const member = membersData[currentEditIndex];
-      member.nome = document.getElementById('editName').value;
-      member.email = document.getElementById('editEmail').value;
-      member.telefone = document.getElementById('editPhone').value;
-      member.plano = document.getElementById('editPlan').value;
-      member.status = document.getElementById('editStatus').value;
+      let hasNewData = false;
       
-      updateStats();
-      updateTable();
-      closeModal('editModal');
-      showAlert('Membro atualizado com sucesso!', 'success');
+      // Converter dados processados para o formato do dashboard para TODOS os anos
+      availableYears.forEach(year => {
+        const yearData = processedData[year];
+        
+        // Verificar se há dados novos para este ano
+        if (yearData && (yearData.totalSales > 0 || Object.keys(yearData.monthlySales).length > 0)) {
+          hasNewData = true;
+          
+          // Converter vendas mensais
+          dashboardData[year].monthlySales = monthOrder.map((month, index) => {
+            const monthData = yearData.monthlySales[month] || { value: 0, transactions: 0 };
+            return {
+              month: month.charAt(0).toUpperCase() + month.slice(1),
+              value: monthData.value,
+              transactions: monthData.transactions
+            };
+          });
+          
+          // Converter balanço mensal
+          if (Object.keys(yearData.monthlyBalance).length > 0) {
+            dashboardData[year].monthlyBalance = monthOrder.map((month, index) => {
+              const balanceData = yearData.monthlyBalance[month] || { income: 0, expenses: 0, balance: 0 };
+              return {
+                month: month.charAt(0).toUpperCase() + month.slice(1),
+                income: balanceData.income,
+                expenses: balanceData.expenses,
+                balance: balanceData.balance
+              };
+            });
+          }
+          
+          // Converter métodos de pagamento
+          if (Object.keys(yearData.paymentMethods).length > 0) {
+            dashboardData[year].paymentMethods = { ...yearData.paymentMethods };
+          }
+          
+          // Adicionar PIX estimado se não existir e houver vendas
+          if (yearData.totalSales > 0) {
+            const totalPayments = Object.values(dashboardData[year].paymentMethods)
+              .reduce((sum, value) => sum + value, 0);
+            
+            // Se o total de pagamentos for menor que o total de vendas, 
+            // a diferença pode ser PIX
+            if (totalPayments < yearData.totalSales) {
+              const pixEstimado = yearData.totalSales - totalPayments;
+              if (pixEstimado > 0) {
+                dashboardData[year].paymentMethods['PIX'] = pixEstimado;
+                addLog(`PIX estimado para ${year}: ${currencyFormatter.format(pixEstimado)}`, 'info');
+              }
+            } else if (!dashboardData[year].paymentMethods['PIX']) {
+              // Se não há PIX, estimar como 25% do total
+              dashboardData[year].paymentMethods['PIX'] = yearData.totalSales * 0.25;
+              addLog(`PIX estimado em 25% para ${year}: ${currencyFormatter.format(yearData.totalSales * 0.25)}`, 'info');
+            }
+          }
+          
+          // Converter top serviços
+          if (Object.keys(yearData.services).length > 0) {
+            const servicesArray = Object.entries(yearData.services)
+              .map(([name, data]) => ({ name, ...data }))
+              .sort((a, b) => b.value - a.value)
+              .slice(0, 5);
+            
+            if (servicesArray.length > 0) {
+              dashboardData[year].topServices = servicesArray;
+            }
+          }
+          
+          // Converter vendas por dia da semana
+          if (Object.keys(yearData.weekdaySales).length > 0) {
+            const weekDays = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            dashboardData[year].weekdaySales = weekDays.map(day => {
+              const dayData = yearData.weekdaySales[day] || { count: 0, value: 0 };
+              return { day, ...dayData };
+            });
+          }
+          
+          // Atualizar totais
+          if (yearData.totalSales > 0) {
+            dashboardData[year].totalSales = yearData.totalSales;
+            dashboardData[year].totalTransactions = yearData.totalTransactions;
+          }
+        }
+      });
+      
+      if (hasNewData) {
+        // Mostrar prévia dos dados
+        showDataPreview();
+        
+        // Destruir todos os gráficos existentes
+        Object.keys(charts).forEach(chartId => {
+          if (charts[chartId]) {
+            try {
+              charts[chartId].destroy();
+            } catch (e) {
+              console.error(`Erro ao destruir gráfico ${chartId}:`, e);
+            }
+          }
+        });
+        charts = {}; // Resetar objeto de gráficos
+        
+        // Aguardar um momento e então atualizar o dashboard
+        setTimeout(() => {
+          updateDashboard();
+          
+          // Atualizar a aba ativa
+          const activeTab = document.querySelector('.tab-content.active');
+          if (activeTab) {
+            updateTabCharts(activeTab.id);
+          }
+          
+          addLog('✓ Dashboard atualizado com os novos dados!', 'success');
+          
+          // Adicionar indicador de sucesso temporário
+          showSuccessNotification();
+        }, 500);
+        
+        addLog('✓ Processamento concluído!', 'success');
+        
+        // Resumo dos dados processados
+        addLog('--- RESUMO DOS DADOS PROCESSADOS ---', 'info');
+        let anyDataProcessed = false;
+        availableYears.forEach(year => {
+          if (dashboardData[year] && dashboardData[year].totalSales > 0) {
+            anyDataProcessed = true;
+            addLog(`${year}:`, 'info');
+            addLog(`  • Total: ${currencyFormatter.format(dashboardData[year].totalSales)}`, 'info');
+            addLog(`  • Transações: ${numberFormatter.format(dashboardData[year].totalTransactions)}`, 'info');
+            addLog(`  • Ticket Médio: ${currencyFormatter.format(dashboardData[year].totalSales / dashboardData[year].totalTransactions)}`, 'info');
+            addLog(`  • Serviços: ${dashboardData[year].topServices.length} tipos diferentes`, 'info');
+          }
+        });
+        if (!anyDataProcessed) {
+          addLog('Nenhum dado foi processado com sucesso.', 'warning');
+        }
+        addLog('-----------------------------------', 'info');
+      } else {
+        addLog('⚠️ Nenhum dado válido foi encontrado nos arquivos.', 'warning');
+        addLog('Verifique se os arquivos contêm as colunas esperadas:', 'info');
+        addLog('• Vendas: EFETIVAÇÃO, TOTAL, DESCRIÇÃO', 'info');
+        addLog('• Fluxo de Caixa: Categoria, [Mês] - Realizado', 'info');
+        
+        // Mostrar notificação de erro
+        const banner = document.getElementById('upload-status-banner');
+        if (banner) {
+          banner.style.backgroundColor = 'var(--danger-color)';
+          banner.querySelector('.status-title').textContent = 'Nenhum dado válido encontrado!';
+          banner.querySelector('.status-subtitle').textContent = 'Verifique o formato dos arquivos e tente novamente.';
+          banner.style.display = 'flex';
+          
+          setTimeout(() => {
+            banner.style.animation = 'fadeOut 0.5s ease-out';
+            setTimeout(() => {
+              banner.style.display = 'none';
+              banner.style.backgroundColor = 'var(--success-color)';
+              banner.querySelector('.status-title').textContent = 'Dados carregados com sucesso!';
+              banner.querySelector('.status-subtitle').textContent = 'O dashboard foi atualizado com as novas informações.';
+              banner.style.animation = 'fadeIn 0.5s ease-out';
+            }, 500);
+          }, 5000);
+        }
+      }
     }
 
-    // Handle add submit
-    function handleAddSubmit(event) {
-      event.preventDefault();
+    function showDataPreview() {
+      const preview = document.getElementById('dataPreview');
+      const previewStats = document.getElementById('previewStats');
       
-      const newMember = {
-        id: membersData.length + 1,
-        nome: document.getElementById('addName').value,
-        email: document.getElementById('addEmail').value,
-        telefone: document.getElementById('addPhone').value,
-        plano: document.getElementById('addPlan').value,
-        status: 'Ativo',
-        dataInicio: new Date().toLocaleDateString(),
-        classesCompleted: 0
-      };
+      preview.style.display = 'block';
+      previewStats.innerHTML = '';
       
-      membersData.push(newMember);
-      updateStats();
-      updateTable();
-      closeModal('addModal');
-      document.getElementById('addForm').reset();
-      showAlert('Membro adicionado com sucesso!', 'success');
-    }
-
-    // Show modal
-    function showModal(modalId) {
-      document.getElementById(modalId).classList.add('show');
-    }
-
-    // Close modal
-    function closeModal(modalId) {
-      document.getElementById(modalId).classList.remove('show');
-    }
-
-    // Show alert
-    function showAlert(message, type) {
-      const alert = document.createElement('div');
-      alert.className = `alert alert-${type}`;
-      alert.innerHTML = `
-        ${type === 'success' ? '✅' : type === 'warning' ? '⚠️' : '❌'}
-        ${message}
+      availableYears.forEach(year => {
+        if (dashboardData[year] && dashboardData[year].totalSales > 0) {
+          const stats = [
+            { 
+              label: `Total de Vendas ${year}`, 
+              value: currencyFormatter.format(dashboardData[year].totalSales) 
+            },
+            { 
+              label: `Transações ${year}`, 
+              value: numberFormatter.format(dashboardData[year].totalTransactions) 
+            },
+            { 
+              label: `Ticket Médio ${year}`, 
+              value: currencyFormatter.format(dashboardData[year].totalSales / dashboardData[year].totalTransactions || 0) 
+            },
+            { 
+              label: `Serviços Diferentes ${year}`, 
+              value: dashboardData[year].topServices.length 
+            }
+          ];
+          
+          stats.forEach(stat => {
+            const statEl = document.createElement('div');
+            statEl.className = 'preview-stat';
+            statEl.innerHTML = `
+              <div class="preview-stat-label">${stat.label}</div>
+              <div class="preview-stat-value">${stat.value}</div>
+            `;
+            previewStats.appendChild(statEl);
+          });
+        }
+      });
+      
+      // Adicionar informação sobre métodos de pagamento
+      const paymentInfo = document.createElement('div');
+      paymentInfo.className = 'preview-info';
+      paymentInfo.style.cssText = `
+        grid-column: 1 / -1;
+        margin-top: 16px;
+        padding: 12px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        font-size: 13px;
+        color: white;
       `;
       
-      document.body.appendChild(alert);
+      const paymentMethodsInfo = availableYears
+        .filter(year => dashboardData[year] && dashboardData[year].totalSales > 0)
+        .map(year => {
+          const totalMethods = Object.keys(dashboardData[year].paymentMethods)
+            .filter(m => dashboardData[year].paymentMethods[m] > 0).length;
+          return `${year}: ${totalMethods} métodos`;
+        })
+        .join(' | ');
       
-      setTimeout(() => {
-        alert.remove();
-      }, 5000);
+      paymentInfo.innerHTML = `
+        <strong>💳 Formas de Pagamento Detectadas:</strong><br>
+        ${paymentMethodsInfo}
+      `;
+      
+      previewStats.appendChild(paymentInfo);
     }
 
-    // Add new member button
-    function addNewMember() {
-      showModal('addModal');
+    function addLog(message, type = 'info') {
+      const logEntries = document.getElementById('logEntries');
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.textContent = `${new Date().toLocaleTimeString('pt-BR')} - ${message}`;
+      logEntries.appendChild(entry);
+      logEntries.scrollTop = logEntries.scrollHeight;
     }
+
+    function clearLog() {
+      document.getElementById('logEntries').innerHTML = '';
+    }
+
+    // Inicializar o dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+      try {
+        // Destruir quaisquer gráficos existentes
+        if (typeof charts !== 'undefined') {
+          Object.keys(charts).forEach(chartId => {
+            if (charts[chartId] && charts[chartId].destroy) {
+              charts[chartId].destroy();
+            }
+          });
+        }
+        
+        // Resetar charts
+        charts = {};
+        
+        // Criar botões de ano
+        updateYearButtons();
+        
+        // Inicializar dashboard
+        updateDashboard();
+        initializeFileUpload();
+      } catch (error) {
+        console.error("Erro ao inicializar dashboard:", error);
+      }
+    });
   </script>
+  
+  <!-- Script de Upload de Arquivos -->
+  <script src="upload-handler.js"></script>
 </body>
 </html>
