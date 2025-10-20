@@ -89,8 +89,8 @@ output "free_tier_info" {
 output "deployment_summary" {
   description = "Resumo completo do deployment"
   value = {
-    projeto             = var.project_name
-    ambiente           = var.environment
+    projeto           = var.project_name
+    ambiente          = var.environment
     regiao            = var.aws_region
     ip_publico        = aws_eip.academia_dashboard.public_ip
     dashboard_url     = "http://${aws_eip.academia_dashboard.public_ip}"
