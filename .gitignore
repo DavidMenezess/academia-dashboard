@@ -8,15 +8,15 @@ Thumbs.db
 node_modules/
 
 # Logs e uploads
-academia-dashboard/web-site/logs/
-academia-dashboard/web-site/uploads/
-academia-dashboard/web-site/api/uploads/
-academia-dashboard/web-site/api/node_modules/
+web-site/logs/
+web-site/uploads/
+web-site/api/uploads/
+web-site/api/node_modules/
 
 # Terraform state
-academia-dashboard/web-site/terraform/.terraform/
-academia-dashboard/web-site/terraform/*.tfstate*
-academia-dashboard/web-site/terraform/terraform.tfvars
+web-site/terraform/.terraform/
+web-site/terraform/*.tfstate*
+web-site/terraform/terraform.tfvars
 
 # Docker artefatos locais
 *.pid
@@ -31,7 +31,6 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
 
 # Logs
 logs/
@@ -75,8 +74,8 @@ temp/
 *.tmp
 
 # Uploads
-api/uploads/*
-!api/uploads/.gitkeep
+web-site/api/uploads/*
+!web-site/api/uploads/.gitkeep
 
 # Chaves e Segredos
 *.pem

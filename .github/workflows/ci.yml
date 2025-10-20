@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: academia-dashboard/web-site/api
+        working-directory: web-site/api
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-          cache-dependency-path: academia-dashboard/web-site/api/package-lock.json
+          cache-dependency-path: web-site/api/package-lock.json
 
       - name: Instalar dependências
         run: npm ci
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: academia-dashboard/web-site
+        working-directory: web-site
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: academia-dashboard/web-site
+        working-directory: web-site
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: academia-dashboard/web-site/terraform
+        working-directory: web-site/terraform
     steps:
       - name: Checkout
         uses: actions/checkout@v4
