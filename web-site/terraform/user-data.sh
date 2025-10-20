@@ -7,29 +7,17 @@
 
 set -e # Parar em caso de erro
 
-# Variáveis do template
-PROJECT_NAME="academia-dashboard"
-GITHUB_REPO="https://github.com/DavidMenezess/academia-dashboard.git"
-API_PORT="3000"
-ENVIRONMENT="prod"
-
-# Cores para output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
-
 # Função de log
 log() {
-    echo -e "${GREEN}[$(date +'%Y-%m-%d %H:%M:%S')]${NC} $1"
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
 }
 
 error() {
-    echo -e "${RED}[$(date +'%Y-%m-%d %H:%M:%S')] ERRO:${NC} $1"
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] ERRO: $1"
 }
 
 warning() {
-    echo -e "${YELLOW}[$(date +'%Y-%m-%d %H:%M:%S')] AVISO:${NC} $1"
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] AVISO: $1"
 }
 
 # Redirecionar output para log
@@ -83,10 +71,9 @@ fi
 
 # Instalar Docker Compose
 log "Instalando Docker Compose..."
-DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)
-curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
-log "Docker Compose ${DOCKER_COMPOSE_VERSION} instalado!"
+log "Docker Compose v2.24.0 instalado!"
 
 # Configurar usuário ubuntu para usar Docker
 usermod -aG docker ubuntu
@@ -98,8 +85,8 @@ ufw default deny incoming
 ufw default allow outgoing
 ufw allow 22/tcp     # SSH
 ufw allow 80/tcp     # HTTP
-ufw allow 443/tcp     # HTTPS
-ufw allow ${API_PORT}/tcp  # API
+ufw allow 443/tcp    # HTTPS
+ufw allow 3000/tcp   # API
 ufw --force reload
 log "Firewall configurado!"
 
@@ -109,30 +96,24 @@ systemctl enable fail2ban
 systemctl start fail2ban
 
 # Criar diretório do projeto
-PROJECT_DIR="/home/ubuntu/${PROJECT_NAME}"
-log "Criando diretório do projeto: ${PROJECT_DIR}"
-mkdir -p ${PROJECT_DIR}
-chown -R ubuntu:ubuntu ${PROJECT_DIR}
+log "Criando diretório do projeto..."
+mkdir -p /home/ubuntu/academia-dashboard
+chown -R ubuntu:ubuntu /home/ubuntu/academia-dashboard
 
-# Clonar repositório se fornecido
-if [ -n "${GITHUB_REPO}" ] && [ "${GITHUB_REPO}" != "" ]; then
-    log "Clonando repositório: ${GITHUB_REPO}"
-    cd /home/ubuntu
-    sudo -u ubuntu git clone ${GITHUB_REPO} ${PROJECT_NAME}
-    if [ $? -eq 0 ]; then
-        log "Repositório clonado com sucesso!"
-    else
-        error "Falha ao clonar repositório. Continuando sem código fonte..."
-    fi
+# Clonar repositório
+log "Clonando repositório..."
+cd /home/ubuntu
+sudo -u ubuntu git clone ${github_repo} academia-dashboard
+if [ $? -eq 0 ]; then
+    log "Repositório clonado com sucesso!"
 else
-    warning "URL do repositório GitHub não fornecida"
-    warning "Você precisará fazer deploy manual do código"
+    error "Falha ao clonar repositório. Continuando sem código fonte..."
 fi
 
 # Se o projeto foi clonado, fazer deploy
-if [ -d "${PROJECT_DIR}" ] && [ -f "${PROJECT_DIR}/docker-compose.prod.yml" ]; then
+if [ -d "/home/ubuntu/academia-dashboard" ] && [ -f "/home/ubuntu/academia-dashboard/docker-compose.prod.yml" ]; then
     log "Iniciando deploy da aplicação..."
-    cd ${PROJECT_DIR}
+    cd /home/ubuntu/academia-dashboard
     
     # Criar diretórios necessários
     mkdir -p data logs api/uploads
