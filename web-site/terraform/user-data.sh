@@ -195,41 +195,68 @@ EOF
     # Ajustar permissões
     chown -R ubuntu:ubuntu .
     
+    # Limpar containers e volumes órfãos
+    log "Limpando containers e volumes órfãos..."
+    docker system prune -f || true
+    docker volume prune -f || true
+    docker network prune -f || true
+    
     # Fazer build e iniciar containers
     log "Executando docker-compose..."
     docker-compose -f docker-compose.prod.yml down || true
-    docker-compose -f docker-compose.prod.yml up -d --build
+    
+    # Aguardar um pouco antes do build
+    sleep 5
+    
+    # Fazer build com no-cache para garantir que funcione
+    log "Fazendo build dos containers..."
+    docker-compose -f docker-compose.prod.yml build --no-cache
+    
+    # Iniciar containers
+    log "Iniciando containers..."
+    docker-compose -f docker-compose.prod.yml up -d
     
     # Aguardar containers iniciarem
     log "Aguardando containers iniciarem..."
-    sleep 20
+    sleep 30
     
     # Verificar se containers estão rodando
     log "Verificando status dos containers..."
     docker ps
     
-    # Verificar logs se containers não estiverem rodando
-    if ! docker ps | grep -q "academia-dashboard-prod"; then
-        warning "⚠️ Dashboard container não está rodando"
-        log "Verificando logs do dashboard..."
-        docker logs academia-dashboard-prod || true
-        log "Tentando reiniciar..."
-        docker-compose -f docker-compose.prod.yml restart academia-dashboard
+    # Verificar e corrigir containers se necessário
+    for i in {1..3}; do
+        log "Verificação $i/3 dos containers..."
+        
+        dashboard_running=$(docker ps | grep -q "academia-dashboard-prod" && echo "yes" || echo "no")
+        api_running=$(docker ps | grep -q "academia-data-api-prod" && echo "yes" || echo "no")
+        
+        if [ "$dashboard_running" = "no" ]; then
+            warning "⚠️ Dashboard container não está rodando (tentativa $i)"
+            log "Verificando logs do dashboard..."
+            docker logs academia-dashboard-prod || true
+            log "Tentando reiniciar dashboard..."
+            docker-compose -f docker-compose.prod.yml restart academia-dashboard
+            sleep 15
+        fi
+        
+        if [ "$api_running" = "no" ]; then
+            warning "⚠️ API container não está rodando (tentativa $i)"
+            log "Verificando logs da API..."
+            docker logs academia-data-api-prod || true
+            log "Tentando reiniciar API..."
+            docker-compose -f docker-compose.prod.yml restart data-api
+            sleep 15
+        fi
+        
+        # Se ambos estão rodando, sair do loop
+        if [ "$dashboard_running" = "yes" ] && [ "$api_running" = "yes" ]; then
+            log "✅ Todos os containers estão rodando!"
+            break
+        fi
+        
         sleep 10
-    else
-        log "✅ Dashboard container está rodando"
-    fi
-    
-    if ! docker ps | grep -q "academia-data-api-prod"; then
-        warning "⚠️ API container não está rodando"
-        log "Verificando logs da API..."
-        docker logs academia-data-api-prod || true
-        log "Tentando reiniciar..."
-        docker-compose -f docker-compose.prod.yml restart data-api
-        sleep 10
-    else
-        log "✅ API container está rodando"
-    fi
+    done
     
     # Verificação final
     log "🎯 STATUS FINAL DOS CONTAINERS:"
@@ -249,6 +276,32 @@ else
     warning "Projeto não encontrado ou docker-compose.prod.yml ausente"
     warning "Deploy manual será necessário"
 fi
+
+# Criar serviço systemd para containers
+log "Criando serviço systemd para containers..."
+cat > /etc/systemd/system/academia-dashboard.service << 'SERVICE_EOF'
+[Unit]
+Description=Academia Dashboard Containers
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/ubuntu/academia-dashboard/web-site
+ExecStart=/usr/local/bin/docker-compose -f docker-compose.prod.yml up -d
+ExecStop=/usr/local/bin/docker-compose -f docker-compose.prod.yml down
+User=ubuntu
+Group=ubuntu
+
+[Install]
+WantedBy=multi-user.target
+SERVICE_EOF
+
+# Habilitar e iniciar o serviço
+systemctl daemon-reload
+systemctl enable academia-dashboard.service
+log "✅ Serviço systemd criado e habilitado"
 
 # Criar script de atualização
 log "Criando script de atualização..."
