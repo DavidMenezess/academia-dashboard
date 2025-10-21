@@ -204,3 +204,4 @@ echo "  - Testar SSL: curl -I https://$DOMAIN"
 
 success "Seu site agora é seguro com HTTPS! 🔒"
 
+
