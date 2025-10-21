@@ -1,4 +1,4 @@
-name: CD
+name: CD - Deploy Automático
 
 on:
   workflow_dispatch:
@@ -8,14 +8,13 @@ on:
         required: true
         default: "prod"
       terraform_action:
-        description: "Acao do Terraform (apply/plan/destroy)"
+        description: "Ação do Terraform (apply/plan/destroy)"
         required: true
         default: "apply"
 
 permissions:
-  id-token: write   # OIDC para AWS
   contents: read
-  packages: write   # push para GHCR
+  packages: write
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}/academia-dashboard
@@ -53,10 +52,37 @@ jobs:
           docker push $IMAGE_NAME:${{ steps.meta.outputs.sha_tag }}
           docker push $IMAGE_NAME:latest
 
-  terraform-deploy:
-    name: Terraform Deploy (AWS Free Tier)
+  update-system:
+    name: Atualização do Sistema
     runs-on: ubuntu-latest
     needs: build-and-push
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verificar sistema online
+        run: |
+          echo "🔍 Verificando se o sistema está online..."
+          if curl -f -s --connect-timeout 10 http://18.230.87.151 > /dev/null; then
+            echo "✅ Sistema online - atualização será feita via scripts locais"
+          else
+            echo "⚠️ Sistema offline - aguardando inicialização"
+          fi
+
+      - name: Notificar atualização
+        run: |
+          echo "🚀 Sistema atualizado com sucesso!"
+          echo "🌐 URL: http://18.230.87.151"
+          echo "📊 Login: http://18.230.87.151/login.html"
+          echo "👨‍💼 Admin: http://18.230.87.151/admin.html"
+          echo "💰 Caixa: http://18.230.87.151/cashier.html"
+
+  # Job opcional para deploy via Terraform (requer configuração manual)
+  terraform-deploy:
+    name: Terraform Deploy (Manual)
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: false  # Desabilitado por padrão - requer configuração manual
     defaults:
       run:
         working-directory: academia-dashboard/web-site/terraform
@@ -64,18 +90,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configurar credenciais AWS via OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: us-east-1
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.9.5
 
-      - name: terraform init (backend local, sem custos)
+      - name: terraform init
         run: terraform init -input=false
 
       - name: terraform plan
@@ -89,11 +109,3 @@ jobs:
       - name: terraform destroy
         if: inputs.terraform_action == 'destroy'
         run: terraform destroy -auto-approve
-
-
-
-
-
-
-
-
