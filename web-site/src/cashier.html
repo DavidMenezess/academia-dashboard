@@ -830,6 +830,7 @@
       <div class="form-actions">
         <button class="btn btn-secondary" onclick="closeModal('cashModal')">❌ Cancelar</button>
         <button class="btn btn-warning" onclick="testOpenCash()">🧪 Teste</button>
+        <button class="btn btn-danger" onclick="resetCashControl()">🔄 Reset</button>
         <button class="btn btn-success" onclick="openCash()">✅ Abrir Caixa</button>
       </div>
     </div>
@@ -881,14 +882,23 @@
     // Sistema de Caixa
     class CashierSystem {
       constructor() {
+        console.log('🚀 Inicializando CashierSystem...');
+        
         this.currentUser = this.getCurrentUser();
         this.currentCategory = this.getCategoryFromURL();
         this.cart = [];
         this.sales = this.loadSales();
         this.cashControl = this.loadCashControl();
         this.currentSaleType = null;
+        
+        console.log('👤 Usuário atual:', this.currentUser);
+        console.log('📂 Categoria:', this.currentCategory);
+        console.log('💰 Controle de caixa:', this.cashControl);
+        
         this.setupEventListeners();
         this.initializeDashboard();
+        
+        console.log('✅ CashierSystem inicializado com sucesso');
       }
       
       getCurrentUser() {
@@ -911,8 +921,11 @@
       }
       
       loadCashControl() {
+        console.log('🔍 Carregando controle de caixa...');
         const stored = localStorage.getItem('academia_cash_control');
-        return stored ? JSON.parse(stored) : {
+        console.log('💾 Dados armazenados:', stored);
+        
+        const defaultControl = {
           isOpen: false,
           initialCash: 0,
           currentBalance: 0,
@@ -921,10 +934,20 @@
           lastClosed: null,
           observations: ''
         };
+        
+        const result = stored ? JSON.parse(stored) : defaultControl;
+        console.log('💰 Controle de caixa carregado:', result);
+        return result;
       }
       
       saveCashControl() {
-        localStorage.setItem('academia_cash_control', JSON.stringify(this.cashControl));
+        console.log('💾 Salvando controle de caixa:', this.cashControl);
+        try {
+          localStorage.setItem('academia_cash_control', JSON.stringify(this.cashControl));
+          console.log('✅ Controle de caixa salvo com sucesso');
+        } catch (error) {
+          console.error('❌ Erro ao salvar controle de caixa:', error);
+        }
       }
       
       setupEventListeners() {
@@ -943,9 +966,11 @@
       }
       
       initializeDashboard() {
+        console.log('🎯 Inicializando dashboard...');
         this.updateHeader();
         this.updateStats();
         this.updateCashControl();
+        console.log('✅ Dashboard inicializado');
       }
       
       updateHeader() {
@@ -982,23 +1007,31 @@
       }
       
       updateCashControl() {
-        document.getElementById('initialCash').textContent = `R$ ${this.cashControl.initialCash.toFixed(2)}`;
-        document.getElementById('todaySalesCash').textContent = `R$ ${this.cashControl.todaySales.toFixed(2)}`;
-        document.getElementById('currentBalance').textContent = `R$ ${this.cashControl.currentBalance.toFixed(2)}`;
-        document.getElementById('cashStatus').textContent = this.cashControl.isOpen ? 'Aberto' : 'Fechado';
+        console.log('🔄 Atualizando controle de caixa:', this.cashControl);
         
-        // Mostrar/ocultar botões baseado no status do caixa
-        const cashControlBtn = document.getElementById('cashControlBtn');
-        const closeCashBtn = document.getElementById('closeCashBtn');
-        
-        if (this.cashControl.isOpen) {
-          cashControlBtn.textContent = '💰 Caixa Aberto';
-          cashControlBtn.style.display = 'none';
-          closeCashBtn.style.display = 'inline-flex';
-        } else {
-          cashControlBtn.textContent = '💰 Controle de Caixa';
-          cashControlBtn.style.display = 'inline-flex';
-          closeCashBtn.style.display = 'none';
+        try {
+          document.getElementById('initialCash').textContent = `R$ ${this.cashControl.initialCash.toFixed(2)}`;
+          document.getElementById('todaySalesCash').textContent = `R$ ${this.cashControl.todaySales.toFixed(2)}`;
+          document.getElementById('currentBalance').textContent = `R$ ${this.cashControl.currentBalance.toFixed(2)}`;
+          document.getElementById('cashStatus').textContent = this.cashControl.isOpen ? 'Aberto' : 'Fechado';
+          
+          // Mostrar/ocultar botões baseado no status do caixa
+          const cashControlBtn = document.getElementById('cashControlBtn');
+          const closeCashBtn = document.getElementById('closeCashBtn');
+          
+          if (this.cashControl.isOpen) {
+            cashControlBtn.textContent = '💰 Caixa Aberto';
+            cashControlBtn.style.display = 'none';
+            closeCashBtn.style.display = 'inline-flex';
+            console.log('✅ Caixa está aberto - botões atualizados');
+          } else {
+            cashControlBtn.textContent = '💰 Controle de Caixa';
+            cashControlBtn.style.display = 'inline-flex';
+            closeCashBtn.style.display = 'none';
+            console.log('✅ Caixa está fechado - botões atualizados');
+          }
+        } catch (error) {
+          console.error('❌ Erro ao atualizar controle de caixa:', error);
         }
       }
       
@@ -1383,6 +1416,22 @@
       document.getElementById('cashObservations').value = 'Teste automático';
       
       alert('Valores de teste inseridos! Agora clique em "Abrir Caixa"');
+    }
+    
+    function resetCashControl() {
+      console.log('🔄 Resetando controle de caixa...');
+      localStorage.removeItem('academia_cash_control');
+      cashierSystem.cashControl = {
+        isOpen: false,
+        initialCash: 0,
+        currentBalance: 0,
+        todaySales: 0,
+        lastOpened: null,
+        lastClosed: null,
+        observations: ''
+      };
+      cashierSystem.updateCashControl();
+      alert('Controle de caixa resetado!');
     }
     
     function showReports() {
