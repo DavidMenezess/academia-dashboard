@@ -4,10 +4,10 @@
 
 # Tabela DynamoDB para o sistema da academia
 resource "aws_dynamodb_table" "academia_dashboard" {
-  name           = "${var.project_name}-${var.environment}"
-  billing_mode   = "PAY_PER_REQUEST" # Free Tier friendly
-  hash_key       = "PK"
-  range_key      = "SK"
+  name         = "${var.project_name}-${var.environment}"
+  billing_mode = "PAY_PER_REQUEST" # Free Tier friendly
+  hash_key     = "PK"
+  range_key    = "SK"
 
   attribute {
     name = "PK"

@@ -26,10 +26,10 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-          cache-dependency-path: web-site/api/package-lock.json
 
       - name: Instalar dependências
-        run: npm ci
+        run: |
+          npm install --no-audit --no-fund
 
       - name: Iniciar API em background
         run: |

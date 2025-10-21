@@ -4,10 +4,10 @@
 
 # Instância EC2 t2.micro (Free Tier)
 resource "aws_instance" "academia_dashboard" {
-  ami                    = data.aws_ami.ubuntu.id
-  instance_type          = var.instance_type
-  key_name               = var.key_name
-  iam_instance_profile   = aws_iam_instance_profile.ec2_dynamodb_profile.name
+  ami                  = data.aws_ami.ubuntu.id
+  instance_type        = var.instance_type
+  key_name             = var.key_name
+  iam_instance_profile = aws_iam_instance_profile.ec2_dynamodb_profile.name
 
   vpc_security_group_ids = [aws_security_group.academia_dashboard.id]
 

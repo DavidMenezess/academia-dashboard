@@ -78,13 +78,13 @@ output "instance_state" {
 output "dynamodb_info" {
   description = "Informações do banco de dados DynamoDB"
   value = {
-    table_name = aws_dynamodb_table.academia_dashboard.name
-    table_arn  = aws_dynamodb_table.academia_dashboard.arn
-    region     = var.aws_region
+    table_name   = aws_dynamodb_table.academia_dashboard.name
+    table_arn    = aws_dynamodb_table.academia_dashboard.arn
+    region       = var.aws_region
     billing_mode = "PAY_PER_REQUEST (Free Tier)"
     free_tier_limits = {
-      storage = "25 GB grátis"
-      read_capacity = "25 RCUs grátis"
+      storage        = "25 GB grátis"
+      read_capacity  = "25 RCUs grátis"
       write_capacity = "25 WCUs grátis"
     }
   }
