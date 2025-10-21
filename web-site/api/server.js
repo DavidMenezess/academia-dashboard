@@ -5,6 +5,7 @@ const XLSX = require('xlsx');
 const csv = require('csv-parser');
 const fs = require('fs-extra');
 const path = require('path');
+const routes = require('./routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -43,10 +44,10 @@ const upload = multer({
   }
 });
 
-// Caminho para o arquivo de dados
+// Caminho para o arquivo de dados (mantido para compatibilidade)
 const DATA_FILE = path.join(__dirname, '../data/academia_data.json');
 
-// Função para ler dados atuais
+// Função para ler dados atuais (compatibilidade)
 function readCurrentData() {
   try {
     if (fs.existsSync(DATA_FILE)) {
@@ -59,7 +60,7 @@ function readCurrentData() {
   }
 }
 
-// Função para salvar dados atualizados
+// Função para salvar dados atualizados (compatibilidade)
 function saveData(data) {
   try {
     data.ultima_atualizacao = new Date().toISOString();
@@ -166,14 +167,28 @@ function processData(data) {
   return currentData;
 }
 
-// Rotas da API
+// ========================================
+// ROTAS DA API PRINCIPAL
+// ========================================
 
-// Health check
+// Usar rotas do banco de dados
+app.use('/api', routes);
+
+// ========================================
+// ROTAS DE COMPATIBILIDADE (LEGACY)
+// ========================================
+
+// Health check (legacy)
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    database: 'SQLite + Legacy JSON',
+    version: '2.0.0'
+  });
 });
 
-// Obter dados atuais
+// Obter dados atuais (legacy)
 app.get('/api/data', (req, res) => {
   try {
     const data = readCurrentData();
@@ -187,7 +202,7 @@ app.get('/api/data', (req, res) => {
   }
 });
 
-// Upload e processamento de arquivo
+// Upload e processamento de arquivo (legacy)
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
@@ -237,7 +252,7 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-// Atualizar dados manualmente
+// Atualizar dados manualmente (legacy)
 app.post('/api/update', (req, res) => {
   try {
     const newData = req.body;
@@ -255,15 +270,56 @@ app.post('/api/update', (req, res) => {
   }
 });
 
-// Iniciar servidor
+// ========================================
+// ROTA DE INICIALIZAÇÃO
+// ========================================
+
+// Rota para inicializar banco de dados
+app.get('/api/init', (req, res) => {
+  try {
+    res.json({
+      success: true,
+      message: 'Banco de dados inicializado com sucesso!',
+      timestamp: new Date().toISOString(),
+      database: 'SQLite',
+      features: [
+        'Autenticação de usuários',
+        'Controle de caixa',
+        'Gestão de vendas',
+        'Produtos e serviços',
+        'Relatórios',
+        'Compatibilidade com dados legados'
+      ]
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false,
+      error: 'Erro ao inicializar banco de dados',
+      details: error.message 
+    });
+  }
+});
+
+// ========================================
+// INICIAR SERVIDOR
+// ========================================
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 API da Academia rodando na porta ${PORT}`);
+  console.log(`🗄️ Banco de dados: SQLite`);
   console.log(`📊 Endpoints disponíveis:`);
-  console.log(`   GET  /health - Health check`);
-  console.log(`   GET  /api/data - Obter dados atuais`);
-  console.log(`   POST /api/upload - Upload de arquivo Excel/CSV`);
-  console.log(`   POST /api/update - Atualizar dados manualmente`);
+  console.log(`   GET  /api/health - Health check`);
+  console.log(`   GET  /api/init - Inicializar banco`);
+  console.log(`   POST /api/auth/login - Login de usuário`);
+  console.log(`   GET  /api/users - Listar usuários`);
+  console.log(`   POST /api/users - Criar usuário`);
+  console.log(`   GET  /api/cash-control/:category - Controle de caixa`);
+  console.log(`   POST /api/sales - Criar venda`);
+  console.log(`   GET  /api/sales/:category - Listar vendas`);
+  console.log(`   GET  /api/products - Listar produtos`);
+  console.log(`   GET  /api/reports/sales/:category - Relatórios`);
+  console.log(`   POST /api/upload - Upload de arquivo (legacy)`);
+  console.log(`   GET  /api/data - Dados legados`);
 });
 
 module.exports = app;
-
