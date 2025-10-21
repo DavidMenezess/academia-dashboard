@@ -32,6 +32,7 @@ resource "aws_instance" "academia_dashboard" {
     github_repo  = var.github_repo
     api_port     = var.api_port
     environment  = var.environment
+    aws_region   = var.aws_region
   }))
 
   # Metadados da instância
