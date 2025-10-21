@@ -468,7 +468,7 @@
     }
     
     .modal {
-      display: none;
+      display: none !important;
       position: fixed;
       top: 0;
       left: 0;
@@ -479,7 +479,7 @@
     }
     
     .modal.show {
-      display: flex;
+      display: flex !important;
       align-items: center;
       justify-content: center;
     }
@@ -829,6 +829,7 @@
       
       <div class="form-actions">
         <button class="btn btn-secondary" onclick="closeModal('cashModal')">❌ Cancelar</button>
+        <button class="btn btn-warning" onclick="testOpenCash()">🧪 Teste</button>
         <button class="btn btn-success" onclick="openCash()">✅ Abrir Caixa</button>
       </div>
     </div>
@@ -1167,14 +1168,45 @@
       }
       
       openCash() {
-        const initialCash = parseFloat(document.getElementById('initialCashValue').value) || 0;
-        const observations = document.getElementById('cashObservations').value;
+        console.log('🔧 Função openCash chamada');
         
+        const initialCashInput = document.getElementById('initialCashValue');
+        const observationsInput = document.getElementById('cashObservations');
+        
+        if (!initialCashInput) {
+          console.error('❌ Campo initialCashValue não encontrado');
+          this.showCashAlert('Erro: Campo de valor não encontrado!', 'error');
+          return;
+        }
+        
+        const initialCash = parseFloat(initialCashInput.value) || 0;
+        const observations = observationsInput ? observationsInput.value : '';
+        
+        console.log('💰 Valor inicial:', initialCash);
+        console.log('📝 Observações:', observations);
+        
+        // Validações
         if (initialCash < 0) {
+          console.error('❌ Valor negativo não permitido');
           this.showCashAlert('Valor inicial não pode ser negativo!', 'error');
           return;
         }
         
+        if (initialCash === 0 && !confirm('Valor inicial é R$ 0,00. Deseja continuar?')) {
+          console.log('❌ Usuário cancelou abertura com valor zero');
+          return;
+        }
+        
+        // Verificar se caixa já está aberto
+        if (this.cashControl && this.cashControl.isOpen) {
+          console.error('❌ Caixa já está aberto');
+          this.showCashAlert('Caixa já está aberto!', 'error');
+          return;
+        }
+        
+        console.log('✅ Validations passed, abrindo caixa...');
+        
+        // Criar novo controle de caixa
         this.cashControl = {
           isOpen: true,
           initialCash: initialCash,
@@ -1185,19 +1217,30 @@
           observations: observations
         };
         
+        console.log('💾 Salvando controle de caixa:', this.cashControl);
+        
+        // Salvar no localStorage
         this.saveCashControl();
+        
+        // Atualizar interface
         this.updateCashControl();
+        
+        // Fechar modal
         this.closeModal('cashModal');
         
         // Limpar formulário
-        document.getElementById('initialCashValue').value = '';
-        document.getElementById('cashObservations').value = '';
+        initialCashInput.value = '';
+        if (observationsInput) {
+          observationsInput.value = '';
+        }
         
+        console.log('✅ Caixa aberto com sucesso');
         this.showCashAlert('Caixa aberto com sucesso!', 'success');
         
-        // Atualizar interface
+        // Atualizar interface novamente após um delay
         setTimeout(() => {
           this.updateCashControl();
+          console.log('🔄 Interface atualizada após abertura do caixa');
         }, 100);
       }
       
@@ -1272,11 +1315,27 @@
       }
       
       showModal(modalId) {
-        document.getElementById(modalId).classList.add('show');
+        console.log('🔧 Abrindo modal:', modalId);
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.add('show');
+          modal.style.display = 'block';
+          console.log('✅ Modal aberto:', modalId);
+        } else {
+          console.error('❌ Modal não encontrado:', modalId);
+        }
       }
       
       closeModal(modalId) {
-        document.getElementById(modalId).classList.remove('show');
+        console.log('🔧 Fechando modal:', modalId);
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.remove('show');
+          modal.style.display = 'none';
+          console.log('✅ Modal fechado:', modalId);
+        } else {
+          console.error('❌ Modal não encontrado:', modalId);
+        }
       }
     }
     
@@ -1311,6 +1370,19 @@
     
     function closeCash() {
       cashierSystem.closeCash();
+    }
+    
+    function testOpenCash() {
+      console.log('🧪 Teste da função openCash');
+      console.log('💰 Valor atual:', document.getElementById('initialCashValue').value);
+      console.log('📝 Observações:', document.getElementById('cashObservations').value);
+      console.log('🎯 Sistema:', cashierSystem);
+      
+      // Simular valores
+      document.getElementById('initialCashValue').value = '100.00';
+      document.getElementById('cashObservations').value = 'Teste automático';
+      
+      alert('Valores de teste inseridos! Agora clique em "Abrir Caixa"');
     }
     
     function showReports() {
