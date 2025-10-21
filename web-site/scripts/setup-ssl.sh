@@ -203,3 +203,4 @@ echo "  - Ver logs: sudo tail -f /var/log/nginx/error.log"
 echo "  - Testar SSL: curl -I https://$DOMAIN"
 
 success "Seu site agora é seguro com HTTPS! 🔒"
+
