@@ -78,6 +78,27 @@ log "Docker Compose v2.24.0 instalado!"
 # Configurar usuário ubuntu para usar Docker
 usermod -aG docker ubuntu
 
+# Configurar variáveis de ambiente para DynamoDB
+log "Configurando variáveis de ambiente para DynamoDB..."
+cat >> /home/ubuntu/.bashrc << 'EOF'
+export DATABASE_TYPE=dynamodb
+export AWS_REGION=${aws_region}
+export DYNAMODB_TABLE=${project_name}-${environment}
+export AWS_USE_IAM_ROLE=true
+EOF
+
+# Configurar AWS CLI (para debugging)
+log "Instalando AWS CLI..."
+if ! command -v aws &> /dev/null; then
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip awscliv2.zip
+    ./aws/install
+    rm -rf aws awscliv2.zip
+    log "AWS CLI instalado com sucesso!"
+else
+    log "AWS CLI já está instalado"
+fi
+
 # Configurar Firewall UFW
 log "Configurando firewall UFW..."
 ufw --force disable
@@ -132,10 +153,26 @@ if [ -d "/home/ubuntu/academia-dashboard" ]; then
     # Criar diretórios necessários
     mkdir -p data logs api/uploads
     
-    # Criar arquivo de dados inicial se não existir
-    if [ ! -f "data/academia_data.json" ]; then
-        log "Criando arquivo de dados inicial..."
-        cat > data/academia_data.json << 'EOF'
+    # Instalar dependências da API se necessário
+    if [ -d "api" ]; then
+        log "Instalando dependências da API..."
+        cd api
+        npm install
+        cd ..
+    fi
+    
+    # Configurar banco de dados
+    log "Configurando banco de dados..."
+    if [ "$DATABASE_TYPE" = "dynamodb" ]; then
+        log "Usando DynamoDB - tabela será criada automaticamente"
+        log "Tabela: $DYNAMODB_TABLE"
+        log "Região: $AWS_REGION"
+    else
+        log "Usando SQLite - banco local"
+        # Criar arquivo de dados inicial se não existir
+        if [ ! -f "data/academia_data.json" ]; then
+            log "Criando arquivo de dados inicial..."
+            cat > data/academia_data.json << 'EOF'
 {
   "academia": {
     "nome": "Academia Dashboard",
@@ -152,6 +189,7 @@ if [ -d "/home/ubuntu/academia-dashboard" ]; then
   "ultima_atualizacao": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 }
 EOF
+        fi
     fi
     
     # Ajustar permissões

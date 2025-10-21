@@ -74,6 +74,22 @@ output "instance_state" {
   value       = aws_instance.academia_dashboard.instance_state
 }
 
+# Informações do DynamoDB
+output "dynamodb_info" {
+  description = "Informações do banco de dados DynamoDB"
+  value = {
+    table_name = aws_dynamodb_table.academia_dashboard.name
+    table_arn  = aws_dynamodb_table.academia_dashboard.arn
+    region     = var.aws_region
+    billing_mode = "PAY_PER_REQUEST (Free Tier)"
+    free_tier_limits = {
+      storage = "25 GB grátis"
+      read_capacity = "25 RCUs grátis"
+      write_capacity = "25 WCUs grátis"
+    }
+  }
+}
+
 # Informações de custo (Free Tier)
 output "free_tier_info" {
   description = "Informações sobre Free Tier"
@@ -81,6 +97,7 @@ output "free_tier_info" {
     instance_type     = "t2.micro (750 horas/mês grátis)"
     ebs_volume        = "${var.ebs_volume_size}GB (30GB grátis por mês)"
     elastic_ip        = "1 Elastic IP grátis quando anexado"
+    dynamodb          = "25GB + 25 RCUs + 25 WCUs grátis (PERMANENTE)"
     data_transfer_out = "1GB grátis por mês (primeiros 15GB para novos clientes)"
   }
 }
@@ -134,6 +151,7 @@ output "next_steps" {
      • 750 horas/mês de t2.micro (GRÁTIS)
      • ${var.ebs_volume_size}GB de armazenamento (30GB GRÁTIS)
      • 1 Elastic IP (GRÁTIS quando anexado)
+     • DynamoDB: 25GB + 25 RCUs + 25 WCUs (GRÁTIS PERMANENTE)
 
   ========================================
   EOT
