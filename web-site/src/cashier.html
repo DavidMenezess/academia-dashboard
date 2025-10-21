@@ -591,8 +591,11 @@
       <span id="currentUserName">Usuário</span>
     </div>
     <div class="header-actions">
-      <button class="btn btn-warning" onclick="openCashModal()">
+      <button class="btn btn-warning" onclick="openCashModal()" id="cashControlBtn">
         💰 Controle de Caixa
+      </button>
+      <button class="btn btn-danger" onclick="closeCash()" id="closeCashBtn" style="display: none;">
+        🔒 Fechar Caixa
       </button>
       <button class="btn btn-secondary" onclick="showReports()">
         📊 Relatórios
@@ -807,25 +810,26 @@
   <div class="modal" id="cashModal">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="modal-title">Controle de Caixa</div>
+        <div class="modal-title">💰 Abrir Caixa</div>
         <button class="modal-close" onclick="closeModal('cashModal')">&times;</button>
       </div>
       
       <div id="cashAlert"></div>
       
       <div class="form-group">
-        <label class="form-label">Valor Inicial do Caixa</label>
-        <input type="number" class="form-input" id="initialCashValue" step="0.01" placeholder="0,00">
+        <label class="form-label">💵 Valor Inicial do Caixa (R$)</label>
+        <input type="number" class="form-input" id="initialCashValue" step="0.01" placeholder="0,00" required>
+        <small style="color: #666; font-size: 12px;">Digite o valor que está no caixa agora</small>
       </div>
       
       <div class="form-group">
-        <label class="form-label">Observações</label>
-        <textarea class="form-input" id="cashObservations" rows="3" placeholder="Observações sobre o caixa"></textarea>
+        <label class="form-label">📝 Observações (Opcional)</label>
+        <textarea class="form-input" id="cashObservations" rows="3" placeholder="Ex: Caixa da manhã, troco para R$ 100, etc."></textarea>
       </div>
       
       <div class="form-actions">
-        <button class="btn btn-secondary" onclick="closeModal('cashModal')">Cancelar</button>
-        <button class="btn btn-success" onclick="openCash()">Abrir Caixa</button>
+        <button class="btn btn-secondary" onclick="closeModal('cashModal')">❌ Cancelar</button>
+        <button class="btn btn-success" onclick="openCash()">✅ Abrir Caixa</button>
       </div>
     </div>
   </div>
@@ -981,6 +985,20 @@
         document.getElementById('todaySalesCash').textContent = `R$ ${this.cashControl.todaySales.toFixed(2)}`;
         document.getElementById('currentBalance').textContent = `R$ ${this.cashControl.currentBalance.toFixed(2)}`;
         document.getElementById('cashStatus').textContent = this.cashControl.isOpen ? 'Aberto' : 'Fechado';
+        
+        // Mostrar/ocultar botões baseado no status do caixa
+        const cashControlBtn = document.getElementById('cashControlBtn');
+        const closeCashBtn = document.getElementById('closeCashBtn');
+        
+        if (this.cashControl.isOpen) {
+          cashControlBtn.textContent = '💰 Caixa Aberto';
+          cashControlBtn.style.display = 'none';
+          closeCashBtn.style.display = 'inline-flex';
+        } else {
+          cashControlBtn.textContent = '💰 Controle de Caixa';
+          cashControlBtn.style.display = 'inline-flex';
+          closeCashBtn.style.display = 'none';
+        }
       }
       
       selectSaleType(type) {
@@ -1152,6 +1170,11 @@
         const initialCash = parseFloat(document.getElementById('initialCashValue').value) || 0;
         const observations = document.getElementById('cashObservations').value;
         
+        if (initialCash < 0) {
+          this.showCashAlert('Valor inicial não pode ser negativo!', 'error');
+          return;
+        }
+        
         this.cashControl = {
           isOpen: true,
           initialCash: initialCash,
@@ -1166,7 +1189,16 @@
         this.updateCashControl();
         this.closeModal('cashModal');
         
+        // Limpar formulário
+        document.getElementById('initialCashValue').value = '';
+        document.getElementById('cashObservations').value = '';
+        
         this.showCashAlert('Caixa aberto com sucesso!', 'success');
+        
+        // Atualizar interface
+        setTimeout(() => {
+          this.updateCashControl();
+        }, 100);
       }
       
       closeCash() {
@@ -1177,6 +1209,11 @@
           this.updateCashControl();
           
           this.showCashAlert('Caixa fechado com sucesso!', 'success');
+          
+          // Atualizar interface
+          setTimeout(() => {
+            this.updateCashControl();
+          }, 100);
         }
       }
       
@@ -1270,6 +1307,10 @@
     
     function openCashModal() {
       cashierSystem.showModal('cashModal');
+    }
+    
+    function closeCash() {
+      cashierSystem.closeCash();
     }
     
     function showReports() {
