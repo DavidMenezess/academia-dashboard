@@ -207,6 +207,51 @@
       margin-bottom: 0.5rem;
     }
     
+    .stat-change {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
+    .cash-control {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+    
+    .cash-control h3 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+    
+    .cash-control-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .cash-control-item {
+      background: var(--background-color);
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .cash-control-label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .cash-control-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--success-color);
+    }
+    
     .main-content {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -296,6 +341,16 @@
       margin-bottom: 0.5rem;
       font-weight: 600;
       color: var(--text-primary);
+    }
+    
+    .form-label.optional {
+      color: var(--text-secondary);
+    }
+    
+    .form-label.optional::after {
+      content: " (opcional)";
+      font-weight: 400;
+      font-size: 0.875rem;
     }
     
     .form-input {
@@ -478,6 +533,25 @@
       display: none !important;
     }
     
+    .alert {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
     @media (max-width: 1024px) {
       .main-content {
         grid-template-columns: 1fr;
@@ -517,6 +591,9 @@
       <span id="currentUserName">Usuário</span>
     </div>
     <div class="header-actions">
+      <button class="btn btn-warning" onclick="openCashModal()">
+        💰 Controle de Caixa
+      </button>
       <button class="btn btn-secondary" onclick="showReports()">
         📊 Relatórios
       </button>
@@ -527,6 +604,29 @@
   </div>
 
   <div class="container">
+    <!-- Cash Control Section -->
+    <div class="cash-control">
+      <h3>💰 Controle de Caixa</h3>
+      <div class="cash-control-grid">
+        <div class="cash-control-item">
+          <div class="cash-control-label">Caixa Inicial</div>
+          <div class="cash-control-value" id="initialCash">R$ 0,00</div>
+        </div>
+        <div class="cash-control-item">
+          <div class="cash-control-label">Vendas do Dia</div>
+          <div class="cash-control-value" id="todaySalesCash">R$ 0,00</div>
+        </div>
+        <div class="cash-control-item">
+          <div class="cash-control-label">Saldo Atual</div>
+          <div class="cash-control-value" id="currentBalance">R$ 0,00</div>
+        </div>
+        <div class="cash-control-item">
+          <div class="cash-control-label">Status</div>
+          <div class="cash-control-value" id="cashStatus">Fechado</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Stats Grid -->
     <div class="stats-grid">
       <div class="stat-card">
@@ -536,8 +636,8 @@
             💰
           </div>
         </div>
-        <div class="stat-value" id="todaySales">R$ 0</div>
-        <div class="stat-change">+15% vs ontem</div>
+        <div class="stat-value" id="todaySales">R$ 0,00</div>
+        <div class="stat-change">Valor total das vendas</div>
       </div>
 
       <div class="stat-card">
@@ -548,7 +648,7 @@
           </div>
         </div>
         <div class="stat-value" id="todayTransactions">0</div>
-        <div class="stat-change">12 transações</div>
+        <div class="stat-change">Número de transações</div>
       </div>
 
       <div class="stat-card">
@@ -559,7 +659,7 @@
           </div>
         </div>
         <div class="stat-value" id="todayMemberships">0</div>
-        <div class="stat-change">8 vendidas</div>
+        <div class="stat-change">Mensalidades vendidas</div>
       </div>
 
       <div class="stat-card">
@@ -570,7 +670,7 @@
           </div>
         </div>
         <div class="stat-value" id="todayProducts">0</div>
-        <div class="stat-change">24 vendidos</div>
+        <div class="stat-change">Produtos vendidos</div>
       </div>
     </div>
 
@@ -613,20 +713,18 @@
         <form id="saleForm" class="hidden">
           <div class="form-grid">
             <div class="form-group">
-              <label class="form-label">Nome do Cliente</label>
-              <input type="text" class="form-input" id="customerName" required>
+              <label class="form-label optional">Nome do Cliente</label>
+              <input type="text" class="form-input" id="customerName" placeholder="Nome do cliente (opcional)">
             </div>
             <div class="form-group">
-              <label class="form-label">CPF/CNPJ</label>
-              <input type="text" class="form-input" id="customerDocument">
+              <label class="form-label optional">CPF/CNPJ</label>
+              <input type="text" class="form-input" id="customerDocument" placeholder="CPF/CNPJ (opcional)">
             </div>
           </div>
           
           <div class="form-group" id="productGroup">
             <label class="form-label">Produto/Serviço</label>
-            <select class="form-select" id="productSelect">
-              <option value="">Selecione um produto</option>
-            </select>
+            <input type="text" class="form-input" id="productName" placeholder="Digite o nome do produto/serviço" required>
           </div>
           
           <div class="form-group">
@@ -636,7 +734,7 @@
           
           <div class="form-group">
             <label class="form-label">Valor Unitário</label>
-            <input type="number" class="form-input" id="unitPrice" step="0.01" required>
+            <input type="number" class="form-input" id="unitPrice" step="0.01" placeholder="0,00" required>
           </div>
           
           <div class="form-group">
@@ -663,12 +761,12 @@
           
           <div class="form-group" id="changeGroup" style="display: none;">
             <label class="form-label">Valor Recebido</label>
-            <input type="number" class="form-input" id="receivedAmount" step="0.01">
+            <input type="number" class="form-input" id="receivedAmount" step="0.01" placeholder="0,00">
           </div>
           
           <div class="form-group">
-            <label class="form-label">Observações</label>
-            <textarea class="form-input" id="observations" rows="3"></textarea>
+            <label class="form-label optional">Observações</label>
+            <textarea class="form-input" id="observations" rows="3" placeholder="Observações (opcional)"></textarea>
           </div>
           
           <div class="form-actions">
@@ -701,6 +799,33 @@
           <button class="btn btn-secondary" onclick="clearCart()">Limpar Carrinho</button>
           <button class="btn btn-success" onclick="finalizeSale()">Finalizar Venda</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cash Control Modal -->
+  <div class="modal" id="cashModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Controle de Caixa</div>
+        <button class="modal-close" onclick="closeModal('cashModal')">&times;</button>
+      </div>
+      
+      <div id="cashAlert"></div>
+      
+      <div class="form-group">
+        <label class="form-label">Valor Inicial do Caixa</label>
+        <input type="number" class="form-input" id="initialCashValue" step="0.01" placeholder="0,00">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Observações</label>
+        <textarea class="form-input" id="cashObservations" rows="3" placeholder="Observações sobre o caixa"></textarea>
+      </div>
+      
+      <div class="form-actions">
+        <button class="btn btn-secondary" onclick="closeModal('cashModal')">Cancelar</button>
+        <button class="btn btn-success" onclick="openCash()">Abrir Caixa</button>
       </div>
     </div>
   </div>
@@ -755,7 +880,7 @@
         this.currentCategory = this.getCategoryFromURL();
         this.cart = [];
         this.sales = this.loadSales();
-        this.products = this.loadProducts();
+        this.cashControl = this.loadCashControl();
         this.currentSaleType = null;
         this.setupEventListeners();
         this.initializeDashboard();
@@ -780,25 +905,21 @@
         localStorage.setItem('academia_sales', JSON.stringify(this.sales));
       }
       
-      loadProducts() {
-        // Produtos padrão do sistema
-        const defaultProducts = [
-          { id: 1, name: 'Mensalidade - Musculação', price: 120.00, type: 'membership' },
-          { id: 2, name: 'Mensalidade - Aeróbico', price: 80.00, type: 'membership' },
-          { id: 3, name: 'Mensalidade - Completa', price: 150.00, type: 'membership' },
-          { id: 4, name: 'Diária - Musculação', price: 15.00, type: 'daily' },
-          { id: 5, name: 'Diária - Aeróbico', price: 10.00, type: 'daily' },
-          { id: 6, name: 'Quinzena - Musculação', price: 60.00, type: 'biweekly' },
-          { id: 7, name: 'Quinzena - Aeróbico', price: 40.00, type: 'biweekly' },
-          { id: 8, name: 'Whey Protein', price: 89.90, type: 'product' },
-          { id: 9, name: 'Creatina', price: 45.00, type: 'product' },
-          { id: 10, name: 'BCAA', price: 35.00, type: 'product' },
-          { id: 11, name: 'Multivitamínico', price: 25.00, type: 'product' },
-          { id: 12, name: 'Garrafa Térmica', price: 15.00, type: 'product' }
-        ];
-        
-        const stored = localStorage.getItem('academia_products');
-        return stored ? JSON.parse(stored) : defaultProducts;
+      loadCashControl() {
+        const stored = localStorage.getItem('academia_cash_control');
+        return stored ? JSON.parse(stored) : {
+          isOpen: false,
+          initialCash: 0,
+          currentBalance: 0,
+          todaySales: 0,
+          lastOpened: null,
+          lastClosed: null,
+          observations: ''
+        };
+      }
+      
+      saveCashControl() {
+        localStorage.setItem('academia_cash_control', JSON.stringify(this.cashControl));
       }
       
       setupEventListeners() {
@@ -819,7 +940,7 @@
       initializeDashboard() {
         this.updateHeader();
         this.updateStats();
-        this.loadProductsSelect();
+        this.updateCashControl();
       }
       
       updateHeader() {
@@ -855,25 +976,11 @@
         document.getElementById('todayProducts').textContent = products;
       }
       
-      loadProductsSelect() {
-        const select = document.getElementById('productSelect');
-        select.innerHTML = '<option value="">Selecione um produto</option>';
-        
-        this.products.forEach(product => {
-          const option = document.createElement('option');
-          option.value = product.id;
-          option.textContent = `${product.name} - R$ ${product.price.toFixed(2)}`;
-          option.dataset.price = product.price;
-          option.dataset.type = product.type;
-          select.appendChild(option);
-        });
-        
-        select.addEventListener('change', (e) => {
-          if (e.target.value) {
-            const selectedOption = e.target.selectedOptions[0];
-            document.getElementById('unitPrice').value = selectedOption.dataset.price;
-          }
-        });
+      updateCashControl() {
+        document.getElementById('initialCash').textContent = `R$ ${this.cashControl.initialCash.toFixed(2)}`;
+        document.getElementById('todaySalesCash').textContent = `R$ ${this.cashControl.todaySales.toFixed(2)}`;
+        document.getElementById('currentBalance').textContent = `R$ ${this.cashControl.currentBalance.toFixed(2)}`;
+        document.getElementById('cashStatus').textContent = this.cashControl.isOpen ? 'Aberto' : 'Fechado';
       }
       
       selectSaleType(type) {
@@ -889,31 +996,6 @@
         
         // Mostrar formulário
         document.getElementById('saleForm').classList.remove('hidden');
-        
-        // Filtrar produtos por tipo
-        this.filterProductsByType(type);
-      }
-      
-      filterProductsByType(type) {
-        const select = document.getElementById('productSelect');
-        const options = select.querySelectorAll('option');
-        
-        options.forEach(option => {
-          if (option.value === '') return;
-          
-          const productType = option.dataset.type;
-          if (type === 'product' && productType === 'product') {
-            option.style.display = 'block';
-          } else if (type === 'membership' && productType === 'membership') {
-            option.style.display = 'block';
-          } else if (type === 'daily' && productType === 'daily') {
-            option.style.display = 'block';
-          } else if (type === 'biweekly' && productType === 'biweekly') {
-            option.style.display = 'block';
-          } else {
-            option.style.display = 'none';
-          }
-        });
       }
       
       selectPaymentMethod(method) {
@@ -934,20 +1016,14 @@
       addToCart() {
         const customerName = document.getElementById('customerName').value;
         const customerDocument = document.getElementById('customerDocument').value;
-        const productId = document.getElementById('productSelect').value;
+        const productName = document.getElementById('productName').value;
         const quantity = parseInt(document.getElementById('quantity').value);
         const unitPrice = parseFloat(document.getElementById('unitPrice').value);
         const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value;
         const observations = document.getElementById('observations').value;
         
-        if (!customerName || !productId || !unitPrice || !paymentMethod) {
+        if (!productName || !unitPrice || !paymentMethod) {
           alert('Por favor, preencha todos os campos obrigatórios.');
-          return;
-        }
-        
-        const product = this.products.find(p => p.id == productId);
-        if (!product) {
-          alert('Produto não encontrado.');
           return;
         }
         
@@ -955,10 +1031,9 @@
         
         const cartItem = {
           id: Date.now(),
-          customerName,
-          customerDocument,
-          product: product.name,
-          productId: product.id,
+          customerName: customerName || 'Cliente não informado',
+          customerDocument: customerDocument || 'Não informado',
+          product: productName,
           quantity,
           unitPrice,
           total,
@@ -1023,15 +1098,20 @@
           return;
         }
         
+        if (!this.cashControl.isOpen) {
+          alert('O caixa está fechado. Abra o caixa antes de finalizar vendas.');
+          return;
+        }
+        
         const total = this.cart.reduce((sum, item) => sum + item.total, 0);
         const paymentMethod = this.cart[0].paymentMethod;
         
         // Calcular troco se necessário
         let change = 0;
         if (paymentMethod === 'money') {
-          const receivedAmount = parseFloat(prompt('Valor recebido:'));
-          if (receivedAmount < total) {
-            alert('Valor insuficiente.');
+          const receivedAmount = parseFloat(document.getElementById('receivedAmount').value);
+          if (!receivedAmount || receivedAmount < total) {
+            alert('Valor recebido insuficiente.');
             return;
           }
           change = receivedAmount - total;
@@ -1053,13 +1133,59 @@
         this.sales.push(sale);
         this.saveSales();
         
+        // Atualizar controle de caixa
+        this.cashControl.todaySales += total;
+        this.cashControl.currentBalance = this.cashControl.initialCash + this.cashControl.todaySales;
+        this.saveCashControl();
+        
         // Limpar carrinho
         this.clearCart();
         
         // Atualizar estatísticas
         this.updateStats();
+        this.updateCashControl();
         
         alert(`Venda finalizada com sucesso!\nTotal: R$ ${total.toFixed(2)}\n${change > 0 ? `Troco: R$ ${change.toFixed(2)}` : ''}`);
+      }
+      
+      openCash() {
+        const initialCash = parseFloat(document.getElementById('initialCashValue').value) || 0;
+        const observations = document.getElementById('cashObservations').value;
+        
+        this.cashControl = {
+          isOpen: true,
+          initialCash: initialCash,
+          currentBalance: initialCash,
+          todaySales: 0,
+          lastOpened: new Date().toISOString(),
+          lastClosed: null,
+          observations: observations
+        };
+        
+        this.saveCashControl();
+        this.updateCashControl();
+        this.closeModal('cashModal');
+        
+        this.showCashAlert('Caixa aberto com sucesso!', 'success');
+      }
+      
+      closeCash() {
+        if (confirm('Tem certeza que deseja fechar o caixa?')) {
+          this.cashControl.isOpen = false;
+          this.cashControl.lastClosed = new Date().toISOString();
+          this.saveCashControl();
+          this.updateCashControl();
+          
+          this.showCashAlert('Caixa fechado com sucesso!', 'success');
+        }
+      }
+      
+      showCashAlert(message, type) {
+        const alert = document.getElementById('cashAlert');
+        alert.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        setTimeout(() => {
+          alert.innerHTML = '';
+        }, 5000);
       }
       
       generateReport() {
@@ -1142,6 +1268,10 @@
       cashierSystem.finalizeSale();
     }
     
+    function openCashModal() {
+      cashierSystem.showModal('cashModal');
+    }
+    
     function showReports() {
       cashierSystem.showModal('reportsModal');
     }
@@ -1183,4 +1313,3 @@
   </script>
 </body>
 </html>
-
