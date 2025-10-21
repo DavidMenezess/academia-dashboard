@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Academia Força Fitness</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #003D7D, #F7941D);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      width: 400px;
+      text-align: center;
+    }
+    
+    .logo {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      color: #003D7D;
+      margin-bottom: 30px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    
+    input:focus {
+      border-color: #003D7D;
+      outline: none;
+    }
+    
+    .btn {
+      width: 100%;
+      background: #003D7D;
+      color: white;
+      padding: 15px;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    
+    .btn:hover {
+      background: #0057B8;
+    }
+    
+    .alert {
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .credentials {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+      text-align: left;
+    }
+    
+    .credentials h3 {
+      margin-top: 0;
+      color: #003D7D;
+    }
+    
+    .cred-item {
+      margin: 10px 0;
+      padding: 10px;
+      background: white;
+      border-radius: 5px;
+      border-left: 4px solid #F7941D;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <div class="logo">🏋️</div>
+    <h1>Academia Força Fitness</h1>
+    
+    <div class="credentials">
+      <h3>Credenciais de Teste:</h3>
+      <div class="cred-item">
+        <strong>Admin:</strong> admin / admin123
+      </div>
+      <div class="cred-item">
+        <strong>Caixa Manhã:</strong> caixa_manha / manha123
+      </div>
+      <div class="cred-item">
+        <strong>Caixa Tarde:</strong> caixa_tarde / tarde123
+      </div>
+      <div class="cred-item">
+        <strong>Caixa Noite:</strong> caixa_noite / noite123
+      </div>
+    </div>
+    
+    <form id="loginForm">
+      <div id="alert"></div>
+      
+      <div class="form-group">
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Senha:</label>
+        <input type="password" id="password" required>
+      </div>
+      
+      <button type="submit" class="btn">Entrar</button>
+    </form>
+  </div>
+
+  <script>
+    // Usuários do sistema
+    const users = {
+      'admin': {
+        password: 'admin123',
+        name: 'Administrador',
+        role: 'admin',
+        redirect: 'admin.html'
+      },
+      'caixa_manha': {
+        password: 'manha123',
+        name: 'Caixa Manhã',
+        role: 'cashier',
+        redirect: 'cashier.html?category=caixa-manha'
+      },
+      'caixa_tarde': {
+        password: 'tarde123',
+        name: 'Caixa Tarde',
+        role: 'cashier',
+        redirect: 'cashier.html?category=caixa-tarde'
+      },
+      'caixa_noite': {
+        password: 'noite123',
+        name: 'Caixa Noite',
+        role: 'cashier',
+        redirect: 'cashier.html?category=caixa-noite'
+      }
+    };
+
+    function showAlert(message, type) {
+      const alert = document.getElementById('alert');
+      alert.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    }
+
+    function login(username, password) {
+      console.log('Tentando login:', username, password);
+      
+      if (users[username] && users[username].password === password) {
+        const user = users[username];
+        
+        // Salvar no sessionStorage
+        sessionStorage.setItem('current_user', JSON.stringify({
+          username: username,
+          name: user.name,
+          role: user.role
+        }));
+        
+        showAlert('Login realizado com sucesso! Redirecionando...', 'success');
+        
+        // Redirecionar após 2 segundos
+        setTimeout(() => {
+          window.location.href = user.redirect;
+        }, 2000);
+        
+        return true;
+      } else {
+        showAlert('Usuário ou senha incorretos!', 'error');
+        return false;
+      }
+    }
+
+    // Event listener do formulário
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      if (!username || !password) {
+        showAlert('Por favor, preencha todos os campos!', 'error');
+        return;
+      }
+      
+      login(username, password);
+    });
+
+    // Verificar se já está logado
+    const currentUser = sessionStorage.getItem('current_user');
+    if (currentUser) {
+      const user = JSON.parse(currentUser);
+      if (user.role === 'admin') {
+        window.location.href = 'admin.html';
+      } else if (user.role === 'cashier') {
+        window.location.href = 'cashier.html';
+      }
+    }
+
+    console.log('Sistema de login carregado!');
+  </script>
+</body>
+</html>
