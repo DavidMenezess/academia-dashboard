@@ -1014,13 +1014,32 @@
         
         const totalSales = todaySales.reduce((sum, sale) => sum + sale.total, 0);
         const totalTransactions = todaySales.length;
-        const memberships = todaySales.filter(sale => sale.type === 'membership').length;
-        const products = todaySales.filter(sale => sale.type === 'product').length;
+        
+        // Contabilizar por tipo de venda
+        const memberships = todaySales.filter(sale => 
+          sale.type === 'mensalidade' || 
+          sale.items.some(item => item.type === 'mensalidade')
+        ).length;
+        
+        const products = todaySales.filter(sale => 
+          sale.type === 'produto' || 
+          sale.items.some(item => item.type === 'produto')
+        ).length;
+        
+        const daily = todaySales.filter(sale => 
+          sale.type === 'diaria' || 
+          sale.items.some(item => item.type === 'diaria')
+        ).length;
+        
+        const biweekly = todaySales.filter(sale => 
+          sale.type === 'quinzena' || 
+          sale.items.some(item => item.type === 'quinzena')
+        ).length;
         
         document.getElementById('todaySales').textContent = `R$ ${totalSales.toFixed(2)}`;
         document.getElementById('todayTransactions').textContent = totalTransactions;
         document.getElementById('todayMemberships').textContent = memberships;
-        document.getElementById('todayProducts').textContent = products;
+        document.getElementById('todayProducts').textContent = products + daily + biweekly;
       }
       
       updateCashControl() {
@@ -1075,8 +1094,43 @@
         // Adicionar classe active ao card selecionado
         event.target.closest('.sale-card').classList.add('active');
         
+        // Preencher campos automaticamente baseado no tipo
+        this.autoFillSaleFields(type);
+        
         // Mostrar formulário
         document.getElementById('saleForm').classList.remove('hidden');
+      }
+      
+      autoFillSaleFields(type) {
+        const productField = document.getElementById('productName');
+        const quantityField = document.getElementById('quantity');
+        const unitPriceField = document.getElementById('unitPrice');
+        
+        switch(type) {
+          case 'mensalidade':
+            productField.value = 'Mensalidade';
+            quantityField.value = '1';
+            unitPriceField.value = '80,00';
+            break;
+          case 'diaria':
+            productField.value = 'Diária';
+            quantityField.value = '1';
+            unitPriceField.value = '15,00';
+            break;
+          case 'quinzena':
+            productField.value = 'Quinzena';
+            quantityField.value = '1';
+            unitPriceField.value = '40,00';
+            break;
+          case 'produto':
+            productField.value = '';
+            quantityField.value = '1';
+            unitPriceField.value = '0,00';
+            break;
+        }
+        
+        // Recalcular troco se dinheiro estiver selecionado
+        this.calculateChange();
       }
       
       selectPaymentMethod(method) {
@@ -1337,6 +1391,7 @@
           cashier: this.currentUser ? this.currentUser.name : 'Sistema',
           items: [...this.cart],
           total,
+          type: this.currentSaleType, // Incluir tipo da venda
           paymentMethods: this.currentPaymentMethods || [paymentMethod],
           changeAmount: change,
           receivedAmount: receivedAmount,
