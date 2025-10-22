@@ -1046,21 +1046,21 @@
         const totalSales = todaySales.reduce((sum, sale) => sum + sale.total, 0);
         const totalTransactions = todaySales.length;
         
-        // Contabilizar por tipo de venda
+        // Contabilizar por tipo de venda (usando tipos em inglês)
         const memberships = todaySales.filter(sale => 
-          sale.type === 'mensalidade'
+          sale.type === 'membership' || sale.type === 'mensalidade'
         ).length;
         
         const products = todaySales.filter(sale => 
-          sale.type === 'produto'
+          sale.type === 'product' || sale.type === 'produto'
         ).length;
         
         const daily = todaySales.filter(sale => 
-          sale.type === 'diaria'
+          sale.type === 'daily' || sale.type === 'diaria'
         ).length;
         
         const biweekly = todaySales.filter(sale => 
-          sale.type === 'quinzena'
+          sale.type === 'biweekly' || sale.type === 'quinzena'
         ).length;
         
         // Logs de debug
