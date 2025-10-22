@@ -970,7 +970,22 @@
         this.updateHeader();
         this.updateStats();
         this.updateCashControl();
+        this.setupGlobalListeners();
         console.log('✅ Dashboard inicializado');
+      }
+      
+      setupGlobalListeners() {
+        // Configurar listeners para cálculo de troco
+        const unitPriceInput = document.getElementById('unitPrice');
+        const quantityInput = document.getElementById('quantity');
+        
+        if (unitPriceInput) {
+          unitPriceInput.addEventListener('input', () => this.calculateChange());
+        }
+        
+        if (quantityInput) {
+          quantityInput.addEventListener('input', () => this.calculateChange());
+        }
       }
       
       updateHeader() {
@@ -1081,24 +1096,48 @@
       
       setupChangeCalculation() {
         const receivedAmountInput = document.getElementById('receivedAmount');
+        const unitPriceInput = document.getElementById('unitPrice');
+        const quantityInput = document.getElementById('quantity');
+        
+        // Listener para valor recebido
         if (receivedAmountInput) {
-          // Remover listener anterior se existir
           receivedAmountInput.removeEventListener('input', this.calculateChange);
-          // Adicionar novo listener
           receivedAmountInput.addEventListener('input', () => this.calculateChange());
+        }
+        
+        // Listener para valor unitário
+        if (unitPriceInput) {
+          unitPriceInput.removeEventListener('input', this.calculateChange);
+          unitPriceInput.addEventListener('input', () => this.calculateChange());
+        }
+        
+        // Listener para quantidade
+        if (quantityInput) {
+          quantityInput.removeEventListener('input', this.calculateChange);
+          quantityInput.addEventListener('input', () => this.calculateChange());
         }
       }
       
       calculateChange() {
         const receivedAmount = parseFloat(document.getElementById('receivedAmount').value) || 0;
-        const totalAmount = this.calculateCartTotal();
+        const unitPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
+        const quantity = parseFloat(document.getElementById('quantity').value) || 0;
+        const totalAmount = unitPrice * quantity;
+        
+        console.log('🧮 Calculando troco:', {
+          receivedAmount,
+          unitPrice,
+          quantity,
+          totalAmount
+        });
         
         if (receivedAmount > 0 && totalAmount > 0) {
           const change = receivedAmount - totalAmount;
           
-          // Mostrar campo de troco
+          // Encontrar ou criar campo de troco
           let changeField = document.getElementById('changeAmount');
           if (!changeField) {
+            console.log('❌ Campo de troco não encontrado, criando...');
             // Criar campo de troco se não existir
             const changeGroup = document.getElementById('changeGroup');
             changeGroup.innerHTML = `
@@ -1115,14 +1154,18 @@
           if (change >= 0) {
             changeField.value = change.toFixed(2);
             changeField.style.color = change > 0 ? '#28a745' : '#6c757d';
+            console.log('✅ Troco calculado:', change.toFixed(2));
           } else {
             changeField.value = '0,00';
             changeField.style.color = '#dc3545';
+            console.log('❌ Valor insuficiente');
             // Mostrar alerta se valor recebido for menor que o total
             if (receivedAmount > 0) {
               this.showCashAlert('⚠️ Valor recebido menor que o total da venda!', 'warning');
             }
           }
+        } else {
+          console.log('⚠️ Valores inválidos para cálculo');
         }
       }
       
