@@ -960,24 +960,82 @@
           return '<p>Nenhuma venda registrada.</p>';
         }
         
-        let html = '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
-        html += '<tr style="background: #f5f5f5;"><th>Horário</th><th>Produto</th><th>Qtd</th><th>Valor</th><th>Pagamento</th><th>Troco</th></tr>';
+        let html = `
+          <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-family: Arial, sans-serif;">
+            <thead>
+              <tr style="background: #f5f5f5; font-weight: bold;">
+                <th style="text-align: center; padding: 8px; border: 1px solid #ddd;">Horário</th>
+                <th style="text-align: center; padding: 8px; border: 1px solid #ddd;">Produto</th>
+                <th style="text-align: center; padding: 8px; border: 1px solid #ddd;">Qtd</th>
+                <th style="text-align: center; padding: 8px; border: 1px solid #ddd;">Valor</th>
+                <th style="text-align: center; padding: 8px; border: 1px solid #ddd;">Pagamento</th>
+                <th style="text-align: center; padding: 8px; border: 1px solid #ddd;">Troco</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
         
         sales.forEach(sale => {
           const saleTime = new Date(sale.timestamp).toLocaleString('pt-BR');
+          
+          // Extrair dados dos produtos vendidos
+          let productNames = '';
+          let quantities = '';
+          let totalValue = 0;
+          let paymentMethods = '';
+          let changeAmount = 0;
+          
+          if (sale.items && sale.items.length > 0) {
+            productNames = sale.items.map(item => item.product_name || item.name || 'Produto').join(', ');
+            quantities = sale.items.map(item => item.quantity || 1).join(', ');
+            totalValue = sale.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+          } else if (sale.product_name) {
+            productNames = sale.product_name;
+            quantities = sale.quantity || 1;
+            totalValue = sale.total || (sale.price * sale.quantity);
+          } else {
+            productNames = 'Produto não especificado';
+            quantities = '1';
+            totalValue = sale.total || 0;
+          }
+          
+          // Extrair métodos de pagamento
+          if (sale.payment_methods && Array.isArray(sale.payment_methods)) {
+            paymentMethods = sale.payment_methods.join(', ');
+          } else if (sale.payment_method) {
+            paymentMethods = sale.payment_method;
+          } else if (sale.paymentMethods && Array.isArray(sale.paymentMethods)) {
+            paymentMethods = sale.paymentMethods.join(', ');
+          } else {
+            paymentMethods = 'Não especificado';
+          }
+          
+          // Extrair troco
+          if (sale.change_amount !== undefined && sale.change_amount !== null) {
+            changeAmount = sale.change_amount;
+          } else if (sale.change !== undefined && sale.change !== null) {
+            changeAmount = sale.change;
+          } else {
+            changeAmount = 0;
+          }
+          
           html += `
-            <tr>
-              <td>${saleTime}</td>
-              <td>${sale.items.map(item => item.product_name).join(', ')}</td>
-              <td>${sale.items.map(item => item.quantity).join(', ')}</td>
-              <td>R$ ${sale.total.toFixed(2)}</td>
-              <td>${sale.payment_method}</td>
-              <td>${sale.change_amount > 0 ? `R$ ${sale.change_amount.toFixed(2)}` : 'N/A'}</td>
+            <tr style="border-bottom: 1px solid #ddd;">
+              <td style="text-align: center; padding: 8px; border: 1px solid #ddd;">${saleTime}</td>
+              <td style="text-align: center; padding: 8px; border: 1px solid #ddd;">${productNames}</td>
+              <td style="text-align: center; padding: 8px; border: 1px solid #ddd;">${quantities}</td>
+              <td style="text-align: center; padding: 8px; border: 1px solid #ddd;">R$ ${totalValue.toFixed(2)}</td>
+              <td style="text-align: center; padding: 8px; border: 1px solid #ddd;">${paymentMethods}</td>
+              <td style="text-align: center; padding: 8px; border: 1px solid #ddd;">${changeAmount > 0 ? `R$ ${changeAmount.toFixed(2)}` : 'N/A'}</td>
             </tr>
           `;
         });
         
-        html += '</table>';
+        html += `
+            </tbody>
+          </table>
+        `;
+        
         return html;
       }
       
