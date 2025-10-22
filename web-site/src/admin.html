@@ -405,7 +405,9 @@
       
       loadUsers() {
         const storedUsers = localStorage.getItem('academia_users');
-        return storedUsers ? JSON.parse(storedUsers) : [];
+        const users = storedUsers ? JSON.parse(storedUsers) : [];
+        console.log('🔍 Usuários carregados:', users);
+        return users;
       }
       
       saveUsers() {
@@ -569,6 +571,13 @@
         if (this.editingUserId) {
           // Editar usuário existente
           const userIndex = this.users.findIndex(u => u.id === this.editingUserId);
+          console.log('🔍 Editando usuário:', {
+            editingUserId: this.editingUserId,
+            userIndex,
+            oldUser: this.users[userIndex],
+            newData: { name, username, password, role, category, isActive }
+          });
+          
           if (userIndex !== -1) {
             this.users[userIndex] = {
               ...this.users[userIndex],
@@ -579,6 +588,7 @@
               category,
               isActive
             };
+            console.log('✅ Usuário editado:', this.users[userIndex]);
           }
         } else {
           // Criar novo usuário
