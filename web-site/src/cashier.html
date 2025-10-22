@@ -915,6 +915,12 @@
         this.cashControl = this.loadCashControl();
         this.currentSaleType = null;
         
+        console.log('📊 Vendas no sistema:', this.sales.length);
+        console.log('📊 Vendas por tipo:', this.sales.reduce((acc, sale) => {
+          acc[sale.type] = (acc[sale.type] || 0) + 1;
+          return acc;
+        }, {}));
+        
         console.log('👤 Usuário atual:', this.currentUser);
         console.log('📂 Categoria:', this.currentCategory);
         console.log('💰 Controle de caixa:', this.cashControl);
@@ -937,7 +943,10 @@
       
       loadSales() {
         const stored = localStorage.getItem('academia_sales');
-        return stored ? JSON.parse(stored) : [];
+        const sales = stored ? JSON.parse(stored) : [];
+        console.log('📊 Vendas carregadas:', sales.length, 'vendas');
+        console.log('📊 Tipos de vendas:', sales.map(sale => ({ type: sale.type, total: sale.total })));
+        return sales;
       }
       
       saveSales() {
@@ -1394,7 +1403,7 @@
         }
         
         const total = this.cart.reduce((sum, item) => sum + item.total, 0);
-        const paymentMethod = this.cart[0].paymentMethod;
+        const paymentMethods = this.cart[0].paymentMethods || ['pix'];
         
         // Calcular troco se necessário
         let change = 0;
@@ -1424,14 +1433,16 @@
           items: [...this.cart],
           total,
           type: this.currentSaleType, // Incluir tipo da venda
-          paymentMethods: this.currentPaymentMethods || [paymentMethod],
+          paymentMethods: paymentMethods,
           changeAmount: change,
           receivedAmount: receivedAmount,
           status: 'completed'
         };
         
+        console.log('💾 Salvando venda:', sale);
         this.sales.push(sale);
         this.saveSales();
+        console.log('✅ Venda salva com sucesso! Tipo:', sale.type);
         
         // Atualizar controle de caixa
         this.cashControl.todaySales += total;
