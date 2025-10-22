@@ -274,6 +274,22 @@
         </div>
       </div>
 
+      <!-- Relatórios de Caixa -->
+      <div class="card">
+        <h2>💰 Relatórios de Caixa</h2>
+        <div class="stats">
+          <div class="stat-item">
+            <div class="stat-number" id="totalCashReports">0</div>
+            <div class="stat-label">Relatórios Hoje</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="totalCashValue">R$ 0,00</div>
+            <div class="stat-label">Valor Total</div>
+          </div>
+        </div>
+        <button onclick="showCashReports()" style="margin-top: 15px; width: 100%;">Ver Relatórios Detalhados</button>
+      </div>
+
       <!-- Ações Rápidas -->
       <div class="card">
         <h2>⚡ Ações Rápidas</h2>
@@ -445,6 +461,34 @@
         document.getElementById('activeUsers').textContent = activeUsers;
         document.getElementById('adminUsers').textContent = adminUsers;
         document.getElementById('cashierUsers').textContent = cashierUsers;
+        
+        // Atualizar estatísticas de relatórios de caixa
+        this.updateCashReportsStats();
+      }
+      
+      updateCashReportsStats() {
+        const reports = JSON.parse(localStorage.getItem('academia_cash_reports') || '[]');
+        const today = new Date().toDateString();
+        
+        // Filtrar relatórios de hoje
+        const todayReports = reports.filter(report => {
+          const reportDate = new Date(report.closeTime).toDateString();
+          return reportDate === today;
+        });
+        
+        // Calcular totais
+        const totalValue = todayReports.reduce((sum, report) => sum + report.totalSales, 0);
+        
+        // Atualizar elementos
+        const totalCashReportsElement = document.getElementById('totalCashReports');
+        const totalCashValueElement = document.getElementById('totalCashValue');
+        
+        if (totalCashReportsElement) {
+          totalCashReportsElement.textContent = todayReports.length;
+        }
+        if (totalCashValueElement) {
+          totalCashValueElement.textContent = `R$ ${totalValue.toFixed(2)}`;
+        }
       }
       
       openAddUserModal() {
@@ -628,6 +672,105 @@
         window.URL.revokeObjectURL(url);
       }
       
+      showCashReports() {
+        console.log('📊 Exibindo relatórios de caixa...');
+        
+        const reports = JSON.parse(localStorage.getItem('academia_cash_reports') || '[]');
+        const today = new Date().toDateString();
+        
+        // Filtrar relatórios de hoje
+        const todayReports = reports.filter(report => {
+          const reportDate = new Date(report.closeTime).toDateString();
+          return reportDate === today;
+        });
+        
+        // Calcular totais
+        const totalValue = todayReports.reduce((sum, report) => sum + report.totalSales, 0);
+        
+        // Atualizar estatísticas
+        document.getElementById('totalCashReports').textContent = todayReports.length;
+        document.getElementById('totalCashValue').textContent = `R$ ${totalValue.toFixed(2)}`;
+        
+        // Criar modal de relatórios
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.display = 'block';
+        modal.innerHTML = `
+          <div class="modal-content" style="max-width: 90%; max-height: 80%; overflow-y: auto;">
+            <div class="modal-header">
+              <h2>💰 Relatórios de Caixa - ${new Date().toLocaleDateString('pt-BR')}</h2>
+              <span class="close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</span>
+            </div>
+            <div class="modal-body">
+              ${this.generateCashReportsHTML(todayReports)}
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(modal);
+      }
+      
+      generateCashReportsHTML(reports) {
+        if (reports.length === 0) {
+          return '<p>Nenhum relatório de caixa encontrado para hoje.</p>';
+        }
+        
+        let html = '<div class="reports-container">';
+        
+        reports.forEach((report, index) => {
+          const openTime = new Date(report.openTime).toLocaleString('pt-BR');
+          const closeTime = new Date(report.closeTime).toLocaleString('pt-BR');
+          
+          html += `
+            <div class="report-card" style="border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 8px;">
+              <h3>📊 ${report.category.toUpperCase()} - ${report.cashier}</h3>
+              <div class="report-info">
+                <p><strong>⏰ Abertura:</strong> ${openTime}</p>
+                <p><strong>⏰ Fechamento:</strong> ${closeTime}</p>
+                <p><strong>💰 Caixa Inicial:</strong> R$ ${report.initialCash.toFixed(2)}</p>
+                <p><strong>💰 Vendas:</strong> R$ ${report.totalSales.toFixed(2)}</p>
+                <p><strong>💰 Saldo Final:</strong> R$ ${report.finalBalance.toFixed(2)}</p>
+                ${report.observations ? `<p><strong>📝 Observações:</strong> ${report.observations}</p>` : ''}
+              </div>
+              
+              <div class="sales-details">
+                <h4>🛒 Vendas Detalhadas:</h4>
+                ${this.generateSalesDetailsHTML(report.sales)}
+              </div>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+        return html;
+      }
+      
+      generateSalesDetailsHTML(sales) {
+        if (sales.length === 0) {
+          return '<p>Nenhuma venda registrada.</p>';
+        }
+        
+        let html = '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
+        html += '<tr style="background: #f5f5f5;"><th>Horário</th><th>Produto</th><th>Qtd</th><th>Valor</th><th>Pagamento</th><th>Troco</th></tr>';
+        
+        sales.forEach(sale => {
+          const saleTime = new Date(sale.timestamp).toLocaleString('pt-BR');
+          html += `
+            <tr>
+              <td>${saleTime}</td>
+              <td>${sale.items.map(item => item.product_name).join(', ')}</td>
+              <td>${sale.items.map(item => item.quantity).join(', ')}</td>
+              <td>R$ ${sale.total.toFixed(2)}</td>
+              <td>${sale.payment_method}</td>
+              <td>${sale.change_amount > 0 ? `R$ ${sale.change_amount.toFixed(2)}` : 'N/A'}</td>
+            </tr>
+          `;
+        });
+        
+        html += '</table>';
+        return html;
+      }
+      
       showAlert(message, type) {
         const alert = document.getElementById('alert');
         alert.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
@@ -638,6 +781,10 @@
     }
     
     // Funções globais
+    function showCashReports() {
+      adminSystem.showCashReports();
+    }
+    
     function openAddUserModal() {
       adminSystem.openAddUserModal();
     }

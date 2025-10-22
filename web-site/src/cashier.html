@@ -829,8 +829,6 @@
       
       <div class="form-actions">
         <button class="btn btn-secondary" onclick="closeModal('cashModal')">❌ Cancelar</button>
-        <button class="btn btn-warning" onclick="testOpenCash()">🧪 Teste</button>
-        <button class="btn btn-danger" onclick="resetCashControl()">🔄 Reset</button>
         <button class="btn btn-success" onclick="openCash()">✅ Abrir Caixa</button>
       </div>
     </div>
@@ -1013,7 +1011,19 @@
           document.getElementById('initialCash').textContent = `R$ ${this.cashControl.initialCash.toFixed(2)}`;
           document.getElementById('todaySalesCash').textContent = `R$ ${this.cashControl.todaySales.toFixed(2)}`;
           document.getElementById('currentBalance').textContent = `R$ ${this.cashControl.currentBalance.toFixed(2)}`;
-          document.getElementById('cashStatus').textContent = this.cashControl.isOpen ? 'Aberto' : 'Fechado';
+          
+          // Status com horário
+          const statusElement = document.getElementById('cashStatus');
+          if (this.cashControl.isOpen) {
+            const openTime = new Date(this.cashControl.lastOpened).toLocaleString('pt-BR');
+            statusElement.textContent = `Aberto (${openTime})`;
+            statusElement.style.color = 'var(--success-color)';
+          } else {
+            const closeTime = this.cashControl.lastClosed ? 
+              new Date(this.cashControl.lastClosed).toLocaleString('pt-BR') : 'Nunca fechado';
+            statusElement.textContent = `Fechado (${closeTime})`;
+            statusElement.style.color = 'var(--danger-color)';
+          }
           
           // Mostrar/ocultar botões baseado no status do caixa
           const cashControlBtn = document.getElementById('cashControlBtn');
@@ -1279,18 +1289,55 @@
       
       closeCash() {
         if (confirm('Tem certeza que deseja fechar o caixa?')) {
+          // Salvar relatório antes de zerar
+          this.saveCashReport();
+          
+          // Zerar valores do caixa
           this.cashControl.isOpen = false;
           this.cashControl.lastClosed = new Date().toISOString();
+          this.cashControl.initialCash = 0;
+          this.cashControl.currentBalance = 0;
+          this.cashControl.todaySales = 0;
+          this.cashControl.observations = '';
+          
           this.saveCashControl();
           this.updateCashControl();
           
-          this.showCashAlert('Caixa fechado com sucesso!', 'success');
+          this.showCashAlert('Caixa fechado com sucesso! Valores zerados.', 'success');
           
           // Atualizar interface
           setTimeout(() => {
             this.updateCashControl();
           }, 100);
         }
+      }
+      
+      saveCashReport() {
+        console.log('📊 Salvando relatório do caixa...');
+        
+        const report = {
+          category: this.currentCategory,
+          cashier: this.currentUser ? this.currentUser.name : 'Desconhecido',
+          openTime: this.cashControl.lastOpened,
+          closeTime: new Date().toISOString(),
+          initialCash: this.cashControl.initialCash,
+          totalSales: this.cashControl.todaySales,
+          finalBalance: this.cashControl.currentBalance,
+          sales: this.sales.filter(sale => {
+            const saleDate = new Date(sale.timestamp);
+            const today = new Date();
+            return saleDate.toDateString() === today.toDateString() && 
+                   sale.category === this.currentCategory;
+          }),
+          observations: this.cashControl.observations
+        };
+        
+        // Salvar relatório no localStorage
+        const reports = JSON.parse(localStorage.getItem('academia_cash_reports') || '[]');
+        reports.push(report);
+        localStorage.setItem('academia_cash_reports', JSON.stringify(reports));
+        
+        console.log('✅ Relatório salvo:', report);
       }
       
       showCashAlert(message, type) {
