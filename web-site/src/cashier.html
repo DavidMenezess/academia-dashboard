@@ -770,11 +770,6 @@
             <input type="number" class="form-input" id="changeAmount" step="0.01" readonly style="background: #f0f0f0; color: #28a745; font-weight: bold;">
           </div>
           
-          <div class="form-group" id="pixGroup" style="display: none;">
-            <label class="form-label">Valor PIX</label>
-            <input type="number" class="form-input" id="pixAmount" step="0.01" placeholder="0,00">
-            <small style="color: #666; font-size: 12px;">💡 Digite o valor que será pago via PIX</small>
-          </div>
           
           <div class="form-group">
             <label class="form-label optional">Observações</label>
@@ -1100,21 +1095,13 @@
         
         // Verificar métodos selecionados e mostrar campos apropriados
         const moneySelected = document.getElementById('money').checked;
-        const pixSelected = document.getElementById('pix').checked;
         
-        // Mostrar campo de troco se dinheiro estiver selecionado
+        // Mostrar campo de troco apenas se dinheiro estiver selecionado
         if (moneySelected) {
           document.getElementById('changeGroup').style.display = 'block';
           this.setupChangeCalculation();
         } else {
           document.getElementById('changeGroup').style.display = 'none';
-        }
-        
-        // Mostrar campo PIX se PIX estiver selecionado
-        if (pixSelected) {
-          document.getElementById('pixGroup').style.display = 'block';
-        } else {
-          document.getElementById('pixGroup').style.display = 'none';
         }
         
         // Atualizar lista de métodos selecionados
@@ -1133,7 +1120,6 @@
       
       setupChangeCalculation() {
         const receivedAmountInput = document.getElementById('receivedAmount');
-        const pixAmountInput = document.getElementById('pixAmount');
         const unitPriceInput = document.getElementById('unitPrice');
         const quantityInput = document.getElementById('quantity');
         
@@ -1141,12 +1127,6 @@
         if (receivedAmountInput) {
           receivedAmountInput.removeEventListener('input', this.calculateChange);
           receivedAmountInput.addEventListener('input', () => this.calculateChange());
-        }
-        
-        // Listener para valor PIX
-        if (pixAmountInput) {
-          pixAmountInput.removeEventListener('input', this.calculateChange);
-          pixAmountInput.addEventListener('input', () => this.calculateChange());
         }
         
         // Listener para valor unitário
@@ -1164,25 +1144,19 @@
       
       calculateChange() {
         const receivedAmount = parseFloat(document.getElementById('receivedAmount').value) || 0;
-        const pixAmount = parseFloat(document.getElementById('pixAmount').value) || 0;
         const unitPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
         const quantity = parseFloat(document.getElementById('quantity').value) || 0;
         const totalAmount = unitPrice * quantity;
         
-        // Calcular total recebido (dinheiro + PIX)
-        const totalReceived = receivedAmount + pixAmount;
-        
         console.log('🧮 Calculando troco:', {
           receivedAmount,
-          pixAmount,
-          totalReceived,
           unitPrice,
           quantity,
           totalAmount
         });
         
-        if (totalReceived > 0 && totalAmount > 0) {
-          const change = totalReceived - totalAmount;
+        if (receivedAmount > 0 && totalAmount > 0) {
+          const change = receivedAmount - totalAmount;
           
           // Encontrar ou criar campo de troco
           let changeField = document.getElementById('changeAmount');
@@ -1213,7 +1187,7 @@
             changeField.style.background = '#f8d7da';
             console.log('❌ Valor insuficiente - Falta:', Math.abs(change).toFixed(2));
             // Mostrar alerta se valor recebido for menor que o total
-            if (totalReceived > 0) {
+            if (receivedAmount > 0) {
               this.showCashAlert(`⚠️ Valor insuficiente! Falta R$ ${Math.abs(change).toFixed(2)}`, 'warning');
             }
           }
@@ -1238,8 +1212,6 @@
         
         // Obter valores de pagamento
         const receivedAmount = parseFloat(document.getElementById('receivedAmount').value) || 0;
-        const pixAmount = parseFloat(document.getElementById('pixAmount').value) || 0;
-        const totalReceived = receivedAmount + pixAmount;
         
         if (!productName || !unitPrice || selectedPaymentMethods.length === 0) {
           alert('Por favor, preencha todos os campos obrigatórios e selecione pelo menos um método de pagamento.');
@@ -1249,11 +1221,6 @@
         // Validar valores de pagamento
         if (selectedPaymentMethods.includes('money') && receivedAmount <= 0) {
           alert('Digite o valor recebido em dinheiro.');
-          return;
-        }
-        
-        if (selectedPaymentMethods.includes('pix') && pixAmount <= 0) {
-          alert('Digite o valor do PIX.');
           return;
         }
         
@@ -1268,9 +1235,7 @@
           unitPrice,
           total,
           paymentMethods: selectedPaymentMethods,
-          receivedAmount,
-          pixAmount,
-          totalReceived,
+          receivedAmount: selectedPaymentMethods.includes('money') ? receivedAmount : 0,
           changeAmount: selectedPaymentMethods.includes('money') ? receivedAmount - total : 0,
           observations,
           type: this.currentSaleType
@@ -1301,7 +1266,6 @@
                 </div>
                 <div class="cart-item-payment">
                   ${item.receivedAmount > 0 ? `💵 Dinheiro: R$ ${item.receivedAmount.toFixed(2)}` : ''}
-                  ${item.pixAmount > 0 ? `💳 PIX: R$ ${item.pixAmount.toFixed(2)}` : ''}
                   ${item.changeAmount > 0 ? `💰 Troco: R$ ${item.changeAmount.toFixed(2)}` : ''}
                   ${item.changeAmount < 0 ? `⚠️ Falta: R$ ${Math.abs(item.changeAmount).toFixed(2)}` : ''}
                 </div>
@@ -1349,7 +1313,6 @@
         // Calcular troco se necessário
         let change = 0;
         let receivedAmount = 0;
-        let pixAmount = 0;
         
         // Verificar se dinheiro está selecionado
         const moneySelected = document.getElementById('money').checked;
@@ -1359,29 +1322,10 @@
             alert('Digite o valor recebido em dinheiro.');
             return;
           }
-        }
-        
-        // Verificar se PIX está selecionado
-        const pixSelected = document.getElementById('pix').checked;
-        if (pixSelected) {
-          pixAmount = parseFloat(document.getElementById('pixAmount').value) || 0;
-          if (pixAmount <= 0) {
-            alert('Digite o valor do PIX.');
+          if (receivedAmount < total) {
+            alert('Valor recebido insuficiente. Total: R$ ' + total.toFixed(2) + ', Recebido: R$ ' + receivedAmount.toFixed(2));
             return;
           }
-        }
-        
-        // Calcular total recebido
-        const totalReceived = receivedAmount + pixAmount;
-        
-        // Verificar se valor é suficiente
-        if (totalReceived > 0 && totalReceived < total) {
-          alert('Valor recebido insuficiente. Total: R$ ' + total.toFixed(2) + ', Recebido: R$ ' + totalReceived.toFixed(2));
-          return;
-        }
-        
-        // Calcular troco apenas se dinheiro estiver selecionado
-        if (moneySelected) {
           change = receivedAmount - total;
         }
         
@@ -1396,8 +1340,6 @@
           paymentMethods: this.currentPaymentMethods || [paymentMethod],
           changeAmount: change,
           receivedAmount: receivedAmount,
-          pixAmount: pixAmount,
-          totalReceived: totalReceived,
           status: 'completed'
         };
         
