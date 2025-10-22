@@ -405,55 +405,78 @@
       }
       
       loadUsers() {
-        const storedUsers = localStorage.getItem('academia_users');
-        const users = storedUsers ? JSON.parse(storedUsers) : [];
-        
-        // Verificar se há dados corrompidos e limpar
-        const validUsers = users.filter(user => 
-          user && 
-          user.id && 
-          user.name && 
-          user.username && 
-          user.role &&
-          typeof user.id === 'number' &&
-          typeof user.name === 'string' &&
-          typeof user.username === 'string' &&
-          typeof user.role === 'string'
-        );
-        
-        // Limpar dados corrompidos
-        if (validUsers.length !== users.length) {
-          console.warn('⚠️ Dados corrompidos detectados, limpando...');
-          console.log('❌ Dados removidos:', users.filter(user => 
-            !user || !user.id || !user.name || !user.username || !user.role
-          ));
-          this.users = validUsers;
-          this.saveUsers();
-        }
-        
-        // Verificar se há nomes duplicados e corrigir
-        const nameCounts = {};
-        validUsers.forEach(user => {
-          if (nameCounts[user.name]) {
-            nameCounts[user.name]++;
-          } else {
-            nameCounts[user.name] = 1;
+        try {
+          const storedUsers = localStorage.getItem('academia_users');
+          console.log('🔍 Dados brutos do localStorage:', storedUsers);
+          
+          const users = storedUsers ? JSON.parse(storedUsers) : [];
+          console.log('🔍 Usuários parseados:', users);
+          
+          // Verificar se há dados corrompidos e limpar
+          const validUsers = users.filter(user => 
+            user && 
+            user.id && 
+            user.name && 
+            user.username && 
+            user.role &&
+            typeof user.id === 'number' &&
+            typeof user.name === 'string' &&
+            typeof user.username === 'string' &&
+            typeof user.role === 'string'
+          );
+          
+          // Limpar dados corrompidos
+          if (validUsers.length !== users.length) {
+            console.warn('⚠️ Dados corrompidos detectados, limpando...');
+            console.log('❌ Dados removidos:', users.filter(user => 
+              !user || !user.id || !user.name || !user.username || !user.role
+            ));
+            this.users = validUsers;
+            this.saveUsers();
           }
-        });
-        
-        // Se há nomes duplicados, corrigir
-        const duplicatedNames = Object.keys(nameCounts).filter(name => nameCounts[name] > 1);
-        if (duplicatedNames.length > 0) {
-          console.warn('⚠️ Nomes duplicados detectados:', duplicatedNames);
-          this.fixDuplicateNames(validUsers);
+          
+          // Verificar se há nomes duplicados e corrigir
+          const nameCounts = {};
+          validUsers.forEach(user => {
+            if (nameCounts[user.name]) {
+              nameCounts[user.name]++;
+            } else {
+              nameCounts[user.name] = 1;
+            }
+          });
+          
+          // Se há nomes duplicados, corrigir
+          const duplicatedNames = Object.keys(nameCounts).filter(name => nameCounts[name] > 1);
+          if (duplicatedNames.length > 0) {
+            console.warn('⚠️ Nomes duplicados detectados:', duplicatedNames);
+            this.fixDuplicateNames(validUsers);
+          }
+          
+          console.log('🔍 Usuários carregados:', validUsers);
+          return validUsers;
+        } catch (error) {
+          console.error('❌ Erro ao carregar usuários:', error);
+          return [];
         }
-        
-        console.log('🔍 Usuários carregados:', validUsers);
-        return validUsers;
       }
       
       saveUsers() {
-        localStorage.setItem('academia_users', JSON.stringify(this.users));
+        try {
+          const usersData = JSON.stringify(this.users);
+          localStorage.setItem('academia_users', usersData);
+          console.log('💾 Dados salvos no localStorage:', this.users.length, 'usuários');
+          
+          // Verificar se foi salvo corretamente
+          const savedData = localStorage.getItem('academia_users');
+          if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            console.log('✅ Dados verificados no localStorage:', parsedData.length, 'usuários');
+          } else {
+            console.error('❌ Erro ao salvar dados no localStorage');
+          }
+        } catch (error) {
+          console.error('❌ Erro ao salvar usuários:', error);
+        }
       }
       
       fixDuplicateNames(users) {
@@ -630,30 +653,48 @@
       }
       
       editUser(userId) {
+        // Recarregar usuários para garantir dados atualizados
+        this.users = this.loadUsers();
+        
         const user = this.users.find(u => u.id === userId);
-        if (!user) return;
+        if (!user) {
+          console.error('❌ Usuário não encontrado:', userId);
+          return;
+        }
         
         console.log('🔍 Editando usuário:', user);
+        console.log('🔍 Todos os usuários:', this.users);
         
         this.editingUserId = userId;
         document.getElementById('modalTitle').textContent = 'Editar Usuário';
-        document.getElementById('userName').value = user.name;
-        document.getElementById('userUsername').value = user.username;
-        document.getElementById('userPassword').value = user.password;
-        document.getElementById('userRole').value = user.role;
-        document.getElementById('userActive').checked = user.isActive;
+        
+        // Limpar campos antes de preencher
+        document.getElementById('userName').value = '';
+        document.getElementById('userUsername').value = '';
+        document.getElementById('userPassword').value = '';
+        document.getElementById('userRole').value = '';
+        document.getElementById('userCategory').value = '';
+        document.getElementById('userActive').checked = false;
+        
+        // Preencher campos com dados do usuário específico
+        document.getElementById('userName').value = user.name || '';
+        document.getElementById('userUsername').value = user.username || '';
+        document.getElementById('userPassword').value = user.password || '';
+        document.getElementById('userRole').value = user.role || '';
+        document.getElementById('userActive').checked = user.isActive || false;
         
         // Atualizar opções de categoria baseado no role
         this.updateCategoryOptions();
         
         // DEFINIR o valor correto APÓS atualizar as opções
-        document.getElementById('userCategory').value = user.category;
+        document.getElementById('userCategory').value = user.category || '';
         
         console.log('✅ Valores definidos:', {
           name: user.name,
           username: user.username,
           role: user.role,
-          category: user.category
+          category: user.category,
+          isActive: user.isActive
         });
         
         document.getElementById('userModal').style.display = 'block';
@@ -711,9 +752,9 @@
             const originalUser = this.users[userIndex];
             this.users[userIndex] = {
               id: originalUser.id,
-              name: name,
-              username: username,
-              password: password,
+              name: name.trim(),
+              username: username.trim(),
+              password: password.trim(),
               role: role,
               category: category,
               isActive: isActive,
@@ -722,6 +763,10 @@
               lastLogin: originalUser.lastLogin
             };
             console.log('✅ Usuário editado:', this.users[userIndex]);
+            
+            // Forçar salvamento imediato
+            this.saveUsers();
+            console.log('💾 Dados salvos no localStorage');
           }
         } else {
           // Criar novo usuário
