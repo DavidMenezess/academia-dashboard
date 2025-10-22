@@ -675,6 +675,28 @@
         <div class="stat-value" id="todayProducts">0</div>
         <div class="stat-change">Produtos vendidos</div>
       </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Diárias</div>
+          <div class="stat-icon" style="background: var(--info-color);">
+            🏃
+          </div>
+        </div>
+        <div class="stat-value" id="todayDaily">0</div>
+        <div class="stat-change">Diárias vendidas</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Quinzenas</div>
+          <div class="stat-icon" style="background: var(--warning-color);">
+            📅
+          </div>
+        </div>
+        <div class="stat-value" id="todayBiweekly">0</div>
+        <div class="stat-change">Quinzenas vendidas</div>
+      </div>
     </div>
 
     <!-- Main Content -->
@@ -1017,29 +1039,38 @@
         
         // Contabilizar por tipo de venda
         const memberships = todaySales.filter(sale => 
-          sale.type === 'mensalidade' || 
-          sale.items.some(item => item.type === 'mensalidade')
+          sale.type === 'mensalidade'
         ).length;
         
         const products = todaySales.filter(sale => 
-          sale.type === 'produto' || 
-          sale.items.some(item => item.type === 'produto')
+          sale.type === 'produto'
         ).length;
         
         const daily = todaySales.filter(sale => 
-          sale.type === 'diaria' || 
-          sale.items.some(item => item.type === 'diaria')
+          sale.type === 'diaria'
         ).length;
         
         const biweekly = todaySales.filter(sale => 
-          sale.type === 'quinzena' || 
-          sale.items.some(item => item.type === 'quinzena')
+          sale.type === 'quinzena'
         ).length;
+        
+        // Logs de debug
+        console.log('📊 Contabilização:', {
+          totalSales,
+          totalTransactions,
+          memberships,
+          products,
+          daily,
+          biweekly,
+          todaySales: todaySales.map(sale => ({ type: sale.type, total: sale.total }))
+        });
         
         document.getElementById('todaySales').textContent = `R$ ${totalSales.toFixed(2)}`;
         document.getElementById('todayTransactions').textContent = totalTransactions;
         document.getElementById('todayMemberships').textContent = memberships;
-        document.getElementById('todayProducts').textContent = products + daily + biweekly;
+        document.getElementById('todayProducts').textContent = products;
+        document.getElementById('todayDaily').textContent = daily;
+        document.getElementById('todayBiweekly').textContent = biweekly;
       }
       
       updateCashControl() {
@@ -1292,7 +1323,8 @@
           receivedAmount: selectedPaymentMethods.includes('money') ? receivedAmount : 0,
           changeAmount: selectedPaymentMethods.includes('money') ? receivedAmount - total : 0,
           observations,
-          type: this.currentSaleType
+          type: this.currentSaleType,
+          saleType: this.currentSaleType // Garantir que o tipo seja salvo
         };
         
         this.cart.push(cartItem);
