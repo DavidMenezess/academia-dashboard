@@ -765,6 +765,8 @@
           <div class="form-group" id="changeGroup" style="display: none;">
             <label class="form-label">Valor Recebido</label>
             <input type="number" class="form-input" id="receivedAmount" step="0.01" placeholder="0,00">
+            <label class="form-label">Troco</label>
+            <input type="number" class="form-input" id="changeAmount" step="0.01" readonly style="background: #f0f0f0; color: #28a745; font-weight: bold;">
           </div>
           
           <div class="form-group">
@@ -1070,8 +1072,57 @@
         // Mostrar campo de troco apenas para dinheiro
         if (method === 'money') {
           document.getElementById('changeGroup').style.display = 'block';
+          // Adicionar listener para cálculo automático do troco
+          this.setupChangeCalculation();
         } else {
           document.getElementById('changeGroup').style.display = 'none';
+        }
+      }
+      
+      setupChangeCalculation() {
+        const receivedAmountInput = document.getElementById('receivedAmount');
+        if (receivedAmountInput) {
+          // Remover listener anterior se existir
+          receivedAmountInput.removeEventListener('input', this.calculateChange);
+          // Adicionar novo listener
+          receivedAmountInput.addEventListener('input', () => this.calculateChange());
+        }
+      }
+      
+      calculateChange() {
+        const receivedAmount = parseFloat(document.getElementById('receivedAmount').value) || 0;
+        const totalAmount = this.calculateCartTotal();
+        
+        if (receivedAmount > 0 && totalAmount > 0) {
+          const change = receivedAmount - totalAmount;
+          
+          // Mostrar campo de troco
+          let changeField = document.getElementById('changeAmount');
+          if (!changeField) {
+            // Criar campo de troco se não existir
+            const changeGroup = document.getElementById('changeGroup');
+            changeGroup.innerHTML = `
+              <label class="form-label">Valor Recebido</label>
+              <input type="number" class="form-input" id="receivedAmount" step="0.01" placeholder="0,00">
+              <label class="form-label">Troco</label>
+              <input type="number" class="form-input" id="changeAmount" step="0.01" readonly style="background: #f0f0f0;">
+            `;
+            changeField = document.getElementById('changeAmount');
+            // Reconfigurar listener
+            this.setupChangeCalculation();
+          }
+          
+          if (change >= 0) {
+            changeField.value = change.toFixed(2);
+            changeField.style.color = change > 0 ? '#28a745' : '#6c757d';
+          } else {
+            changeField.value = '0,00';
+            changeField.style.color = '#dc3545';
+            // Mostrar alerta se valor recebido for menor que o total
+            if (receivedAmount > 0) {
+              this.showCashAlert('⚠️ Valor recebido menor que o total da venda!', 'warning');
+            }
+          }
         }
       }
       
@@ -1171,9 +1222,13 @@
         // Calcular troco se necessário
         let change = 0;
         if (paymentMethod === 'money') {
-          const receivedAmount = parseFloat(document.getElementById('receivedAmount').value);
-          if (!receivedAmount || receivedAmount < total) {
-            alert('Valor recebido insuficiente.');
+          const receivedAmount = parseFloat(document.getElementById('receivedAmount').value) || 0;
+          if (receivedAmount <= 0) {
+            alert('Digite o valor recebido em dinheiro.');
+            return;
+          }
+          if (receivedAmount < total) {
+            alert('Valor recebido insuficiente. Total: R$ ' + total.toFixed(2) + ', Recebido: R$ ' + receivedAmount.toFixed(2));
             return;
           }
           change = receivedAmount - total;
@@ -1188,7 +1243,8 @@
           items: [...this.cart],
           total,
           paymentMethod,
-          change,
+          changeAmount: change,
+          receivedAmount: paymentMethod === 'money' ? parseFloat(document.getElementById('receivedAmount').value) : total,
           status: 'completed'
         };
         
