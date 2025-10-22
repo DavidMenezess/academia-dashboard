@@ -296,6 +296,7 @@
         <button class="btn btn-success" onclick="openAddUserModal()">+ Novo Usuário</button>
         <button class="btn" onclick="refreshUsers()">🔄 Atualizar Lista</button>
         <button class="btn" onclick="exportUsers()">📤 Exportar Dados</button>
+        <button class="btn btn-warning" onclick="adminSystem.clearCorruptedData()">🧹 Limpar Dados Corrompidos</button>
       </div>
     </div>
 
@@ -407,15 +408,44 @@
         const storedUsers = localStorage.getItem('academia_users');
         const users = storedUsers ? JSON.parse(storedUsers) : [];
         
-        // Verificar se há dados corrompidos
+        // Verificar se há dados corrompidos e limpar
         const validUsers = users.filter(user => 
-          user && user.id && user.name && user.username && user.role
+          user && 
+          user.id && 
+          user.name && 
+          user.username && 
+          user.role &&
+          typeof user.id === 'number' &&
+          typeof user.name === 'string' &&
+          typeof user.username === 'string' &&
+          typeof user.role === 'string'
         );
         
+        // Limpar dados corrompidos
         if (validUsers.length !== users.length) {
           console.warn('⚠️ Dados corrompidos detectados, limpando...');
+          console.log('❌ Dados removidos:', users.filter(user => 
+            !user || !user.id || !user.name || !user.username || !user.role
+          ));
           this.users = validUsers;
           this.saveUsers();
+        }
+        
+        // Verificar se há nomes duplicados e corrigir
+        const nameCounts = {};
+        validUsers.forEach(user => {
+          if (nameCounts[user.name]) {
+            nameCounts[user.name]++;
+          } else {
+            nameCounts[user.name] = 1;
+          }
+        });
+        
+        // Se há nomes duplicados, corrigir
+        const duplicatedNames = Object.keys(nameCounts).filter(name => nameCounts[name] > 1);
+        if (duplicatedNames.length > 0) {
+          console.warn('⚠️ Nomes duplicados detectados:', duplicatedNames);
+          this.fixDuplicateNames(validUsers);
         }
         
         console.log('🔍 Usuários carregados:', validUsers);
@@ -424,6 +454,92 @@
       
       saveUsers() {
         localStorage.setItem('academia_users', JSON.stringify(this.users));
+      }
+      
+      fixDuplicateNames(users) {
+        console.log('🔧 Corrigindo nomes duplicados...');
+        
+        // Mapear nomes originais para cada categoria
+        const categoryNames = {
+          'caixa-manha': 'Caixa Manhã',
+          'caixa-tarde': 'Caixa Tarde', 
+          'caixa-noite': 'Caixa Noite'
+        };
+        
+        // Corrigir nomes baseado na categoria
+        users.forEach(user => {
+          if (user.category && categoryNames[user.category]) {
+            const categoryName = categoryNames[user.category];
+            if (user.name !== categoryName) {
+              console.log(`🔧 Corrigindo nome do usuário ${user.id}: "${user.name}" -> "${categoryName}"`);
+              user.name = categoryName;
+            }
+          }
+        });
+        
+        // Salvar correções
+        this.users = users;
+        this.saveUsers();
+        console.log('✅ Nomes duplicados corrigidos!');
+      }
+      
+      clearCorruptedData() {
+        console.log('🧹 Limpando dados corrompidos do localStorage...');
+        
+        // Limpar dados corrompidos
+        localStorage.removeItem('academia_users');
+        
+        // Recriar usuários padrão
+        const defaultUsers = [
+          {
+            id: 1,
+            name: 'Administrador',
+            username: 'admin',
+            password: 'admin123',
+            role: 'admin',
+            category: 'admin',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            id: 2,
+            name: 'Caixa Manhã',
+            username: 'caixa_manha',
+            password: 'caixa123',
+            role: 'cashier',
+            category: 'caixa-manha',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            id: 3,
+            name: 'Caixa Tarde',
+            username: 'caixa_tarde',
+            password: 'caixa123',
+            role: 'cashier',
+            category: 'caixa-tarde',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            id: 4,
+            name: 'Caixa Noite',
+            username: 'caixa_noite',
+            password: 'caixa123',
+            role: 'cashier',
+            category: 'caixa-noite',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          }
+        ];
+        
+        this.users = defaultUsers;
+        this.saveUsers();
+        console.log('✅ Dados limpos e usuários padrão criados!');
       }
       
       setupEventListeners() {
@@ -591,14 +707,19 @@
           });
           
           if (userIndex !== -1) {
+            // Preservar dados originais e atualizar apenas os campos necessários
+            const originalUser = this.users[userIndex];
             this.users[userIndex] = {
-              ...this.users[userIndex],
-              name,
-              username,
-              password,
-              role,
-              category,
-              isActive
+              id: originalUser.id,
+              name: name,
+              username: username,
+              password: password,
+              role: role,
+              category: category,
+              isActive: isActive,
+              createdAt: originalUser.createdAt,
+              updatedAt: new Date().toISOString(),
+              lastLogin: originalUser.lastLogin
             };
             console.log('✅ Usuário editado:', this.users[userIndex]);
           }
