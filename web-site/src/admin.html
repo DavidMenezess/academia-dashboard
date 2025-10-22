@@ -503,16 +503,29 @@
         const user = this.users.find(u => u.id === userId);
         if (!user) return;
         
+        console.log('🔍 Editando usuário:', user);
+        
         this.editingUserId = userId;
         document.getElementById('modalTitle').textContent = 'Editar Usuário';
         document.getElementById('userName').value = user.name;
         document.getElementById('userUsername').value = user.username;
         document.getElementById('userPassword').value = user.password;
         document.getElementById('userRole').value = user.role;
-        document.getElementById('userCategory').value = user.category;
         document.getElementById('userActive').checked = user.isActive;
         
+        // Atualizar opções de categoria baseado no role
         this.updateCategoryOptions();
+        
+        // DEFINIR o valor correto APÓS atualizar as opções
+        document.getElementById('userCategory').value = user.category;
+        
+        console.log('✅ Valores definidos:', {
+          name: user.name,
+          username: user.username,
+          role: user.role,
+          category: user.category
+        });
+        
         document.getElementById('userModal').style.display = 'block';
       }
       
@@ -721,9 +734,19 @@
           const openTime = new Date(report.openTime).toLocaleString('pt-BR');
           const closeTime = new Date(report.closeTime).toLocaleString('pt-BR');
           
+          // Mapear categoria para nome amigável
+          const categoryNames = {
+            'caixa-manha': 'Caixa Manhã',
+            'caixa-tarde': 'Caixa Tarde', 
+            'caixa-noite': 'Caixa Noite',
+            'admin': 'Administrador'
+          };
+          
+          const friendlyCategory = categoryNames[report.category] || report.category;
+          
           html += `
             <div class="report-card" style="border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 8px;">
-              <h3>📊 ${report.category.toUpperCase()} - ${report.cashier}</h3>
+              <h3>📊 ${friendlyCategory} - ${report.cashier}</h3>
               <div class="report-info">
                 <p><strong>⏰ Abertura:</strong> ${openTime}</p>
                 <p><strong>⏰ Fechamento:</strong> ${closeTime}</p>
