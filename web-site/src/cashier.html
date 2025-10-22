@@ -1228,11 +1228,32 @@
         const productName = document.getElementById('productName').value;
         const quantity = parseInt(document.getElementById('quantity').value);
         const unitPrice = parseFloat(document.getElementById('unitPrice').value);
-        const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value;
         const observations = document.getElementById('observations').value;
         
-        if (!productName || !unitPrice || !paymentMethod) {
-          alert('Por favor, preencha todos os campos obrigatórios.');
+        // Obter métodos de pagamento selecionados
+        const selectedPaymentMethods = [];
+        document.querySelectorAll('input[name="payment"]:checked').forEach(checkbox => {
+          selectedPaymentMethods.push(checkbox.value);
+        });
+        
+        // Obter valores de pagamento
+        const receivedAmount = parseFloat(document.getElementById('receivedAmount').value) || 0;
+        const pixAmount = parseFloat(document.getElementById('pixAmount').value) || 0;
+        const totalReceived = receivedAmount + pixAmount;
+        
+        if (!productName || !unitPrice || selectedPaymentMethods.length === 0) {
+          alert('Por favor, preencha todos os campos obrigatórios e selecione pelo menos um método de pagamento.');
+          return;
+        }
+        
+        // Validar valores de pagamento
+        if (selectedPaymentMethods.includes('money') && receivedAmount <= 0) {
+          alert('Digite o valor recebido em dinheiro.');
+          return;
+        }
+        
+        if (selectedPaymentMethods.includes('pix') && pixAmount <= 0) {
+          alert('Digite o valor do PIX.');
           return;
         }
         
@@ -1246,7 +1267,11 @@
           quantity,
           unitPrice,
           total,
-          paymentMethod,
+          paymentMethods: selectedPaymentMethods,
+          receivedAmount,
+          pixAmount,
+          totalReceived,
+          changeAmount: selectedPaymentMethods.includes('money') ? receivedAmount - total : 0,
           observations,
           type: this.currentSaleType
         };
@@ -1272,7 +1297,13 @@
               <div class="cart-item-info">
                 <div class="cart-item-name">${item.product}</div>
                 <div class="cart-item-details">
-                  ${item.customerName} - Qtd: ${item.quantity} - ${item.paymentMethod.toUpperCase()}
+                  ${item.customerName} - Qtd: ${item.quantity} - ${item.paymentMethods.join(' + ').toUpperCase()}
+                </div>
+                <div class="cart-item-payment">
+                  ${item.receivedAmount > 0 ? `💵 Dinheiro: R$ ${item.receivedAmount.toFixed(2)}` : ''}
+                  ${item.pixAmount > 0 ? `💳 PIX: R$ ${item.pixAmount.toFixed(2)}` : ''}
+                  ${item.changeAmount > 0 ? `💰 Troco: R$ ${item.changeAmount.toFixed(2)}` : ''}
+                  ${item.changeAmount < 0 ? `⚠️ Falta: R$ ${Math.abs(item.changeAmount).toFixed(2)}` : ''}
                 </div>
               </div>
               <div class="cart-item-price">R$ ${item.total.toFixed(2)}</div>
@@ -1317,16 +1348,40 @@
         
         // Calcular troco se necessário
         let change = 0;
-        if (paymentMethod === 'money') {
-          const receivedAmount = parseFloat(document.getElementById('receivedAmount').value) || 0;
+        let receivedAmount = 0;
+        let pixAmount = 0;
+        
+        // Verificar se dinheiro está selecionado
+        const moneySelected = document.getElementById('money').checked;
+        if (moneySelected) {
+          receivedAmount = parseFloat(document.getElementById('receivedAmount').value) || 0;
           if (receivedAmount <= 0) {
             alert('Digite o valor recebido em dinheiro.');
             return;
           }
-          if (receivedAmount < total) {
-            alert('Valor recebido insuficiente. Total: R$ ' + total.toFixed(2) + ', Recebido: R$ ' + receivedAmount.toFixed(2));
+        }
+        
+        // Verificar se PIX está selecionado
+        const pixSelected = document.getElementById('pix').checked;
+        if (pixSelected) {
+          pixAmount = parseFloat(document.getElementById('pixAmount').value) || 0;
+          if (pixAmount <= 0) {
+            alert('Digite o valor do PIX.');
             return;
           }
+        }
+        
+        // Calcular total recebido
+        const totalReceived = receivedAmount + pixAmount;
+        
+        // Verificar se valor é suficiente
+        if (totalReceived > 0 && totalReceived < total) {
+          alert('Valor recebido insuficiente. Total: R$ ' + total.toFixed(2) + ', Recebido: R$ ' + totalReceived.toFixed(2));
+          return;
+        }
+        
+        // Calcular troco apenas se dinheiro estiver selecionado
+        if (moneySelected) {
           change = receivedAmount - total;
         }
         
@@ -1338,9 +1393,11 @@
           cashier: this.currentUser ? this.currentUser.name : 'Sistema',
           items: [...this.cart],
           total,
-          paymentMethod,
+          paymentMethods: this.currentPaymentMethods || [paymentMethod],
           changeAmount: change,
-          receivedAmount: paymentMethod === 'money' ? parseFloat(document.getElementById('receivedAmount').value) : total,
+          receivedAmount: receivedAmount,
+          pixAmount: pixAmount,
+          totalReceived: totalReceived,
           status: 'completed'
         };
         
