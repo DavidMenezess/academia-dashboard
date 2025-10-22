@@ -406,8 +406,20 @@
       loadUsers() {
         const storedUsers = localStorage.getItem('academia_users');
         const users = storedUsers ? JSON.parse(storedUsers) : [];
-        console.log('🔍 Usuários carregados:', users);
-        return users;
+        
+        // Verificar se há dados corrompidos
+        const validUsers = users.filter(user => 
+          user && user.id && user.name && user.username && user.role
+        );
+        
+        if (validUsers.length !== users.length) {
+          console.warn('⚠️ Dados corrompidos detectados, limpando...');
+          this.users = validUsers;
+          this.saveUsers();
+        }
+        
+        console.log('🔍 Usuários carregados:', validUsers);
+        return validUsers;
       }
       
       saveUsers() {
@@ -701,11 +713,19 @@
         const reports = JSON.parse(localStorage.getItem('academia_cash_reports') || '[]');
         const today = new Date().toDateString();
         
+        console.log('🔍 Debug showCashReports:', {
+          allReports: reports,
+          today: today,
+          reportsCount: reports.length
+        });
+        
         // Filtrar relatórios de hoje
         const todayReports = reports.filter(report => {
           const reportDate = new Date(report.closeTime).toDateString();
           return reportDate === today;
         });
+        
+        console.log('🔍 Relatórios de hoje:', todayReports);
         
         // Calcular totais
         const totalValue = todayReports.reduce((sum, report) => sum + report.totalSales, 0);

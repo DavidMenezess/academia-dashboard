@@ -1587,6 +1587,10 @@
       
       saveCashReport() {
         console.log('📊 Salvando relatório do caixa...');
+        
+        // Forçar atualização do usuário atual
+        this.currentUser = this.getCurrentUser();
+        
         console.log('🔍 Debug saveCashReport:', {
           currentCategory: this.currentCategory,
           currentUser: this.currentUser,
