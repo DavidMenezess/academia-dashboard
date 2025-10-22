@@ -742,6 +742,8 @@
       }
       
       editUser(userId) {
+        console.log('🔍 Iniciando edição do usuário ID:', userId);
+        
         // Recarregar usuários para garantir dados atualizados
         this.users = this.loadUsers();
         
@@ -751,13 +753,14 @@
           return;
         }
         
-        console.log('🔍 Editando usuário:', user);
-        console.log('🔍 Todos os usuários:', this.users);
+        console.log('🔍 Usuário encontrado:', user);
+        console.log('🔍 Todos os usuários antes da edição:', this.users);
         
+        // Definir o usuário sendo editado
         this.editingUserId = userId;
         document.getElementById('modalTitle').textContent = 'Editar Usuário';
         
-        // Limpar campos antes de preencher
+        // Limpar TODOS os campos antes de preencher
         document.getElementById('userName').value = '';
         document.getElementById('userUsername').value = '';
         document.getElementById('userPassword').value = '';
@@ -772,7 +775,14 @@
         document.getElementById('userRole').value = user.role || '';
         document.getElementById('userActive').checked = user.isActive || false;
         
-        // Atualizar opções de categoria baseado no role PRIMEIRO
+        console.log('🔍 Campos preenchidos:', {
+          name: user.name,
+          username: user.username,
+          role: user.role,
+          isActive: user.isActive
+        });
+        
+        // Atualizar opções de categoria baseado no role
         this.updateCategoryOptions();
         
         // Aguardar um tick para garantir que as opções foram criadas
@@ -781,15 +791,14 @@
           document.getElementById('userCategory').value = user.category || '';
           
           console.log('✅ Categoria definida:', user.category);
+          console.log('✅ Valores finais no modal:', {
+            name: document.getElementById('userName').value,
+            username: document.getElementById('userUsername').value,
+            role: document.getElementById('userRole').value,
+            category: document.getElementById('userCategory').value,
+            isActive: document.getElementById('userActive').checked
+          });
         }, 10);
-        
-        console.log('✅ Valores definidos:', {
-          name: user.name,
-          username: user.username,
-          role: user.role,
-          category: user.category,
-          isActive: user.isActive
-        });
         
         document.getElementById('userModal').style.display = 'block';
       }
@@ -822,12 +831,21 @@
       }
       
       saveUser() {
-        const name = document.getElementById('userName').value;
-        const username = document.getElementById('userUsername').value;
-        const password = document.getElementById('userPassword').value;
+        const name = document.getElementById('userName').value.trim();
+        const username = document.getElementById('userUsername').value.trim();
+        const password = document.getElementById('userPassword').value.trim();
         const role = document.getElementById('userRole').value;
         const category = document.getElementById('userCategory').value;
         const isActive = document.getElementById('userActive').checked;
+        
+        console.log('🔍 Salvando usuário:', {
+          editingUserId: this.editingUserId,
+          name,
+          username,
+          role,
+          category,
+          isActive
+        });
         
         if (!name || !username || !password) {
           this.showAlert('Por favor, preencha todos os campos obrigatórios!', 'error');
@@ -842,9 +860,9 @@
         }
         
         if (this.editingUserId) {
-          // Editar usuário existente
+          // Editar usuário existente - APENAS o usuário específico
           const userIndex = this.users.findIndex(u => u.id === this.editingUserId);
-          console.log('🔍 Editando usuário:', {
+          console.log('🔍 Editando usuário específico:', {
             editingUserId: this.editingUserId,
             userIndex,
             oldUser: this.users[userIndex],
@@ -856,9 +874,9 @@
             const originalUser = this.users[userIndex];
             this.users[userIndex] = {
               id: originalUser.id,
-              name: name.trim(),
-              username: username.trim(),
-              password: password.trim(),
+              name: name,
+              username: username,
+              password: password,
               role: role,
               category: category,
               isActive: isActive,
@@ -867,10 +885,7 @@
               lastLogin: originalUser.lastLogin
             };
             console.log('✅ Usuário editado:', this.users[userIndex]);
-            
-            // Forçar salvamento imediato
-            this.saveUsers();
-            console.log('💾 Dados salvos no localStorage');
+            console.log('🔍 Todos os usuários após edição:', this.users);
           }
         } else {
           // Criar novo usuário
@@ -886,11 +901,14 @@
               ['add_sales', 'view_daily_reports', 'manage_products'],
             lastLogin: null,
             createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
             isActive
           };
           this.users.push(newUser);
+          console.log('✅ Novo usuário criado:', newUser);
         }
         
+        // Salvar apenas uma vez
         this.saveUsers();
         this.loadUsersTable();
         this.updateStats();
