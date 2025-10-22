@@ -297,6 +297,7 @@
         <button class="btn" onclick="refreshUsers()">🔄 Atualizar Lista</button>
         <button class="btn" onclick="exportUsers()">📤 Exportar Dados</button>
         <button class="btn btn-warning" onclick="adminSystem.clearCorruptedData()">🧹 Limpar Dados Corrompidos</button>
+        <button class="btn btn-danger" onclick="adminSystem.resetAllData()">🔄 Resetar Todos os Dados</button>
       </div>
     </div>
 
@@ -585,6 +586,74 @@
         this.showAlert('Dados corrompidos limpos e usuários recriados!', 'success');
       }
       
+      resetAllData() {
+        console.log('🔄 Resetando todos os dados...');
+        
+        // Limpar todos os dados do localStorage
+        localStorage.removeItem('academia_users');
+        localStorage.removeItem('academia_cash_reports');
+        localStorage.removeItem('academia_sales');
+        localStorage.removeItem('academia_cash_control');
+        
+        // Recriar usuários com dados limpos
+        const cleanUsers = [
+          {
+            id: 1,
+            name: 'Administrador',
+            username: 'admin',
+            password: 'admin123',
+            role: 'admin',
+            category: 'admin',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            id: 2,
+            name: 'David Menezes',
+            username: 'david',
+            password: 'caixa123',
+            role: 'cashier',
+            category: 'caixa-manha',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            id: 3,
+            name: 'Larissa Santos',
+            username: 'larissa',
+            password: 'caixa123',
+            role: 'cashier',
+            category: 'caixa-tarde',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            id: 4,
+            name: 'Junior Silva',
+            username: 'junior',
+            password: 'caixa123',
+            role: 'cashier',
+            category: 'caixa-noite',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          }
+        ];
+        
+        this.users = cleanUsers;
+        this.saveUsers();
+        
+        // Recarregar interface
+        this.loadUsersTable();
+        this.updateStats();
+        
+        console.log('✅ Todos os dados resetados com sucesso!');
+        this.showAlert('Todos os dados foram resetados com sucesso!', 'success');
+      }
+      
       setupEventListeners() {
         document.getElementById('userForm').addEventListener('submit', (e) => {
           e.preventDefault();
@@ -703,11 +772,16 @@
         document.getElementById('userRole').value = user.role || '';
         document.getElementById('userActive').checked = user.isActive || false;
         
-        // Atualizar opções de categoria baseado no role
+        // Atualizar opções de categoria baseado no role PRIMEIRO
         this.updateCategoryOptions();
         
-        // DEFINIR o valor correto APÓS atualizar as opções
-        document.getElementById('userCategory').value = user.category || '';
+        // Aguardar um tick para garantir que as opções foram criadas
+        setTimeout(() => {
+          // DEFINIR o valor correto APÓS atualizar as opções
+          document.getElementById('userCategory').value = user.category || '';
+          
+          console.log('✅ Categoria definida:', user.category);
+        }, 10);
         
         console.log('✅ Valores definidos:', {
           name: user.name,
@@ -724,6 +798,9 @@
         const role = document.getElementById('userRole').value;
         const categorySelect = document.getElementById('userCategory');
         
+        // Salvar o valor atual antes de limpar
+        const currentValue = categorySelect.value;
+        
         categorySelect.innerHTML = '';
         
         if (role === 'admin') {
@@ -735,6 +812,13 @@
             <option value="caixa-noite">Caixa Noite</option>
           `;
         }
+        
+        // Restaurar o valor se for válido para o novo role
+        if (currentValue && categorySelect.querySelector(`option[value="${currentValue}"]`)) {
+          categorySelect.value = currentValue;
+        }
+        
+        console.log('🔧 Opções de categoria atualizadas para role:', role);
       }
       
       saveUser() {
