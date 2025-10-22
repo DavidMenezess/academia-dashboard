@@ -127,3 +127,5 @@ docker logs -f web-site-academia-dashboard
 ### **🔍 Para verificar:**
 - **Local:** Execute `check-status.bat`
 - **EC2:** Execute `docker ps`
+
+

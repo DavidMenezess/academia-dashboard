@@ -107,3 +107,5 @@ try {
     echo "   4. Verifique os logs: docker logs web-site-academia-dashboard"
     echo "   5. Reinicie manualmente: docker-compose -f docker-compose.prod.yml restart"
 }
+
+

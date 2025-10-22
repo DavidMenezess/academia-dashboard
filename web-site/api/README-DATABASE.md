@@ -221,3 +221,5 @@ export AWS_REGION=us-east-1
 5. **Teste a API:** `curl http://localhost:3000/api/health`
 
 **Agora seu sistema tem persistência de dados sem custos!** 🎉
+
+

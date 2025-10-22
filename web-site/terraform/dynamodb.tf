@@ -169,3 +169,5 @@ output "iam_role_arn" {
   description = "ARN da role IAM para EC2"
   value       = aws_iam_role.ec2_dynamodb_role.arn
 }
+
+

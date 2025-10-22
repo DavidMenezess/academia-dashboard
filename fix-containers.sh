@@ -177,3 +177,5 @@ log "- Ver logs: docker-compose -f docker-compose.prod.yml logs"
 log "- Reiniciar: docker-compose -f docker-compose.prod.yml restart"
 log "- Parar: docker-compose -f docker-compose.prod.yml down"
 log "========================================="
+
+

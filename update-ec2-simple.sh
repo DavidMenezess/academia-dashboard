@@ -23,3 +23,5 @@ echo "✅ Atualização concluída!"
 echo "🌐 Sistema disponível em: http://$(curl -s ifconfig.me)"
 echo "📊 Status dos containers:"
 docker ps
+
+
