@@ -1124,6 +1124,7 @@
       }
       
       selectSaleType(type) {
+        console.log('🎯 Selecionando tipo de venda:', type);
         this.currentSaleType = type;
         
         // Remover classe active de todos os cards
@@ -1139,6 +1140,8 @@
         
         // Mostrar formulário
         document.getElementById('saleForm').classList.remove('hidden');
+        
+        console.log('✅ Tipo de venda definido:', this.currentSaleType);
       }
       
       autoFillSaleFields(type) {
@@ -1336,6 +1339,12 @@
           saleType: this.currentSaleType // Garantir que o tipo seja salvo
         };
         
+        console.log('🛒 Adicionando ao carrinho:', {
+          currentSaleType: this.currentSaleType,
+          cartItemType: cartItem.type,
+          product: productName
+        });
+        
         this.cart.push(cartItem);
         this.updateCartDisplay();
         this.clearForm();
@@ -1432,12 +1441,18 @@
           cashier: this.currentUser ? this.currentUser.name : 'Sistema',
           items: [...this.cart],
           total,
-          type: this.currentSaleType, // Incluir tipo da venda
+          type: this.currentSaleType || this.cart[0]?.type || 'produto', // Garantir tipo correto
           paymentMethods: paymentMethods,
           changeAmount: change,
           receivedAmount: receivedAmount,
           status: 'completed'
         };
+        
+        console.log('🔍 Debug finalizeSale:', {
+          currentSaleType: this.currentSaleType,
+          cartItemType: this.cart[0]?.type,
+          finalType: sale.type
+        });
         
         console.log('💾 Salvando venda:', sale);
         this.sales.push(sale);
