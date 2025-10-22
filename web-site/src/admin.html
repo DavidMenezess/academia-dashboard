@@ -435,7 +435,7 @@
             this.saveUsers();
           }
           
-          // Verificar se há nomes duplicados e corrigir
+          // Verificar se há nomes duplicados e corrigir apenas se necessário
           const nameCounts = {};
           validUsers.forEach(user => {
             if (nameCounts[user.name]) {
@@ -450,6 +450,8 @@
           if (duplicatedNames.length > 0) {
             console.warn('⚠️ Nomes duplicados detectados:', duplicatedNames);
             this.fixDuplicateNames(validUsers);
+          } else {
+            console.log('✅ Nenhum nome duplicado encontrado');
           }
           
           console.log('🔍 Usuários carregados:', validUsers);
@@ -480,30 +482,43 @@
       }
       
       fixDuplicateNames(users) {
-        console.log('🔧 Corrigindo nomes duplicados...');
+        console.log('🔧 Verificando nomes duplicados...');
         
-        // Mapear nomes originais para cada categoria
-        const categoryNames = {
-          'caixa-manha': 'Caixa Manhã',
-          'caixa-tarde': 'Caixa Tarde', 
-          'caixa-noite': 'Caixa Noite'
-        };
-        
-        // Corrigir nomes baseado na categoria
+        // Verificar se há nomes realmente duplicados (mesmo nome para usuários diferentes)
+        const nameCounts = {};
         users.forEach(user => {
-          if (user.category && categoryNames[user.category]) {
-            const categoryName = categoryNames[user.category];
-            if (user.name !== categoryName) {
-              console.log(`🔧 Corrigindo nome do usuário ${user.id}: "${user.name}" -> "${categoryName}"`);
-              user.name = categoryName;
-            }
+          if (nameCounts[user.name]) {
+            nameCounts[user.name]++;
+          } else {
+            nameCounts[user.name] = 1;
           }
         });
         
-        // Salvar correções
-        this.users = users;
-        this.saveUsers();
-        console.log('✅ Nomes duplicados corrigidos!');
+        // Apenas corrigir se houver nomes realmente duplicados
+        const duplicatedNames = Object.keys(nameCounts).filter(name => nameCounts[name] > 1);
+        
+        if (duplicatedNames.length > 0) {
+          console.warn('⚠️ Nomes duplicados detectados:', duplicatedNames);
+          
+          // Corrigir apenas nomes que são realmente duplicados
+          duplicatedNames.forEach(duplicatedName => {
+            const usersWithSameName = users.filter(user => user.name === duplicatedName);
+            usersWithSameName.forEach((user, index) => {
+              if (index > 0) { // Manter o primeiro, corrigir os outros
+                const newName = `${user.name} ${index + 1}`;
+                console.log(`🔧 Corrigindo nome duplicado do usuário ${user.id}: "${user.name}" -> "${newName}"`);
+                user.name = newName;
+              }
+            });
+          });
+          
+          // Salvar correções apenas se houve mudanças
+          this.users = users;
+          this.saveUsers();
+          console.log('✅ Nomes duplicados corrigidos!');
+        } else {
+          console.log('✅ Nenhum nome duplicado encontrado');
+        }
       }
       
       clearCorruptedData() {
@@ -512,7 +527,7 @@
         // Limpar dados corrompidos
         localStorage.removeItem('academia_users');
         
-        // Recriar usuários padrão
+        // Recriar usuários padrão com nomes únicos
         const defaultUsers = [
           {
             id: 1,
@@ -527,8 +542,8 @@
           },
           {
             id: 2,
-            name: 'Caixa Manhã',
-            username: 'caixa_manha',
+            name: 'David Menezes',
+            username: 'david',
             password: 'caixa123',
             role: 'cashier',
             category: 'caixa-manha',
@@ -538,8 +553,8 @@
           },
           {
             id: 3,
-            name: 'Caixa Tarde',
-            username: 'caixa_tarde',
+            name: 'Larissa Santos',
+            username: 'larissa',
             password: 'caixa123',
             role: 'cashier',
             category: 'caixa-tarde',
@@ -549,8 +564,8 @@
           },
           {
             id: 4,
-            name: 'Caixa Noite',
-            username: 'caixa_noite',
+            name: 'Junior Silva',
+            username: 'junior',
             password: 'caixa123',
             role: 'cashier',
             category: 'caixa-noite',
@@ -563,6 +578,11 @@
         this.users = defaultUsers;
         this.saveUsers();
         console.log('✅ Dados limpos e usuários padrão criados!');
+        
+        // Recarregar a tabela
+        this.loadUsersTable();
+        this.updateStats();
+        this.showAlert('Dados corrompidos limpos e usuários recriados!', 'success');
       }
       
       setupEventListeners() {
