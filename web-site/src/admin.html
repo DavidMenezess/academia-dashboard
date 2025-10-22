@@ -1000,15 +1000,30 @@
           }
           
           // Extrair métodos de pagamento
+          let rawPaymentMethods = [];
           if (sale.payment_methods && Array.isArray(sale.payment_methods)) {
-            paymentMethods = sale.payment_methods.join(', ');
+            rawPaymentMethods = sale.payment_methods;
           } else if (sale.payment_method) {
-            paymentMethods = sale.payment_method;
+            rawPaymentMethods = [sale.payment_method];
           } else if (sale.paymentMethods && Array.isArray(sale.paymentMethods)) {
-            paymentMethods = sale.paymentMethods.join(', ');
+            rawPaymentMethods = sale.paymentMethods;
           } else {
-            paymentMethods = 'Não especificado';
+            rawPaymentMethods = ['Não especificado'];
           }
+          
+          // Traduzir métodos de pagamento para português
+          const paymentTranslations = {
+            'pix': 'PIX',
+            'money': 'Dinheiro',
+            'debit': 'Débito',
+            'credit': 'Crédito',
+            'cash': 'Dinheiro',
+            'card': 'Cartão'
+          };
+          
+          paymentMethods = rawPaymentMethods.map(method => 
+            paymentTranslations[method.toLowerCase()] || method
+          ).join(', ');
           
           // Extrair troco
           if (sale.change_amount !== undefined && sale.change_amount !== null) {
