@@ -1392,12 +1392,18 @@
         });
         document.getElementById('saleForm').classList.add('hidden');
         document.getElementById('changeGroup').style.display = 'none';
-        this.currentSaleType = null;
+        // NÃO resetar currentSaleType aqui - será resetado apenas quando necessário
+        console.log('🧹 Formulário limpo, mantendo tipo:', this.currentSaleType);
       }
       
       clearCart() {
         this.cart = [];
         this.updateCartDisplay();
+      }
+      
+      resetSaleType() {
+        this.currentSaleType = null;
+        console.log('🔄 Tipo de venda resetado');
       }
       
       finalizeSale() {
@@ -1466,6 +1472,9 @@
         
         // Limpar carrinho
         this.clearCart();
+        
+        // Resetar tipo de venda APÓS salvar
+        this.resetSaleType();
         
         // Atualizar estatísticas
         this.updateStats();
