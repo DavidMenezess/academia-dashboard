@@ -747,33 +747,32 @@
         // Buscar dados de vendas atuais
         const sales = JSON.parse(localStorage.getItem('academia_sales') || '[]');
         const cashControl = JSON.parse(localStorage.getItem('academia_cash_control') || '{}');
+        const period = document.getElementById('reportPeriod')?.value || 'today';
         
         console.log('📊 Vendas encontradas:', sales.length);
         console.log('💰 Controle de caixa:', cashControl);
+        console.log('📅 Período selecionado:', period);
         
-        // Filtrar vendas de hoje por categoria
-        const today = new Date().toDateString();
-        const todaySales = sales.filter(sale => 
-          new Date(sale.timestamp).toDateString() === today
-        );
+        // Filtrar vendas pelo período selecionado
+        const filteredSales = this.filterSalesByPeriod(sales, period);
         
-        console.log('📊 Vendas de hoje:', todaySales.length);
+        console.log('📊 Vendas filtradas:', filteredSales.length);
         
-        // Calcular valores por caixa (incluindo caixas abertos)
-        const morningSales = todaySales.filter(sale => sale.category === 'caixa-manha');
-        const afternoonSales = todaySales.filter(sale => sale.category === 'caixa-tarde');
-        const nightSales = todaySales.filter(sale => sale.category === 'caixa-noite');
+        // Calcular valores por caixa
+        const morningSales = filteredSales.filter(sale => sale.category === 'caixa-manha');
+        const afternoonSales = filteredSales.filter(sale => sale.category === 'caixa-tarde');
+        const nightSales = filteredSales.filter(sale => sale.category === 'caixa-noite');
         
         let morningValue = morningSales.reduce((sum, sale) => sum + (sale.total || 0), 0);
         let afternoonValue = afternoonSales.reduce((sum, sale) => sum + (sale.total || 0), 0);
         let nightValue = nightSales.reduce((sum, sale) => sum + (sale.total || 0), 0);
         
-        // Se o caixa estiver aberto, incluir vendas atuais
-        if (cashControl.isOpen && cashControl.category) {
+        // Se o caixa estiver aberto E for período "hoje", incluir vendas atuais
+        if (cashControl.isOpen && cashControl.category && period === 'today') {
           const currentCategory = cashControl.category;
           const currentSales = cashControl.todaySales || 0;
           
-          console.log('💰 Caixa aberto:', {
+          console.log('💰 Caixa aberto (apenas para hoje):', {
             category: currentCategory,
             currentSales: currentSales
           });
@@ -794,7 +793,8 @@
           morningValue,
           afternoonValue,
           nightValue,
-          totalValue
+          totalValue,
+          period
         });
         
         // Atualizar elementos
@@ -803,7 +803,7 @@
         this.updateElement('nightCashValue', `R$ ${nightValue.toFixed(2)}`);
         this.updateElement('totalCashValue', `R$ ${totalValue.toFixed(2)}`);
         
-        // Atualizar contagem de relatórios (incluindo caixas abertos)
+        // Atualizar contagem de relatórios
         const totalReports = this.getTotalReportsCount();
         this.updateElement('totalCashReports', totalReports);
       }
@@ -821,6 +821,112 @@
         }
         
         return count;
+      }
+      
+      filterSalesByPeriod(sales, period) {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        console.log('🔍 Filtering sales by period:', {
+          period,
+          totalSales: sales.length,
+          today: today.toLocaleDateString()
+        });
+        
+        switch (period) {
+          case 'today':
+            console.log('🔍 Filtering for today');
+            return sales.filter(sale => {
+              const saleDate = new Date(sale.timestamp);
+              const saleDateOnly = new Date(saleDate.getFullYear(), saleDate.getMonth(), saleDate.getDate());
+              const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+              const isToday = saleDateOnly.getTime() === todayOnly.getTime();
+              
+              console.log('🔍 Today sale check:', {
+                saleTimestamp: sale.timestamp,
+                saleDate: saleDate.toLocaleDateString(),
+                today: today.toLocaleDateString(),
+                isToday
+              });
+              
+              return isToday;
+            });
+            
+          case 'week':
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - today.getDay());
+            return sales.filter(sale => {
+              const saleDate = new Date(sale.timestamp);
+              return saleDate >= weekStart && saleDate <= now;
+            });
+            
+          case 'month':
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            return sales.filter(sale => {
+              const saleDate = new Date(sale.timestamp);
+              return saleDate >= monthStart && saleDate <= now;
+            });
+            
+          case 'year':
+            const yearStart = new Date(now.getFullYear(), 0, 1);
+            return sales.filter(sale => {
+              const saleDate = new Date(sale.timestamp);
+              return saleDate >= yearStart && saleDate <= now;
+            });
+            
+          case 'custom':
+            const startDate = document.getElementById('startDate')?.value;
+            const endDate = document.getElementById('endDate')?.value;
+            
+            console.log('🔍 Custom period dates:', { startDate, endDate });
+            
+            if (!startDate || !endDate) {
+              console.log('⚠️ Custom dates not provided, returning all sales');
+              return sales;
+            }
+            
+            // Criar datas corretamente (sem timezone UTC)
+            const start = new Date(startDate + 'T00:00:00');
+            const end = new Date(endDate + 'T23:59:59');
+            
+            console.log('🔍 Date range:', { 
+              startDate, 
+              endDate, 
+              start: start.toISOString(), 
+              end: end.toISOString(),
+              startLocal: start.toLocaleDateString(),
+              endLocal: end.toLocaleDateString()
+            });
+            
+            const filteredSales = sales.filter(sale => {
+              const saleDate = new Date(sale.timestamp);
+              
+              // Comparar apenas a data (ignorar hora)
+              const saleDateOnly = new Date(saleDate.getFullYear(), saleDate.getMonth(), saleDate.getDate());
+              const startDateOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+              const endDateOnly = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+              
+              const isInRange = saleDateOnly >= startDateOnly && saleDateOnly <= endDateOnly;
+              
+              console.log('🔍 Sale date check:', {
+                saleTimestamp: sale.timestamp,
+                saleDate: saleDate.toISOString(),
+                saleDateOnly: saleDateOnly.toLocaleDateString(),
+                startDateOnly: startDateOnly.toLocaleDateString(),
+                endDateOnly: endDateOnly.toLocaleDateString(),
+                isInRange,
+                saleTotal: sale.total
+              });
+              
+              return isInRange;
+            });
+            
+            console.log('🔍 Filtered sales count:', filteredSales.length);
+            return filteredSales;
+            
+          default:
+            return sales;
+        }
       }
       
       filterReportsByPeriod(reports, period) {
