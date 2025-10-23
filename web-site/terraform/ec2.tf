@@ -26,8 +26,8 @@ resource "aws_instance" "academia_dashboard" {
   # Monitoramento (desabilitado para Free Tier)
   monitoring = var.enable_detailed_monitoring
 
-  # User Data - Script de inicialização compacto
-  user_data = base64encode(templatefile("${path.module}/user-data-compact-fixed.sh", {
+  # User Data - Script de inicialização robusto
+  user_data = base64encode(templatefile("${path.module}/user-data-robust.sh", {
     aws_region = var.aws_region
   }))
 
