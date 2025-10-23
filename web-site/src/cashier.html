@@ -1428,7 +1428,7 @@
           this.clearForm();
           
           console.log('✅ Avaliação adicionada ao carrinho:', cartItem);
-          alert(`Avaliação #${evaluationNumber} do instrutor ${instructorName} adicionada com sucesso!`);
+          alert(`Avaliação ${evaluationNumber} do instrutor ${instructorName} adicionada com sucesso!`);
           return;
         }
         
@@ -1564,6 +1564,8 @@
               timestamp: new Date().toISOString(),
               category: this.currentCategory,
               cashier: this.currentUser ? this.currentUser.name : 'Sistema',
+              customerName: evaluation.customerName,
+              customerDocument: evaluation.customerDocument,
               items: [evaluation],
               total: 0, // Avaliações não têm valor
               type: 'evaluation',
