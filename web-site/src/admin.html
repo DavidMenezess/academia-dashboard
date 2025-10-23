@@ -775,15 +775,28 @@
               return reports;
             }
             
-            // Criar datas corretamente
-            const start = new Date(startDate + 'T00:00:00.000Z');
-            const end = new Date(endDate + 'T23:59:59.999Z');
+            // Criar datas corretamente (sem timezone UTC)
+            const start = new Date(startDate + 'T00:00:00');
+            const end = new Date(endDate + 'T23:59:59');
+            const today = new Date();
+            const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            
+            // Validar se a data inicial não é futura
+            const startDateOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+            if (startDateOnly > todayOnly) {
+              console.log('⚠️ Start date is in the future, returning empty array');
+              return [];
+            }
             
             console.log('🔍 Date range:', { 
               startDate, 
               endDate, 
               start: start.toISOString(), 
-              end: end.toISOString() 
+              end: end.toISOString(),
+              startLocal: start.toLocaleDateString(),
+              endLocal: end.toLocaleDateString(),
+              today: today.toLocaleDateString(),
+              isStartInFuture: startDateOnly > todayOnly
             });
             
             const filteredReports = reports.filter(report => {
@@ -799,9 +812,9 @@
               console.log('🔍 Report date check:', {
                 reportCloseTime: report.closeTime,
                 reportDate: reportDate.toISOString(),
-                reportDateOnly: reportDateOnly.toISOString(),
-                startDateOnly: startDateOnly.toISOString(),
-                endDateOnly: endDateOnly.toISOString(),
+                reportDateOnly: reportDateOnly.toLocaleDateString(),
+                startDateOnly: startDateOnly.toLocaleDateString(),
+                endDateOnly: endDateOnly.toLocaleDateString(),
                 isInRange,
                 reportCategory: report.category,
                 reportTotalSales: report.totalSales
