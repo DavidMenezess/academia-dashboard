@@ -686,7 +686,12 @@
         console.log('🔍 updateCashReportsStats called:', {
           totalReports: reports.length,
           selectedPeriod: period,
-          reports: reports
+          reports: reports.map(r => ({
+            category: r.category,
+            closeTime: r.closeTime,
+            totalSales: r.totalSales,
+            sales: r.sales?.length || 0
+          }))
         });
         
         // Debug: Mostrar todos os relatórios disponíveis
@@ -735,12 +740,33 @@
         
         switch (period) {
           case 'today':
-            return reports.filter(report => {
+            console.log('🔍 Filtering for today:', {
+              today: today.toISOString(),
+              todayLocal: today.toLocaleDateString(),
+              totalReports: reports.length
+            });
+            
+            const todayReports = reports.filter(report => {
               const reportDate = new Date(report.closeTime);
               const reportDateOnly = new Date(reportDate.getFullYear(), reportDate.getMonth(), reportDate.getDate());
               const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-              return reportDateOnly.getTime() === todayOnly.getTime();
+              const isToday = reportDateOnly.getTime() === todayOnly.getTime();
+              
+              console.log('🔍 Today report check:', {
+                reportCloseTime: report.closeTime,
+                reportDate: reportDate.toISOString(),
+                reportDateOnly: reportDateOnly.toLocaleDateString(),
+                todayOnly: todayOnly.toLocaleDateString(),
+                isToday,
+                reportCategory: report.category,
+                reportTotalSales: report.totalSales
+              });
+              
+              return isToday;
             });
+            
+            console.log('🔍 Today reports found:', todayReports.length);
+            return todayReports;
             
           case 'week':
             const weekStart = new Date(today);
@@ -778,15 +804,6 @@
             // Criar datas corretamente (sem timezone UTC)
             const start = new Date(startDate + 'T00:00:00');
             const end = new Date(endDate + 'T23:59:59');
-            const today = new Date();
-            const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-            
-            // Validar se a data inicial não é futura
-            const startDateOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-            if (startDateOnly > todayOnly) {
-              console.log('⚠️ Start date is in the future, returning empty array');
-              return [];
-            }
             
             console.log('🔍 Date range:', { 
               startDate, 
@@ -794,9 +811,7 @@
               start: start.toISOString(), 
               end: end.toISOString(),
               startLocal: start.toLocaleDateString(),
-              endLocal: end.toLocaleDateString(),
-              today: today.toLocaleDateString(),
-              isStartInFuture: startDateOnly > todayOnly
+              endLocal: end.toLocaleDateString()
             });
             
             const filteredReports = reports.filter(report => {
