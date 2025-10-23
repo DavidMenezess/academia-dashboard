@@ -26,8 +26,8 @@ COPY api/ /app/api/
 # Expor porta 80
 EXPOSE 80
 
-# Script de inicialização
-COPY docker-entrypoint.sh /docker-entrypoint.sh
+# Script de inicialização limpo
+COPY docker-entrypoint-clean.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 # Comando de inicialização
