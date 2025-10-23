@@ -697,6 +697,17 @@
         <div class="stat-value" id="todayBiweekly">0</div>
         <div class="stat-change">Quinzenas vendidas</div>
       </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">Avaliações</div>
+          <div class="stat-icon" style="background: var(--info-color);">
+            📋
+          </div>
+        </div>
+        <div class="stat-value" id="todayEvaluations">0</div>
+        <div class="stat-change">Avaliações realizadas</div>
+      </div>
     </div>
 
     <!-- Main Content -->
@@ -732,6 +743,12 @@
             <div class="sale-title">Quinzena</div>
             <div class="sale-description">Venda de quinzena</div>
           </div>
+          
+          <div class="sale-card" onclick="selectSaleType('evaluation')">
+            <div class="sale-icon">📋</div>
+            <div class="sale-title">Avaliação</div>
+            <div class="sale-description">Avaliação com instrutor</div>
+          </div>
         </div>
         
         <!-- Sale Form -->
@@ -750,6 +767,17 @@
           <div class="form-group" id="productGroup">
             <label class="form-label">Produto/Serviço</label>
             <input type="text" class="form-input" id="productName" placeholder="Digite o nome do produto/serviço" required>
+          </div>
+          
+          <!-- Campos específicos para avaliação -->
+          <div class="form-group" id="evaluationGroup" style="display: none;">
+            <label class="form-label">Nome do Instrutor</label>
+            <input type="text" class="form-input" id="instructorName" placeholder="Ex: Pedro, Maria, João...">
+          </div>
+          
+          <div class="form-group" id="evaluationNumberGroup" style="display: none;">
+            <label class="form-label">Número da Avaliação</label>
+            <input type="number" class="form-input" id="evaluationNumber" placeholder="Ex: 1, 2, 3..." min="1">
           </div>
           
           <div class="form-group">
@@ -1063,6 +1091,10 @@
           sale.type === 'biweekly' || sale.type === 'quinzena'
         ).length;
         
+        const evaluations = todaySales.filter(sale => 
+          sale.type === 'evaluation' || sale.type === 'avaliacao'
+        ).length;
+        
         // Logs de debug
         console.log('📊 Contabilização:', {
           totalSales,
@@ -1071,6 +1103,7 @@
           products,
           daily,
           biweekly,
+          evaluations,
           todaySales: todaySales.map(sale => ({ type: sale.type, total: sale.total }))
         });
         
@@ -1080,6 +1113,7 @@
         document.getElementById('todayProducts').textContent = products;
         document.getElementById('todayDaily').textContent = daily;
         document.getElementById('todayBiweekly').textContent = biweekly;
+        document.getElementById('todayEvaluations').textContent = evaluations;
       }
       
       updateCashControl() {
@@ -1148,6 +1182,14 @@
         const productField = document.getElementById('productName');
         const quantityField = document.getElementById('quantity');
         const unitPriceField = document.getElementById('unitPrice');
+        const evaluationGroup = document.getElementById('evaluationGroup');
+        const evaluationNumberGroup = document.getElementById('evaluationNumberGroup');
+        const instructorNameField = document.getElementById('instructorName');
+        const evaluationNumberField = document.getElementById('evaluationNumber');
+        
+        // Ocultar campos de avaliação por padrão
+        if (evaluationGroup) evaluationGroup.style.display = 'none';
+        if (evaluationNumberGroup) evaluationNumberGroup.style.display = 'none';
         
         switch(type) {
           case 'mensalidade':
@@ -1164,6 +1206,17 @@
             productField.value = 'Quinzena';
             quantityField.value = '1';
             unitPriceField.value = '40,00';
+            break;
+          case 'evaluation':
+            productField.value = 'Avaliação';
+            quantityField.value = '1';
+            unitPriceField.value = '50,00';
+            // Mostrar campos específicos de avaliação
+            if (evaluationGroup) evaluationGroup.style.display = 'block';
+            if (evaluationNumberGroup) evaluationNumberGroup.style.display = 'block';
+            // Limpar campos de avaliação
+            if (instructorNameField) instructorNameField.value = '';
+            if (evaluationNumberField) evaluationNumberField.value = '';
             break;
           case 'produto':
             productField.value = '';
@@ -1301,6 +1354,10 @@
         const unitPrice = parseFloat(document.getElementById('unitPrice').value);
         const observations = document.getElementById('observations').value;
         
+        // Campos específicos para avaliação
+        const instructorName = document.getElementById('instructorName').value;
+        const evaluationNumber = document.getElementById('evaluationNumber').value;
+        
         // Obter métodos de pagamento selecionados
         const selectedPaymentMethods = [];
         document.querySelectorAll('input[name="payment"]:checked').forEach(checkbox => {
@@ -1313,6 +1370,18 @@
         if (!productName || !unitPrice || selectedPaymentMethods.length === 0) {
           alert('Por favor, preencha todos os campos obrigatórios e selecione pelo menos um método de pagamento.');
           return;
+        }
+        
+        // Validação específica para avaliação
+        if (this.currentSaleType === 'evaluation') {
+          if (!instructorName.trim()) {
+            alert('Por favor, digite o nome do instrutor para a avaliação.');
+            return;
+          }
+          if (!evaluationNumber || evaluationNumber <= 0) {
+            alert('Por favor, digite um número válido para a avaliação.');
+            return;
+          }
         }
         
         // Validar valores de pagamento
@@ -1336,7 +1405,10 @@
           changeAmount: selectedPaymentMethods.includes('money') ? receivedAmount - total : 0,
           observations,
           type: this.currentSaleType,
-          saleType: this.currentSaleType // Garantir que o tipo seja salvo
+          saleType: this.currentSaleType, // Garantir que o tipo seja salvo
+          // Campos específicos para avaliação
+          instructorName: this.currentSaleType === 'evaluation' ? instructorName : null,
+          evaluationNumber: this.currentSaleType === 'evaluation' ? parseInt(evaluationNumber) : null
         };
         
         console.log('🛒 Adicionando ao carrinho:', {
@@ -1367,6 +1439,8 @@
                 <div class="cart-item-name">${item.product}</div>
                 <div class="cart-item-details">
                   ${item.customerName} - Qtd: ${item.quantity} - ${item.paymentMethods.join(' + ').toUpperCase()}
+                  ${item.instructorName ? `<br>👨‍🏫 Instrutor: ${item.instructorName}` : ''}
+                  ${item.evaluationNumber ? `<br>📋 Avaliação #${item.evaluationNumber}` : ''}
                 </div>
                 <div class="cart-item-payment">
                   ${item.receivedAmount > 0 ? `💵 Dinheiro: R$ ${item.receivedAmount.toFixed(2)}` : ''}

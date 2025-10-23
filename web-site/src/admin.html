@@ -274,6 +274,28 @@
         </div>
       </div>
 
+      <!-- Estatísticas de Avaliações -->
+      <div class="card">
+        <h2>📋 Avaliações por Instrutor</h2>
+        <div class="stats">
+          <div class="stat-item">
+            <div class="stat-number" id="totalEvaluations">0</div>
+            <div class="stat-label">Total de Avaliações</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="totalInstructors">0</div>
+            <div class="stat-label">Instrutores Ativos</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="avgEvaluationsPerInstructor">0</div>
+            <div class="stat-label">Média por Instrutor</div>
+          </div>
+        </div>
+        <button onclick="showEvaluationsReport()" style="margin-top: 15px; width: 100%; padding: 8px; background: #17a2b8; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          📊 Ver Relatório de Avaliações
+        </button>
+      </div>
+
       <!-- Relatórios de Caixa -->
       <div class="card">
         <h2>💼 Relatórios de Caixa</h2>
@@ -683,6 +705,161 @@
         
         // Atualizar estatísticas de relatórios de caixa (tempo real)
         this.updateRealTimeStats();
+        
+        // Atualizar estatísticas de avaliações
+        this.updateEvaluationsStats();
+      }
+      
+      updateEvaluationsStats() {
+        console.log('📊 Atualizando estatísticas de avaliações...');
+        
+        const sales = JSON.parse(localStorage.getItem('academia_sales') || '[]');
+        const period = document.getElementById('reportPeriod')?.value || 'today';
+        
+        // Filtrar vendas de avaliação pelo período
+        const evaluationSales = this.filterSalesByPeriod(sales, period).filter(sale => 
+          sale.type === 'evaluation' || sale.type === 'avaliacao'
+        );
+        
+        console.log('🔍 Vendas de avaliação filtradas:', evaluationSales);
+        
+        // Calcular estatísticas
+        const totalEvaluations = evaluationSales.length;
+        const instructors = [...new Set(evaluationSales.map(sale => sale.instructorName).filter(name => name))];
+        const totalInstructors = instructors.length;
+        const avgEvaluationsPerInstructor = totalInstructors > 0 ? (totalEvaluations / totalInstructors).toFixed(1) : 0;
+        
+        // Atualizar elementos
+        document.getElementById('totalEvaluations').textContent = totalEvaluations;
+        document.getElementById('totalInstructors').textContent = totalInstructors;
+        document.getElementById('avgEvaluationsPerInstructor').textContent = avgEvaluationsPerInstructor;
+        
+        console.log('📊 Estatísticas de avaliações:', {
+          totalEvaluations,
+          totalInstructors,
+          avgEvaluationsPerInstructor,
+          instructors
+        });
+      }
+      
+      showEvaluationsReport() {
+        console.log('📊 Exibindo relatório de avaliações...');
+        
+        const sales = JSON.parse(localStorage.getItem('academia_sales') || '[]');
+        const period = document.getElementById('reportPeriod')?.value || 'today';
+        
+        // Filtrar vendas de avaliação pelo período
+        const evaluationSales = this.filterSalesByPeriod(sales, period).filter(sale => 
+          sale.type === 'evaluation' || sale.type === 'avaliacao'
+        );
+        
+        console.log('🔍 Vendas de avaliação para relatório:', evaluationSales);
+        
+        // Agrupar por instrutor
+        const instructorStats = {};
+        evaluationSales.forEach(sale => {
+          const instructor = sale.instructorName || 'Não informado';
+          if (!instructorStats[instructor]) {
+            instructorStats[instructor] = {
+              name: instructor,
+              count: 0,
+              totalValue: 0,
+              evaluations: []
+            };
+          }
+          instructorStats[instructor].count++;
+          instructorStats[instructor].totalValue += sale.total || 0;
+          instructorStats[instructor].evaluations.push(sale);
+        });
+        
+        console.log('📊 Estatísticas por instrutor:', instructorStats);
+        
+        // Criar modal de relatório
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.display = 'block';
+        modal.innerHTML = `
+          <div class="modal-content" style="max-width: 90%; max-height: 80%; overflow-y: auto;">
+            <div class="modal-header">
+              <h2>📊 Relatório de Avaliações por Instrutor</h2>
+              <span class="close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</span>
+            </div>
+            <div class="modal-body">
+              ${this.generateEvaluationsReportHTML(instructorStats)}
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(modal);
+      }
+      
+      generateEvaluationsReportHTML(instructorStats) {
+        const instructors = Object.values(instructorStats);
+        
+        if (instructors.length === 0) {
+          return `
+            <div style="text-align: center; padding: 2rem; color: #666;">
+              <h3>📋 Nenhuma avaliação encontrada</h3>
+              <p>Não há avaliações registradas para o período selecionado.</p>
+            </div>
+          `;
+        }
+        
+        let html = '<div class="evaluations-container">';
+        
+        // Ordenar por número de avaliações (decrescente)
+        instructors.sort((a, b) => b.count - a.count);
+        
+        instructors.forEach((instructor, index) => {
+          html += `
+            <div class="instructor-card" style="border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 8px; background: #f8f9fa;">
+              <h3>👨‍🏫 ${instructor.name} - ${instructor.count} avaliação(ões)</h3>
+              <div class="instructor-info">
+                <p><strong>💰 Valor Total:</strong> R$ ${instructor.totalValue.toFixed(2)}</p>
+                <p><strong>📊 Média por Avaliação:</strong> R$ ${(instructor.totalValue / instructor.count).toFixed(2)}</p>
+              </div>
+              
+              <div class="evaluations-details">
+                <h4>📋 Avaliações Detalhadas:</h4>
+                ${this.generateEvaluationsDetailsHTML(instructor.evaluations)}
+              </div>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+        return html;
+      }
+      
+      generateEvaluationsDetailsHTML(evaluations) {
+        if (evaluations.length === 0) return '<p>Nenhuma avaliação encontrada.</p>';
+        
+        return `
+          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <thead>
+              <tr style="background: #f8f9fa;">
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Horário</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Cliente</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Número</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Valor</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Pagamento</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Observações</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${evaluations.map(evaluation => `
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${new Date(evaluation.timestamp).toLocaleString('pt-BR')}</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${evaluation.customerName || 'N/A'}</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">#${evaluation.evaluationNumber || 'N/A'}</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">R$ ${(evaluation.total || 0).toFixed(2)}</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${(evaluation.paymentMethods || []).join(', ').toUpperCase()}</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${evaluation.observations || 'N/A'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
       }
       
       updateCashReportsStats() {
