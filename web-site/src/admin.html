@@ -253,7 +253,7 @@
     <div class="dashboard-grid">
       <!-- Estatísticas -->
       <div class="card">
-        <h2>📊 Estatísticas do Sistema</h2>
+        <h2>📈 Estatísticas do Sistema</h2>
         <div class="stats">
           <div class="stat-item">
             <div class="stat-number" id="totalUsers">0</div>
@@ -276,11 +276,11 @@
 
       <!-- Relatórios de Caixa -->
       <div class="card">
-        <h2>📊 Relatórios de Caixa</h2>
+        <h2>💼 Relatórios de Caixa</h2>
         
         <!-- Filtros de Período -->
         <div style="margin-bottom: 20px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: bold;">📅 Período:</label>
+          <label style="display: block; margin-bottom: 8px; font-weight: bold;">📆 Período:</label>
           <select id="reportPeriod" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
             <option value="today">Hoje</option>
             <option value="week">Esta Semana</option>
@@ -310,7 +310,7 @@
         
         <!-- Estatísticas por Caixa -->
         <div style="margin-bottom: 20px;">
-          <h3 style="margin-bottom: 15px; color: #333;">💰 Valores por Caixa</h3>
+          <h3 style="margin-bottom: 15px; color: #333;">💳 Valores por Caixa</h3>
           <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
             <div style="text-align: center; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
               <div style="font-size: 18px; font-weight: bold; color: #28a745;" id="morningCashValue">R$ 0,00</div>
@@ -339,12 +339,12 @@
           </div>
         </div>
         
-        <button onclick="showCashReports()" style="margin-top: 15px; width: 100%;">Ver Relatórios Detalhados</button>
+        <button onclick="showCashReports()" style="margin-top: 15px; width: 100%;">📋 Ver Relatórios Detalhados</button>
       </div>
 
       <!-- Ações Rápidas -->
       <div class="card">
-        <h2>⚡ Ações Rápidas</h2>
+        <h2>🚀 Ações Rápidas</h2>
         <button class="btn btn-success" onclick="openAddUserModal()">+ Novo Usuário</button>
         <button class="btn" onclick="refreshUsers()">🔄 Atualizar Lista</button>
         <button class="btn" onclick="exportUsers()">📤 Exportar Dados</button>
@@ -1103,7 +1103,7 @@
         modal.innerHTML = `
           <div class="modal-content" style="max-width: 90%; max-height: 80%; overflow-y: auto;">
             <div class="modal-header">
-              <h2>💰 Relatórios de Caixa - ${new Date().toLocaleDateString('pt-BR')}</h2>
+              <h2>💼 Relatórios de Caixa - ${new Date().toLocaleDateString('pt-BR')}</h2>
               <span class="close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</span>
             </div>
             <div class="modal-body">
@@ -1138,7 +1138,7 @@
           
           html += `
             <div class="report-card" style="border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 8px;">
-              <h3>📊 ${friendlyCategory} - ${report.cashier}</h3>
+              <h3>📈 ${friendlyCategory} - ${report.cashier}</h3>
               <div class="report-info">
                 <p><strong>⏰ Abertura:</strong> ${openTime}</p>
                 <p><strong>⏰ Fechamento:</strong> ${closeTime}</p>
