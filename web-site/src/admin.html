@@ -683,16 +683,32 @@
         const reports = JSON.parse(localStorage.getItem('academia_cash_reports') || '[]');
         const period = document.getElementById('reportPeriod')?.value || 'today';
         
+        console.log('🔍 updateCashReportsStats called:', {
+          totalReports: reports.length,
+          selectedPeriod: period,
+          reports: reports
+        });
+        
         // Filtrar relatórios por período
         const filteredReports = this.filterReportsByPeriod(reports, period);
+        
+        console.log('🔍 Filtered reports:', filteredReports);
         
         // Calcular valores por caixa
         const morningValue = this.calculateCashValue(filteredReports, 'caixa-manha');
         const afternoonValue = this.calculateCashValue(filteredReports, 'caixa-tarde');
         const nightValue = this.calculateCashValue(filteredReports, 'caixa-noite');
         
+        console.log('🔍 Cash values:', {
+          morningValue,
+          afternoonValue,
+          nightValue
+        });
+        
         // Calcular total geral
         const totalValue = morningValue + afternoonValue + nightValue;
+        
+        console.log('🔍 Total value:', totalValue);
         
         // Atualizar elementos
         this.updateElement('morningCashValue', `R$ ${morningValue.toFixed(2)}`);
@@ -739,7 +755,10 @@
             const startDate = document.getElementById('startDate')?.value;
             const endDate = document.getElementById('endDate')?.value;
             
+            console.log('🔍 Custom period dates:', { startDate, endDate });
+            
             if (!startDate || !endDate) {
+              console.log('⚠️ Custom dates not provided, returning all reports');
               return reports;
             }
             
@@ -747,10 +766,25 @@
             const end = new Date(endDate);
             end.setHours(23, 59, 59, 999); // Incluir todo o dia final
             
-            return reports.filter(report => {
+            console.log('🔍 Date range:', { start, end });
+            
+            const filteredReports = reports.filter(report => {
               const reportDate = new Date(report.closeTime);
-              return reportDate >= start && reportDate <= end;
+              const isInRange = reportDate >= start && reportDate <= end;
+              
+              console.log('🔍 Report date check:', {
+                reportDate: reportDate.toISOString(),
+                reportCloseTime: report.closeTime,
+                isInRange,
+                reportCategory: report.category,
+                reportTotalSales: report.totalSales
+              });
+              
+              return isInRange;
             });
+            
+            console.log('🔍 Filtered reports count:', filteredReports.length);
+            return filteredReports;
             
           default:
             return reports;
@@ -1288,16 +1322,35 @@
     document.addEventListener('DOMContentLoaded', function() {
       const reportPeriod = document.getElementById('reportPeriod');
       const customDateRange = document.getElementById('customDateRange');
+      const startDate = document.getElementById('startDate');
+      const endDate = document.getElementById('endDate');
       
       if (reportPeriod) {
         reportPeriod.addEventListener('change', function() {
           if (this.value === 'custom') {
             customDateRange.style.display = 'block';
+            
+            // Definir datas padrão para hoje se não estiverem definidas
+            const today = new Date().toISOString().split('T')[0];
+            if (startDate && !startDate.value) {
+              startDate.value = today;
+            }
+            if (endDate && !endDate.value) {
+              endDate.value = today;
+            }
           } else {
             customDateRange.style.display = 'none';
           }
           updateCashReports();
         });
+      }
+      
+      // Event listeners para campos de data
+      if (startDate) {
+        startDate.addEventListener('change', updateCashReports);
+      }
+      if (endDate) {
+        endDate.addEventListener('change', updateCashReports);
       }
     });
     
