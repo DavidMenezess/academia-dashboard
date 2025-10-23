@@ -276,17 +276,69 @@
 
       <!-- Relatórios de Caixa -->
       <div class="card">
-        <h2>💰 Relatórios de Caixa</h2>
+        <h2>📊 Relatórios de Caixa</h2>
+        
+        <!-- Filtros de Período -->
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: bold;">📅 Período:</label>
+          <select id="reportPeriod" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="today">Hoje</option>
+            <option value="week">Esta Semana</option>
+            <option value="month">Este Mês</option>
+            <option value="year">Este Ano</option>
+            <option value="custom">Período Personalizado</option>
+          </select>
+          
+          <!-- Período Personalizado -->
+          <div id="customDateRange" style="display: none;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div>
+                <label style="display: block; margin-bottom: 5px; font-size: 12px;">Data Inicial:</label>
+                <input type="date" id="startDate" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 5px; font-size: 12px;">Data Final:</label>
+                <input type="date" id="endDate" style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
+              </div>
+            </div>
+          </div>
+          
+          <button onclick="updateCashReports()" style="width: 100%; padding: 8px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            🔄 Atualizar Relatórios
+          </button>
+        </div>
+        
+        <!-- Estatísticas por Caixa -->
+        <div style="margin-bottom: 20px;">
+          <h3 style="margin-bottom: 15px; color: #333;">💰 Valores por Caixa</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+            <div style="text-align: center; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+              <div style="font-size: 18px; font-weight: bold; color: #28a745;" id="morningCashValue">R$ 0,00</div>
+              <div style="font-size: 12px; color: #666;">Caixa Manhã</div>
+            </div>
+            <div style="text-align: center; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+              <div style="font-size: 18px; font-weight: bold; color: #ffc107;" id="afternoonCashValue">R$ 0,00</div>
+              <div style="font-size: 12px; color: #666;">Caixa Tarde</div>
+            </div>
+            <div style="text-align: center; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+              <div style="font-size: 18px; font-weight: bold; color: #dc3545;" id="nightCashValue">R$ 0,00</div>
+              <div style="font-size: 12px; color: #666;">Caixa Noite</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Estatísticas Gerais -->
         <div class="stats">
           <div class="stat-item">
             <div class="stat-number" id="totalCashReports">0</div>
-            <div class="stat-label">Relatórios Hoje</div>
+            <div class="stat-label">Relatórios</div>
           </div>
           <div class="stat-item">
             <div class="stat-number" id="totalCashValue">R$ 0,00</div>
             <div class="stat-label">Valor Total</div>
           </div>
         </div>
+        
         <button onclick="showCashReports()" style="margin-top: 15px; width: 100%;">Ver Relatórios Detalhados</button>
       </div>
 
@@ -296,8 +348,6 @@
         <button class="btn btn-success" onclick="openAddUserModal()">+ Novo Usuário</button>
         <button class="btn" onclick="refreshUsers()">🔄 Atualizar Lista</button>
         <button class="btn" onclick="exportUsers()">📤 Exportar Dados</button>
-        <button class="btn btn-warning" onclick="adminSystem.clearCorruptedData()">🧹 Limpar Dados Corrompidos</button>
-        <button class="btn btn-danger" onclick="adminSystem.resetAllData()">🔄 Resetar Todos os Dados</button>
       </div>
     </div>
 
@@ -631,26 +681,92 @@
       
       updateCashReportsStats() {
         const reports = JSON.parse(localStorage.getItem('academia_cash_reports') || '[]');
-        const today = new Date().toDateString();
+        const period = document.getElementById('reportPeriod')?.value || 'today';
         
-        // Filtrar relatórios de hoje
-        const todayReports = reports.filter(report => {
-          const reportDate = new Date(report.closeTime).toDateString();
-          return reportDate === today;
-        });
+        // Filtrar relatórios por período
+        const filteredReports = this.filterReportsByPeriod(reports, period);
         
-        // Calcular totais
-        const totalValue = todayReports.reduce((sum, report) => sum + report.totalSales, 0);
+        // Calcular valores por caixa
+        const morningValue = this.calculateCashValue(filteredReports, 'caixa-manha');
+        const afternoonValue = this.calculateCashValue(filteredReports, 'caixa-tarde');
+        const nightValue = this.calculateCashValue(filteredReports, 'caixa-noite');
+        
+        // Calcular total geral
+        const totalValue = morningValue + afternoonValue + nightValue;
         
         // Atualizar elementos
-        const totalCashReportsElement = document.getElementById('totalCashReports');
-        const totalCashValueElement = document.getElementById('totalCashValue');
+        this.updateElement('morningCashValue', `R$ ${morningValue.toFixed(2)}`);
+        this.updateElement('afternoonCashValue', `R$ ${afternoonValue.toFixed(2)}`);
+        this.updateElement('nightCashValue', `R$ ${nightValue.toFixed(2)}`);
+        this.updateElement('totalCashReports', filteredReports.length);
+        this.updateElement('totalCashValue', `R$ ${totalValue.toFixed(2)}`);
+      }
+      
+      filterReportsByPeriod(reports, period) {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         
-        if (totalCashReportsElement) {
-          totalCashReportsElement.textContent = todayReports.length;
+        switch (period) {
+          case 'today':
+            return reports.filter(report => {
+              const reportDate = new Date(report.closeTime);
+              return reportDate.toDateString() === today.toDateString();
+            });
+            
+          case 'week':
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - today.getDay());
+            return reports.filter(report => {
+              const reportDate = new Date(report.closeTime);
+              return reportDate >= weekStart && reportDate <= now;
+            });
+            
+          case 'month':
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            return reports.filter(report => {
+              const reportDate = new Date(report.closeTime);
+              return reportDate >= monthStart && reportDate <= now;
+            });
+            
+          case 'year':
+            const yearStart = new Date(now.getFullYear(), 0, 1);
+            return reports.filter(report => {
+              const reportDate = new Date(report.closeTime);
+              return reportDate >= yearStart && reportDate <= now;
+            });
+            
+          case 'custom':
+            const startDate = document.getElementById('startDate')?.value;
+            const endDate = document.getElementById('endDate')?.value;
+            
+            if (!startDate || !endDate) {
+              return reports;
+            }
+            
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            end.setHours(23, 59, 59, 999); // Incluir todo o dia final
+            
+            return reports.filter(report => {
+              const reportDate = new Date(report.closeTime);
+              return reportDate >= start && reportDate <= end;
+            });
+            
+          default:
+            return reports;
         }
-        if (totalCashValueElement) {
-          totalCashValueElement.textContent = `R$ ${totalValue.toFixed(2)}`;
+      }
+      
+      calculateCashValue(reports, category) {
+        return reports
+          .filter(report => report.category === category)
+          .reduce((sum, report) => sum + (report.totalSales || 0), 0);
+      }
+      
+      updateElement(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+          element.textContent = value;
         }
       }
       
@@ -1133,6 +1249,10 @@
       adminSystem.showCashReports();
     }
     
+    function updateCashReports() {
+      adminSystem.updateCashReportsStats();
+    }
+    
     function openAddUserModal() {
       adminSystem.openAddUserModal();
     }
@@ -1163,6 +1283,23 @@
         closeUserModal();
       }
     }
+    
+    // Event listeners para filtros
+    document.addEventListener('DOMContentLoaded', function() {
+      const reportPeriod = document.getElementById('reportPeriod');
+      const customDateRange = document.getElementById('customDateRange');
+      
+      if (reportPeriod) {
+        reportPeriod.addEventListener('change', function() {
+          if (this.value === 'custom') {
+            customDateRange.style.display = 'block';
+          } else {
+            customDateRange.style.display = 'none';
+          }
+          updateCashReports();
+        });
+      }
+    });
     
     // Inicializar sistema
     const adminSystem = new AdminSystem();
