@@ -970,6 +970,7 @@
                 <th style="text-align: center; padding: 8px; border: 1px solid #ddd;">Valor</th>
                 <th style="text-align: center; padding: 8px; border: 1px solid #ddd;">Pagamento</th>
                 <th style="text-align: center; padding: 8px; border: 1px solid #ddd;">Troco</th>
+                <th style="text-align: center; padding: 8px; border: 1px solid #ddd;">Observações</th>
               </tr>
             </thead>
             <tbody>
@@ -1077,6 +1078,26 @@
             console.log('🔍 ChangeAmount was NaN, set to 0');
           }
           
+          // Extrair observações
+          let observations = '';
+          if (sale.observations && sale.observations.trim() !== '') {
+            observations = sale.observations.trim();
+            console.log('🔍 Observations found:', observations);
+          } else if (sale.items && sale.items.length > 0) {
+            // Tentar extrair observações dos items
+            const itemWithObservations = sale.items.find(item => item.observations && item.observations.trim() !== '');
+            if (itemWithObservations) {
+              observations = itemWithObservations.observations.trim();
+              console.log('🔍 Observations from item:', observations);
+            } else {
+              observations = 'N/A';
+              console.log('🔍 No observations found');
+            }
+          } else {
+            observations = 'N/A';
+            console.log('🔍 No observations data found');
+          }
+          
           html += `
             <tr style="border-bottom: 1px solid #ddd;">
               <td style="text-align: center; padding: 8px; border: 1px solid #ddd;">${saleTime}</td>
@@ -1085,6 +1106,7 @@
               <td style="text-align: center; padding: 8px; border: 1px solid #ddd;">R$ ${totalValue.toFixed(2)}</td>
               <td style="text-align: center; padding: 8px; border: 1px solid #ddd;">${paymentMethods}</td>
               <td style="text-align: center; padding: 8px; border: 1px solid #ddd;">${changeAmount > 0 ? `R$ ${changeAmount.toFixed(2)}` : 'N/A'}</td>
+              <td style="text-align: center; padding: 8px; border: 1px solid #ddd;">${observations}</td>
             </tr>
           `;
         });
