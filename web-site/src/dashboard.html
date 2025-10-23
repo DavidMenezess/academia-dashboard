@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academia Força Fitness - Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #003D7D;
+      --primary-light: #0057B8;
+      --primary-dark: #002E5F;
+      --secondary-color: #F7941D;
+      --secondary-light: #FFAA33;
+      --secondary-dark: #E57E00;
+      --tertiary-color: #0057B8;
+      --accent-color: #F7941D;
+      --background-color: #F5F7FA;
+      --card-bg: #FFFFFF;
+      --text-primary: #1F2937;
+      --text-secondary: #4B5563;
+      --text-tertiary: #9CA3AF;
+      --border-color: #E5E7EB;
+      --success-color: #10B981;
+      --warning-color: #F59E0B;
+      --danger-color: #EF4444;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--background-color);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+      margin-bottom: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+    
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .card h2 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin-top: 1rem;
+    }
+    
+    .btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: var(--transition);
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+    
+    .btn:hover {
+      background: var(--primary-light);
+      transform: translateY(-1px);
+    }
+    
+    .btn-success {
+      background: var(--success-color);
+    }
+    
+    .btn-success:hover {
+      background: #059669;
+    }
+    
+    .btn-warning {
+      background: var(--warning-color);
+    }
+    
+    .btn-warning:hover {
+      background: #d97706;
+    }
+    
+    .btn-danger {
+      background: var(--danger-color);
+    }
+    
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .quick-actions .btn {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--border-color);
+      margin-top: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🏋️ Academia Força Fitness</h1>
+      <p>Dashboard Principal - Sistema de Gestão</p>
+    </div>
+    
+    <div class="dashboard-grid">
+      <!-- Estatísticas Gerais -->
+      <div class="card">
+        <h2>📊 Estatísticas Gerais</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="totalUsers">0</div>
+            <div class="stat-label">Total de Usuários</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="activeUsers">0</div>
+            <div class="stat-label">Usuários Ativos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="totalSales">0</div>
+            <div class="stat-label">Vendas Hoje</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="totalRevenue">R$ 0,00</div>
+            <div class="stat-label">Receita Hoje</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Gráfico de Vendas -->
+      <div class="card">
+        <h2>📈 Vendas por Período</h2>
+        <div class="chart-container">
+          <canvas id="salesChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Ações Rápidas -->
+      <div class="card">
+        <h2>🚀 Ações Rápidas</h2>
+        <div class="quick-actions">
+          <a href="admin.html" class="btn">👥 Gerenciar Usuários</a>
+          <a href="admin.html" class="btn btn-success">📊 Relatórios</a>
+          <a href="cashier.html" class="btn btn-warning">💳 Sistema de Caixa</a>
+          <a href="login.html" class="btn btn-danger">🚪 Sair</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>&copy; 2024 Academia Força Fitness. Todos os direitos reservados.</p>
+    </div>
+  </div>
+  
+  <script>
+    // Carregar estatísticas
+    function loadStats() {
+      const users = JSON.parse(localStorage.getItem('academia_users') || '[]');
+      const sales = JSON.parse(localStorage.getItem('academia_sales') || '[]');
+      const reports = JSON.parse(localStorage.getItem('academia_cash_reports') || '[]');
+      
+      // Estatísticas de usuários
+      document.getElementById('totalUsers').textContent = users.length;
+      document.getElementById('activeUsers').textContent = users.filter(u => u.status === 'active').length;
+      
+      // Estatísticas de vendas
+      const today = new Date().toDateString();
+      const todaySales = sales.filter(sale => new Date(sale.date).toDateString() === today);
+      document.getElementById('totalSales').textContent = todaySales.length;
+      
+      const totalRevenue = todaySales.reduce((sum, sale) => sum + (sale.total || 0), 0);
+      document.getElementById('totalRevenue').textContent = `R$ ${totalRevenue.toFixed(2)}`;
+    }
+    
+    // Inicializar gráfico
+    function initChart() {
+      const ctx = document.getElementById('salesChart').getContext('2d');
+      const sales = JSON.parse(localStorage.getItem('academia_sales') || '[]');
+      
+      // Agrupar vendas por dia da semana
+      const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+      const salesByDay = days.map(() => 0);
+      
+      sales.forEach(sale => {
+        const date = new Date(sale.date);
+        const dayOfWeek = date.getDay();
+        salesByDay[dayOfWeek]++;
+      });
+      
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: days,
+          datasets: [{
+            label: 'Vendas',
+            data: salesByDay,
+            borderColor: '#003D7D',
+            backgroundColor: 'rgba(0, 61, 125, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    // Inicializar dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+      loadStats();
+      initChart();
+    });
+  </script>
+</body>
+</html>
