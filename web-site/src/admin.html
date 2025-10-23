@@ -1276,7 +1276,10 @@
           allReports: reports.length,
           allSales: sales.length,
           cashControl: cashControl,
-          selectedPeriod: period
+          selectedPeriod: period,
+          isOpen: cashControl.isOpen,
+          category: cashControl.category,
+          lastOpened: cashControl.lastOpened
         });
         
         // Filtrar relatórios pelo período selecionado
@@ -1331,11 +1334,21 @@
       generateRealTimeReportsHTML(reports, sales, cashControl) {
         let html = '<div class="reports-container">';
         
-        // Verificar se há caixas abertos E se o período é "hoje"
+        // Verificar se há caixas abertos
         const period = document.getElementById('reportPeriod')?.value || 'today';
-        const hasOpenCash = cashControl.isOpen && cashControl.category && period === 'today';
+        const hasOpenCash = cashControl.isOpen && cashControl.category;
+        
+        console.log('🔍 Debug generateRealTimeReportsHTML:', {
+          cashControl: cashControl,
+          isOpen: cashControl.isOpen,
+          category: cashControl.category,
+          period: period,
+          hasOpenCash: hasOpenCash
+        });
         
         if (hasOpenCash) {
+          console.log('✅ Caixa aberto detectado, gerando relatório...');
+          
           // Mostrar relatórios de caixas abertos
           html += '<h3>📊 Relatórios Caixas Abertos</h3>';
           
@@ -1348,9 +1361,26 @@
           const openCategory = cashControl.category;
           const friendlyCategory = categoryNames[openCategory] || openCategory;
           
+          console.log('🔍 Dados do caixa aberto:', {
+            openCategory,
+            friendlyCategory,
+            totalSales: cashControl.todaySales,
+            currentBalance: cashControl.currentBalance
+          });
+          
           // Filtrar vendas do caixa aberto
           const openCashSales = sales.filter(sale => sale.category === openCategory);
           const totalSales = openCashSales.reduce((sum, sale) => sum + (sale.total || 0), 0);
+          
+          console.log('🔍 Vendas do caixa aberto:', {
+            openCashSales: openCashSales.length,
+            totalSales,
+            sales: openCashSales.map(sale => ({
+              timestamp: sale.timestamp,
+              total: sale.total,
+              category: sale.category
+            }))
+          });
           
           html += `
             <div class="report-card" style="border: 1px solid #28a745; margin: 10px 0; padding: 15px; border-radius: 8px; background: #d4edda;">
@@ -1369,6 +1399,12 @@
               </div>
             </div>
           `;
+        } else {
+          console.log('❌ Nenhum caixa aberto detectado:', {
+            isOpen: cashControl.isOpen,
+            category: cashControl.category,
+            cashControl: cashControl
+          });
         }
         
         // Mostrar relatórios fechados
