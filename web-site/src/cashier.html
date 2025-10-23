@@ -753,7 +753,7 @@
         
         <!-- Sale Form -->
         <form id="saleForm" class="hidden">
-          <div class="form-grid">
+          <div class="form-grid" id="customerInfoGroup">
             <div class="form-group">
               <label class="form-label optional">Nome do Cliente</label>
               <input type="text" class="form-input" id="customerName" placeholder="Nome do cliente (opcional)">
@@ -780,17 +780,17 @@
             <input type="number" class="form-input" id="evaluationNumber" placeholder="Ex: 1, 2, 3..." min="1">
           </div>
           
-          <div class="form-group">
+          <div class="form-group" id="quantityGroup">
             <label class="form-label">Quantidade</label>
             <input type="number" class="form-input" id="quantity" value="1" min="1" required>
           </div>
           
-          <div class="form-group">
+          <div class="form-group" id="unitPriceGroup">
             <label class="form-label">Valor Unitário</label>
             <input type="number" class="form-input" id="unitPrice" step="0.01" placeholder="0,00" required>
           </div>
           
-          <div class="form-group">
+          <div class="form-group" id="paymentGroup">
             <label class="form-label">Forma de Pagamento</label>
             <div class="payment-methods">
               <div class="payment-method" onclick="selectPaymentMethod('pix')">
@@ -1187,9 +1187,23 @@
         const instructorNameField = document.getElementById('instructorName');
         const evaluationNumberField = document.getElementById('evaluationNumber');
         
+        // Elementos para mostrar/ocultar
+        const customerInfoGroup = document.getElementById('customerInfoGroup');
+        const productGroup = document.getElementById('productGroup');
+        const quantityGroup = document.getElementById('quantityGroup');
+        const unitPriceGroup = document.getElementById('unitPriceGroup');
+        const paymentGroup = document.getElementById('paymentGroup');
+        
         // Ocultar campos de avaliação por padrão
         if (evaluationGroup) evaluationGroup.style.display = 'none';
         if (evaluationNumberGroup) evaluationNumberGroup.style.display = 'none';
+        
+        // Mostrar todos os campos por padrão
+        if (customerInfoGroup) customerInfoGroup.style.display = 'block';
+        if (productGroup) productGroup.style.display = 'block';
+        if (quantityGroup) quantityGroup.style.display = 'block';
+        if (unitPriceGroup) unitPriceGroup.style.display = 'block';
+        if (paymentGroup) paymentGroup.style.display = 'block';
         
         switch(type) {
           case 'mensalidade':
@@ -1208,12 +1222,17 @@
             unitPriceField.value = '40,00';
             break;
           case 'evaluation':
-            productField.value = 'Avaliação';
-            quantityField.value = '1';
-            unitPriceField.value = '50,00';
-            // Mostrar campos específicos de avaliação
+            // Para avaliação, ocultar campos desnecessários
+            if (customerInfoGroup) customerInfoGroup.style.display = 'none';
+            if (productGroup) productGroup.style.display = 'none';
+            if (quantityGroup) quantityGroup.style.display = 'none';
+            if (unitPriceGroup) unitPriceGroup.style.display = 'none';
+            if (paymentGroup) paymentGroup.style.display = 'none';
+            
+            // Mostrar apenas campos de avaliação
             if (evaluationGroup) evaluationGroup.style.display = 'block';
             if (evaluationNumberGroup) evaluationNumberGroup.style.display = 'block';
+            
             // Limpar campos de avaliação
             if (instructorNameField) instructorNameField.value = '';
             if (evaluationNumberField) evaluationNumberField.value = '';
@@ -1382,9 +1401,36 @@
             alert('Por favor, digite um número válido para a avaliação.');
             return;
           }
+          
+          // Para avaliações, criar item simplificado
+          const cartItem = {
+            id: Date.now(),
+            customerName: 'Avaliação',
+            customerDocument: 'N/A',
+            product: 'Avaliação',
+            quantity: 1,
+            unitPrice: 0,
+            total: 0,
+            paymentMethods: ['evaluation'],
+            receivedAmount: 0,
+            changeAmount: 0,
+            observations: `Avaliação #${evaluationNumber} - Instrutor: ${instructorName}`,
+            type: 'evaluation',
+            saleType: 'evaluation',
+            instructorName: instructorName,
+            evaluationNumber: parseInt(evaluationNumber)
+          };
+          
+          this.cart.push(cartItem);
+          this.updateCartDisplay();
+          this.clearForm();
+          
+          console.log('✅ Avaliação adicionada ao carrinho:', cartItem);
+          alert(`Avaliação #${evaluationNumber} do instrutor ${instructorName} adicionada com sucesso!`);
+          return;
         }
         
-        // Validar valores de pagamento
+        // Validar valores de pagamento para outros tipos
         if (selectedPaymentMethods.includes('money') && receivedAmount <= 0) {
           alert('Digite o valor recebido em dinheiro.');
           return;
@@ -1486,11 +1532,62 @@
           return;
         }
         
-        if (!this.cashControl.isOpen) {
+        // Verificar se há avaliações no carrinho
+        const hasEvaluations = this.cart.some(item => item.type === 'evaluation');
+        
+        // Para avaliações, não precisa de caixa aberto
+        if (!hasEvaluations && !this.cashControl.isOpen) {
           alert('O caixa está fechado. Abra o caixa antes de finalizar vendas.');
           return;
         }
         
+        // Processar avaliações separadamente
+        if (hasEvaluations) {
+          const evaluations = this.cart.filter(item => item.type === 'evaluation');
+          const otherItems = this.cart.filter(item => item.type !== 'evaluation');
+          
+          // Salvar avaliações
+          evaluations.forEach(evaluation => {
+            const sale = {
+              id: Date.now() + Math.random(),
+              timestamp: new Date().toISOString(),
+              category: this.currentCategory,
+              cashier: this.currentUser ? this.currentUser.name : 'Sistema',
+              items: [evaluation],
+              total: 0, // Avaliações não têm valor
+              type: 'evaluation',
+              paymentMethods: ['evaluation'],
+              changeAmount: 0,
+              receivedAmount: 0,
+              observations: evaluation.observations,
+              instructorName: evaluation.instructorName,
+              evaluationNumber: evaluation.evaluationNumber,
+              status: 'completed'
+            };
+            
+            console.log('💾 Salvando avaliação:', sale);
+            this.sales.push(sale);
+          });
+          
+          // Processar outros itens normalmente
+          if (otherItems.length > 0) {
+            this.cart = otherItems; // Atualizar carrinho para processar apenas outros itens
+            this.finalizeSale(); // Recursão para processar vendas normais
+            return;
+          } else {
+            // Apenas avaliações, finalizar
+            this.saveSales();
+            this.cart = [];
+            this.updateCartDisplay();
+            this.clearForm();
+            this.updateStats();
+            
+            alert(`Avaliações finalizadas com sucesso!\n${evaluations.length} avaliação(ões) registrada(s)`);
+            return;
+          }
+        }
+        
+        // Processo normal para vendas (não avaliações)
         const total = this.cart.reduce((sum, item) => sum + item.total, 0);
         const paymentMethods = this.cart[0].paymentMethods || ['pix'];
         
