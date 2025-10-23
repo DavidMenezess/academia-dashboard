@@ -985,18 +985,42 @@
           let paymentMethods = '';
           let changeAmount = 0;
           
+          console.log('🔍 Debug sale data:', sale);
+          
           if (sale.items && sale.items.length > 0) {
-            productNames = sale.items.map(item => item.product_name || item.name || 'Produto').join(', ');
+            // Dados estruturados em items
+            productNames = sale.items.map(item => {
+              console.log('🔍 Item data:', item);
+              return item.product || item.product_name || item.name || 'Produto não especificado';
+            }).join(', ');
+            
             quantities = sale.items.map(item => item.quantity || 1).join(', ');
-            totalValue = sale.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-          } else if (sale.product_name) {
-            productNames = sale.product_name;
+            
+            totalValue = sale.items.reduce((sum, item) => {
+              const itemTotal = (item.unitPrice || item.price || 0) * (item.quantity || 1);
+              console.log('🔍 Item total:', itemTotal);
+              return sum + itemTotal;
+            }, 0);
+            
+            console.log('🔍 Total calculated from items:', totalValue);
+          } else if (sale.product_name || sale.product) {
+            // Dados diretos na venda
+            productNames = sale.product_name || sale.product || 'Produto não especificado';
             quantities = sale.quantity || 1;
-            totalValue = sale.total || (sale.price * sale.quantity);
+            totalValue = sale.total || (sale.unitPrice || sale.price || 0) * (sale.quantity || 1);
+            console.log('🔍 Total from direct sale:', totalValue);
           } else {
+            // Fallback
             productNames = 'Produto não especificado';
             quantities = '1';
             totalValue = sale.total || 0;
+            console.log('🔍 Fallback total:', totalValue);
+          }
+          
+          // Garantir que totalValue seja um número válido
+          if (isNaN(totalValue) || totalValue === null || totalValue === undefined) {
+            totalValue = 0;
+            console.log('🔍 TotalValue was NaN, set to 0');
           }
           
           // Extrair métodos de pagamento
@@ -1026,12 +1050,31 @@
           ).join(', ');
           
           // Extrair troco
-          if (sale.change_amount !== undefined && sale.change_amount !== null) {
+          if (sale.change_amount !== undefined && sale.change_amount !== null && !isNaN(sale.change_amount)) {
             changeAmount = sale.change_amount;
-          } else if (sale.change !== undefined && sale.change !== null) {
+            console.log('🔍 Change from change_amount:', changeAmount);
+          } else if (sale.change !== undefined && sale.change !== null && !isNaN(sale.change)) {
             changeAmount = sale.change;
+            console.log('🔍 Change from change:', changeAmount);
+          } else if (sale.items && sale.items.length > 0) {
+            // Tentar extrair troco dos items
+            const itemWithChange = sale.items.find(item => item.changeAmount !== undefined && item.changeAmount !== null);
+            if (itemWithChange) {
+              changeAmount = itemWithChange.changeAmount;
+              console.log('🔍 Change from item changeAmount:', changeAmount);
+            } else {
+              changeAmount = 0;
+              console.log('🔍 No change found in items');
+            }
           } else {
             changeAmount = 0;
+            console.log('🔍 No change data found');
+          }
+          
+          // Garantir que changeAmount seja um número válido
+          if (isNaN(changeAmount) || changeAmount === null || changeAmount === undefined) {
+            changeAmount = 0;
+            console.log('🔍 ChangeAmount was NaN, set to 0');
           }
           
           html += `
