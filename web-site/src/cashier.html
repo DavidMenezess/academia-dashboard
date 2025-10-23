@@ -1531,7 +1531,9 @@
           todaySales: 0,
           lastOpened: new Date().toISOString(),
           lastClosed: null,
-          observations: observations
+          observations: observations,
+          category: this.currentCategory,
+          cashier: this.currentUser ? this.currentUser.name : 'Sistema'
         };
         
         console.log('💾 Salvando controle de caixa:', this.cashControl);

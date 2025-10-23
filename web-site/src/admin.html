@@ -1279,7 +1279,17 @@
           selectedPeriod: period,
           isOpen: cashControl.isOpen,
           category: cashControl.category,
-          lastOpened: cashControl.lastOpened
+          lastOpened: cashControl.lastOpened,
+          cashier: cashControl.cashier,
+          todaySales: cashControl.todaySales,
+          currentBalance: cashControl.currentBalance
+        });
+        
+        // Debug adicional para verificar localStorage
+        console.log('🔍 localStorage debug:', {
+          academia_cash_control: localStorage.getItem('academia_cash_control'),
+          academia_sales: localStorage.getItem('academia_sales'),
+          academia_cash_reports: localStorage.getItem('academia_cash_reports')
         });
         
         // Filtrar relatórios pelo período selecionado
@@ -1343,10 +1353,36 @@
           isOpen: cashControl.isOpen,
           category: cashControl.category,
           period: period,
-          hasOpenCash: hasOpenCash
+          hasOpenCash: hasOpenCash,
+          cashier: cashControl.cashier,
+          todaySales: cashControl.todaySales
         });
         
-        if (hasOpenCash) {
+        // Verificação adicional - se não detectou, tentar outras formas
+        if (!hasOpenCash && cashControl.isOpen) {
+          console.log('⚠️ Caixa está aberto mas sem categoria, tentando detectar...');
+          // Tentar detectar categoria das vendas atuais
+          const todaySales = sales.filter(sale => {
+            const saleDate = new Date(sale.timestamp);
+            const today = new Date();
+            return saleDate.toDateString() === today.toDateString();
+          });
+          
+          if (todaySales.length > 0) {
+            const mostRecentSale = todaySales[todaySales.length - 1];
+            console.log('🔍 Venda mais recente:', mostRecentSale);
+            if (mostRecentSale.category) {
+              cashControl.category = mostRecentSale.category;
+              cashControl.cashier = mostRecentSale.cashier || 'Sistema';
+              console.log('✅ Categoria detectada das vendas:', cashControl.category);
+            }
+          }
+        }
+        
+        // Verificar novamente após tentar detectar categoria
+        const finalHasOpenCash = cashControl.isOpen && cashControl.category;
+        
+        if (finalHasOpenCash) {
           console.log('✅ Caixa aberto detectado, gerando relatório...');
           
           // Mostrar relatórios de caixas abertos
