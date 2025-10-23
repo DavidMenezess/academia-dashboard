@@ -1383,15 +1383,7 @@
           selectedPaymentMethods.push(checkbox.value);
         });
         
-        // Obter valores de pagamento
-        const receivedAmount = parseFloat(document.getElementById('receivedAmount').value) || 0;
-        
-        if (!productName || !unitPrice || selectedPaymentMethods.length === 0) {
-          alert('Por favor, preencha todos os campos obrigatórios e selecione pelo menos um método de pagamento.');
-          return;
-        }
-        
-        // Validação específica para avaliação
+        // Validação específica para avaliação (deve vir primeiro)
         if (this.currentSaleType === 'evaluation') {
           if (!instructorName.trim()) {
             alert('Por favor, digite o nome do instrutor para a avaliação.');
@@ -1429,6 +1421,15 @@
           alert(`Avaliação #${evaluationNumber} do instrutor ${instructorName} adicionada com sucesso!`);
           return;
         }
+        
+        // Validação geral para outros tipos de venda
+        if (!productName || !unitPrice || selectedPaymentMethods.length === 0) {
+          alert('Por favor, preencha todos os campos obrigatórios e selecione pelo menos um método de pagamento.');
+          return;
+        }
+        
+        // Obter valores de pagamento
+        const receivedAmount = parseFloat(document.getElementById('receivedAmount').value) || 0;
         
         // Validar valores de pagamento para outros tipos
         if (selectedPaymentMethods.includes('money') && receivedAmount <= 0) {
