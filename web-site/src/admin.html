@@ -851,9 +851,9 @@
                 <tr>
                   <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${new Date(evaluation.timestamp).toLocaleString('pt-BR')}</td>
                   <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${evaluation.customerName || 'N/A'}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">#${evaluation.evaluationNumber || 'N/A'}</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${evaluation.evaluationNumber || 'N/A'}</td>
                   <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">R$ ${(evaluation.total || 0).toFixed(2)}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${(evaluation.paymentMethods || []).join(', ').toUpperCase()}</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">N/A</td>
                   <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${evaluation.observations || 'N/A'}</td>
                 </tr>
               `).join('')}
@@ -1796,12 +1796,18 @@
             'debit': 'Débito',
             'credit': 'Crédito',
             'cash': 'Dinheiro',
-            'card': 'Cartão'
+            'card': 'Cartão',
+            'n/a': 'N/A'
           };
           
-          paymentMethods = rawPaymentMethods.map(method => 
-            paymentTranslations[method.toLowerCase()] || method
-          ).join(', ');
+          // Para avaliações, sempre mostrar N/A
+          if (sale.type === 'evaluation') {
+            paymentMethods = 'N/A';
+          } else {
+            paymentMethods = rawPaymentMethods.map(method => 
+              paymentTranslations[method.toLowerCase()] || method
+            ).join(', ');
+          }
           
           // Extrair troco
           if (sale.change_amount !== undefined && sale.change_amount !== null && !isNaN(sale.change_amount)) {
