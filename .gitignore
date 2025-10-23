@@ -1,27 +1,3 @@
-# Sistema
-.DS_Store
-Thumbs.db
-.env
-.env.*
-
-# Node
-node_modules/
-
-# Logs e uploads
-web-site/logs/
-web-site/uploads/
-web-site/api/uploads/
-web-site/api/node_modules/
-
-# Terraform state
-web-site/terraform/.terraform/
-web-site/terraform/*.tfstate*
-web-site/terraform/terraform.tfvars
-
-# Docker artefatos locais
-*.pid
-*.log
-
 # ========================================
 # .gitignore - Academia Dashboard
 # ========================================
@@ -31,6 +7,7 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
 
 # Logs
 logs/
@@ -74,8 +51,8 @@ temp/
 *.tmp
 
 # Uploads
-web-site/api/uploads/*
-!web-site/api/uploads/.gitkeep
+api/uploads/*
+!api/uploads/.gitkeep
 
 # Chaves e Segredos
 *.pem

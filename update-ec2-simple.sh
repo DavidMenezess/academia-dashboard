@@ -25,3 +25,5 @@ echo "📊 Status dos containers:"
 docker ps
 
 
+
+

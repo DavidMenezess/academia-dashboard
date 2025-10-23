@@ -1,11 +1,21 @@
 // Sistema de Upload de Arquivos Excel/CSV para Academia Dashboard
 class AcademiaUploadHandler {
     constructor() {
-        this.apiUrl = 'http://localhost:3000/api';
+        // Detectar URL da API automaticamente
+        this.apiUrl = this.detectApiUrl();
         this.uploadForm = null;
         this.progressBar = null;
         this.statusMessage = null;
         this.init();
+    }
+
+    detectApiUrl() {
+        // Se estiver em localhost, usar porta 3000
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            return 'http://localhost:3000/api';
+        }
+        // Se estiver em produção (AWS), usar a mesma URL mas porta 3000
+        return `${window.location.protocol}//${window.location.hostname}:3000/api`;
     }
 
     init() {
