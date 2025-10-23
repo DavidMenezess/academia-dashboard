@@ -1270,37 +1270,44 @@
         const reports = JSON.parse(localStorage.getItem('academia_cash_reports') || '[]');
         const sales = JSON.parse(localStorage.getItem('academia_sales') || '[]');
         const cashControl = JSON.parse(localStorage.getItem('academia_cash_control') || '{}');
-        const today = new Date().toDateString();
+        const period = document.getElementById('reportPeriod')?.value || 'today';
         
         console.log('🔍 Debug showCashReports:', {
           allReports: reports.length,
           allSales: sales.length,
           cashControl: cashControl,
-          today: today
+          selectedPeriod: period
         });
         
-        // Filtrar relatórios de hoje
-        const todayReports = reports.filter(report => {
-          const reportDate = new Date(report.closeTime).toDateString();
-          return reportDate === today;
-        });
+        // Filtrar relatórios pelo período selecionado
+        const filteredReports = this.filterReportsByPeriod(reports, period);
         
-        // Filtrar vendas de hoje
-        const todaySales = sales.filter(sale => 
-          new Date(sale.timestamp).toDateString() === today
-        );
+        // Filtrar vendas pelo período selecionado
+        const filteredSales = this.filterSalesByPeriod(sales, period);
         
-        console.log('🔍 Relatórios de hoje:', todayReports.length);
-        console.log('🔍 Vendas de hoje:', todaySales.length);
+        console.log('🔍 Relatórios filtrados:', filteredReports.length);
+        console.log('🔍 Vendas filtradas:', filteredSales.length);
         
         // Calcular totais
-        const reportsValue = todayReports.reduce((sum, report) => sum + report.totalSales, 0);
-        const salesValue = todaySales.reduce((sum, sale) => sum + (sale.total || 0), 0);
+        const reportsValue = filteredReports.reduce((sum, report) => sum + report.totalSales, 0);
+        const salesValue = filteredSales.reduce((sum, sale) => sum + (sale.total || 0), 0);
         const totalValue = reportsValue + salesValue;
         
         // Atualizar estatísticas
-        document.getElementById('totalCashReports').textContent = todayReports.length + (cashControl.isOpen ? 1 : 0);
+        document.getElementById('totalCashReports').textContent = filteredReports.length + (cashControl.isOpen && period === 'today' ? 1 : 0);
         document.getElementById('totalCashValue').textContent = `R$ ${totalValue.toFixed(2)}`;
+        
+        // Determinar título do modal baseado no período
+        let modalTitle = '💼 Relatórios de Caixa';
+        if (period === 'custom') {
+          const startDate = document.getElementById('startDate')?.value;
+          const endDate = document.getElementById('endDate')?.value;
+          if (startDate && endDate) {
+            modalTitle += ` - ${startDate} a ${endDate}`;
+          }
+        } else {
+          modalTitle += ` - ${new Date().toLocaleDateString('pt-BR')}`;
+        }
         
         // Criar modal de relatórios
         const modal = document.createElement('div');
@@ -1309,11 +1316,11 @@
         modal.innerHTML = `
           <div class="modal-content" style="max-width: 90%; max-height: 80%; overflow-y: auto;">
             <div class="modal-header">
-              <h2>💼 Relatórios de Caixa - ${new Date().toLocaleDateString('pt-BR')}</h2>
+              <h2>${modalTitle}</h2>
               <span class="close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</span>
             </div>
             <div class="modal-body">
-              ${this.generateRealTimeReportsHTML(todayReports, todaySales, cashControl)}
+              ${this.generateRealTimeReportsHTML(filteredReports, filteredSales, cashControl)}
             </div>
           </div>
         `;
@@ -1324,33 +1331,45 @@
       generateRealTimeReportsHTML(reports, sales, cashControl) {
         let html = '<div class="reports-container">';
         
-        // Mostrar status dos caixas
-        html += '<div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">';
-        html += '<h3>📊 Status dos Caixas (Tempo Real)</h3>';
+        // Verificar se há caixas abertos E se o período é "hoje"
+        const period = document.getElementById('reportPeriod')?.value || 'today';
+        const hasOpenCash = cashControl.isOpen && cashControl.category && period === 'today';
         
-        const categories = ['caixa-manha', 'caixa-tarde', 'caixa-noite'];
-        const categoryNames = {
-          'caixa-manha': 'Caixa Manhã',
-          'caixa-tarde': 'Caixa Tarde',
-          'caixa-noite': 'Caixa Noite'
-        };
-        
-        categories.forEach(category => {
-          const categorySales = sales.filter(sale => sale.category === category);
-          const categoryValue = categorySales.reduce((sum, sale) => sum + (sale.total || 0), 0);
-          const isOpen = cashControl.isOpen && cashControl.category === category;
+        if (hasOpenCash) {
+          // Mostrar relatórios de caixas abertos
+          html += '<h3>📊 Relatórios Caixas Abertos</h3>';
+          
+          const categoryNames = {
+            'caixa-manha': 'Caixa Manhã',
+            'caixa-tarde': 'Caixa Tarde',
+            'caixa-noite': 'Caixa Noite'
+          };
+          
+          const openCategory = cashControl.category;
+          const friendlyCategory = categoryNames[openCategory] || openCategory;
+          
+          // Filtrar vendas do caixa aberto
+          const openCashSales = sales.filter(sale => sale.category === openCategory);
+          const totalSales = openCashSales.reduce((sum, sale) => sum + (sale.total || 0), 0);
           
           html += `
-            <div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: ${isOpen ? '#d4edda' : '#f8f9fa'};">
-              <strong>${categoryNames[category]}:</strong> 
-              R$ ${categoryValue.toFixed(2)} 
-              ${isOpen ? '<span style="color: #28a745;">(ABERTO)</span>' : '<span style="color: #6c757d;">(FECHADO)</span>'}
-              - ${categorySales.length} vendas
+            <div class="report-card" style="border: 1px solid #28a745; margin: 10px 0; padding: 15px; border-radius: 8px; background: #d4edda;">
+              <h3>📈 ${friendlyCategory} - ${cashControl.cashier || 'Sistema'} <span style="color: #28a745;">(ABERTO)</span></h3>
+              <div class="report-info">
+                <p><strong>⏰ Abertura:</strong> ${new Date(cashControl.lastOpened).toLocaleString('pt-BR')}</p>
+                <p><strong>💰 Caixa Inicial:</strong> R$ ${cashControl.initialCash.toFixed(2)}</p>
+                <p><strong>💰 Vendas Atuais:</strong> R$ ${totalSales.toFixed(2)}</p>
+                <p><strong>💰 Saldo Atual:</strong> R$ ${cashControl.currentBalance.toFixed(2)}</p>
+                ${cashControl.observations ? `<p><strong>📝 Observações:</strong> ${cashControl.observations}</p>` : ''}
+              </div>
+              
+              <div class="sales-details">
+                <h4>🛒 Vendas Detalhadas (Tempo Real):</h4>
+                ${this.generateSalesDetailsHTML(openCashSales)}
+              </div>
             </div>
           `;
-        });
-        
-        html += '</div>';
+        }
         
         // Mostrar relatórios fechados
         if (reports.length > 0) {
@@ -1387,8 +1406,8 @@
               </div>
             `;
           });
-        } else {
-          html += '<p>Nenhum relatório de caixa fechado encontrado para hoje.</p>';
+        } else if (!hasOpenCash) {
+          html += '<p>Nenhum relatório de caixa encontrado para o período selecionado.</p>';
         }
         
         html += '</div>';
