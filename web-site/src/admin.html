@@ -840,9 +840,8 @@
               <tr style="background: #f8f9fa;">
                 <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Horário</th>
                 <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Cliente</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Instrutor</th>
                 <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Número</th>
-                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Valor</th>
-                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Pagamento</th>
                 <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Observações</th>
               </tr>
             </thead>
@@ -851,9 +850,8 @@
                 <tr>
                   <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${new Date(evaluation.timestamp).toLocaleString('pt-BR')}</td>
                   <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${evaluation.customerName || 'N/A'}</td>
+                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${evaluation.instructorName || 'N/A'}</td>
                   <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${evaluation.evaluationNumber || 'N/A'}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">R$ ${(evaluation.total || 0).toFixed(2)}</td>
-                  <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">N/A</td>
                   <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${evaluation.observations || 'N/A'}</td>
                 </tr>
               `).join('')}

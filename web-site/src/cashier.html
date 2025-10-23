@@ -780,6 +780,11 @@
             <input type="number" class="form-input" id="evaluationNumber" placeholder="Ex: 1, 2, 3..." min="1">
           </div>
           
+          <div class="form-group" id="evaluationClientGroup" style="display: none;">
+            <label class="form-label">Nome do Cliente</label>
+            <input type="text" class="form-input" id="evaluationClientName" placeholder="Nome do cliente da avaliação">
+          </div>
+          
           <div class="form-group" id="quantityGroup">
             <label class="form-label">Quantidade</label>
             <input type="number" class="form-input" id="quantity" value="1" min="1" required>
@@ -1193,6 +1198,7 @@
         const quantityGroup = document.getElementById('quantityGroup');
         const unitPriceGroup = document.getElementById('unitPriceGroup');
         const paymentGroup = document.getElementById('paymentGroup');
+        const evaluationClientGroup = document.getElementById('evaluationClientGroup');
         
         // Ocultar campos de avaliação por padrão
         if (evaluationGroup) evaluationGroup.style.display = 'none';
@@ -1232,10 +1238,13 @@
             // Mostrar apenas campos de avaliação
             if (evaluationGroup) evaluationGroup.style.display = 'block';
             if (evaluationNumberGroup) evaluationNumberGroup.style.display = 'block';
+            if (evaluationClientGroup) evaluationClientGroup.style.display = 'block';
             
             // Limpar campos de avaliação
             if (instructorNameField) instructorNameField.value = '';
             if (evaluationNumberField) evaluationNumberField.value = '';
+            const evaluationClientField = document.getElementById('evaluationClientName');
+            if (evaluationClientField) evaluationClientField.value = '';
             break;
           case 'produto':
             productField.value = '';
@@ -1376,6 +1385,7 @@
         // Campos específicos para avaliação
         const instructorName = document.getElementById('instructorName').value;
         const evaluationNumber = document.getElementById('evaluationNumber').value;
+        const evaluationClientName = document.getElementById('evaluationClientName').value;
         
         // Obter métodos de pagamento selecionados
         const selectedPaymentMethods = [];
@@ -1397,7 +1407,7 @@
           // Para avaliações, criar item simplificado
           const cartItem = {
             id: Date.now(),
-            customerName: 'Avaliação',
+            customerName: evaluationClientName || 'Avaliação',
             customerDocument: 'N/A',
             product: 'Avaliação',
             quantity: 1,
