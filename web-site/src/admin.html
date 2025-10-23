@@ -8,9 +8,9 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
-      --primary: #1e40af;
-      --primary-dark: #1e3a8a;
-      --primary-light: #3b82f6;
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
       --secondary: #f59e0b;
       --secondary-dark: #d97706;
       --accent: #10b981;
@@ -18,7 +18,10 @@
       --danger: #ef4444;
       --warning: #f59e0b;
       --success: #10b981;
-      --info: #3b82f6;
+      --info: #06b6d4;
+      --neutral: #64748b;
+      --neutral-dark: #475569;
+      --neutral-light: #94a3b8;
       --gray-50: #f9fafb;
       --gray-100: #f3f4f6;
       --gray-200: #e5e7eb;
@@ -56,8 +59,8 @@
       min-height: 100vh;
     }
     
-    .header {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    .    header {
+      background: linear-gradient(135deg, var(--neutral-dark) 0%, var(--neutral) 50%, var(--primary) 100%);
       color: var(--white);
       padding: 1.5rem 2rem;
       box-shadow: var(--shadow-lg);
@@ -190,7 +193,7 @@
     .card-icon {
       width: 24px;
       height: 24px;
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--neutral) 0%, var(--primary) 100%);
       border-radius: var(--radius);
       display: flex;
       align-items: center;
@@ -222,7 +225,7 @@
     .stat-number {
       font-size: 2rem;
       font-weight: 700;
-      color: var(--primary);
+      color: var(--neutral-dark);
       margin-bottom: 0.25rem;
       line-height: 1;
     }
@@ -234,7 +237,7 @@
     }
     
     .btn {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      background: linear-gradient(135deg, var(--neutral) 0%, var(--primary) 100%);
       color: var(--white);
       border: none;
       padding: 0.75rem 1.5rem;
