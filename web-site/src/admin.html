@@ -303,9 +303,12 @@
             </div>
           </div>
           
-          <button onclick="updateCashReports()" style="width: 100%; padding: 8px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
-            🔄 Atualizar Relatórios
-          </button>
+        <button onclick="updateCashReports()" style="width: 100%; padding: 8px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          🔄 Atualizar Relatórios
+        </button>
+        <button onclick="startAutoRefresh()" style="width: 100%; padding: 8px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 5px;">
+          ⚡ Atualização Automática
+        </button>
         </div>
         
         <!-- Estatísticas por Caixa -->
@@ -678,8 +681,8 @@
         document.getElementById('adminUsers').textContent = adminUsers;
         document.getElementById('cashierUsers').textContent = cashierUsers;
         
-        // Atualizar estatísticas de relatórios de caixa
-        this.updateCashReportsStats();
+        // Atualizar estatísticas de relatórios de caixa (tempo real)
+        this.updateRealTimeStats();
       }
       
       updateCashReportsStats() {
@@ -735,6 +738,89 @@
         this.updateElement('nightCashValue', `R$ ${nightValue.toFixed(2)}`);
         this.updateElement('totalCashReports', filteredReports.length);
         this.updateElement('totalCashValue', `R$ ${totalValue.toFixed(2)}`);
+      }
+      
+      // Nova função para atualizar dados em tempo real
+      updateRealTimeStats() {
+        console.log('🔄 Atualizando estatísticas em tempo real...');
+        
+        // Buscar dados de vendas atuais
+        const sales = JSON.parse(localStorage.getItem('academia_sales') || '[]');
+        const cashControl = JSON.parse(localStorage.getItem('academia_cash_control') || '{}');
+        
+        console.log('📊 Vendas encontradas:', sales.length);
+        console.log('💰 Controle de caixa:', cashControl);
+        
+        // Filtrar vendas de hoje por categoria
+        const today = new Date().toDateString();
+        const todaySales = sales.filter(sale => 
+          new Date(sale.timestamp).toDateString() === today
+        );
+        
+        console.log('📊 Vendas de hoje:', todaySales.length);
+        
+        // Calcular valores por caixa (incluindo caixas abertos)
+        const morningSales = todaySales.filter(sale => sale.category === 'caixa-manha');
+        const afternoonSales = todaySales.filter(sale => sale.category === 'caixa-tarde');
+        const nightSales = todaySales.filter(sale => sale.category === 'caixa-noite');
+        
+        let morningValue = morningSales.reduce((sum, sale) => sum + (sale.total || 0), 0);
+        let afternoonValue = afternoonSales.reduce((sum, sale) => sum + (sale.total || 0), 0);
+        let nightValue = nightSales.reduce((sum, sale) => sum + (sale.total || 0), 0);
+        
+        // Se o caixa estiver aberto, incluir vendas atuais
+        if (cashControl.isOpen && cashControl.category) {
+          const currentCategory = cashControl.category;
+          const currentSales = cashControl.todaySales || 0;
+          
+          console.log('💰 Caixa aberto:', {
+            category: currentCategory,
+            currentSales: currentSales
+          });
+          
+          // Adicionar vendas atuais ao valor correspondente
+          if (currentCategory === 'caixa-manha') {
+            morningValue += currentSales;
+          } else if (currentCategory === 'caixa-tarde') {
+            afternoonValue += currentSales;
+          } else if (currentCategory === 'caixa-noite') {
+            nightValue += currentSales;
+          }
+        }
+        
+        const totalValue = morningValue + afternoonValue + nightValue;
+        
+        console.log('💰 Valores calculados:', {
+          morningValue,
+          afternoonValue,
+          nightValue,
+          totalValue
+        });
+        
+        // Atualizar elementos
+        this.updateElement('morningCashValue', `R$ ${morningValue.toFixed(2)}`);
+        this.updateElement('afternoonCashValue', `R$ ${afternoonValue.toFixed(2)}`);
+        this.updateElement('nightCashValue', `R$ ${nightValue.toFixed(2)}`);
+        this.updateElement('totalCashValue', `R$ ${totalValue.toFixed(2)}`);
+        
+        // Atualizar contagem de relatórios (incluindo caixas abertos)
+        const totalReports = this.getTotalReportsCount();
+        this.updateElement('totalCashReports', totalReports);
+      }
+      
+      getTotalReportsCount() {
+        const reports = JSON.parse(localStorage.getItem('academia_cash_reports') || '[]');
+        const cashControl = JSON.parse(localStorage.getItem('academia_cash_control') || '{}');
+        
+        // Contar relatórios fechados
+        let count = reports.length;
+        
+        // Adicionar 1 se houver caixa aberto
+        if (cashControl.isOpen) {
+          count += 1;
+        }
+        
+        return count;
       }
       
       filterReportsByPeriod(reports, period) {
@@ -1073,15 +1159,18 @@
       }
       
       showCashReports() {
-        console.log('📊 Exibindo relatórios de caixa...');
+        console.log('📊 Exibindo relatórios de caixa em tempo real...');
         
         const reports = JSON.parse(localStorage.getItem('academia_cash_reports') || '[]');
+        const sales = JSON.parse(localStorage.getItem('academia_sales') || '[]');
+        const cashControl = JSON.parse(localStorage.getItem('academia_cash_control') || '{}');
         const today = new Date().toDateString();
         
         console.log('🔍 Debug showCashReports:', {
-          allReports: reports,
-          today: today,
-          reportsCount: reports.length
+          allReports: reports.length,
+          allSales: sales.length,
+          cashControl: cashControl,
+          today: today
         });
         
         // Filtrar relatórios de hoje
@@ -1090,13 +1179,21 @@
           return reportDate === today;
         });
         
-        console.log('🔍 Relatórios de hoje:', todayReports);
+        // Filtrar vendas de hoje
+        const todaySales = sales.filter(sale => 
+          new Date(sale.timestamp).toDateString() === today
+        );
+        
+        console.log('🔍 Relatórios de hoje:', todayReports.length);
+        console.log('🔍 Vendas de hoje:', todaySales.length);
         
         // Calcular totais
-        const totalValue = todayReports.reduce((sum, report) => sum + report.totalSales, 0);
+        const reportsValue = todayReports.reduce((sum, report) => sum + report.totalSales, 0);
+        const salesValue = todaySales.reduce((sum, sale) => sum + (sale.total || 0), 0);
+        const totalValue = reportsValue + salesValue;
         
         // Atualizar estatísticas
-        document.getElementById('totalCashReports').textContent = todayReports.length;
+        document.getElementById('totalCashReports').textContent = todayReports.length + (cashControl.isOpen ? 1 : 0);
         document.getElementById('totalCashValue').textContent = `R$ ${totalValue.toFixed(2)}`;
         
         // Criar modal de relatórios
@@ -1110,12 +1207,86 @@
               <span class="close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</span>
             </div>
             <div class="modal-body">
-              ${this.generateCashReportsHTML(todayReports)}
+              ${this.generateRealTimeReportsHTML(todayReports, todaySales, cashControl)}
             </div>
           </div>
         `;
         
         document.body.appendChild(modal);
+      }
+      
+      generateRealTimeReportsHTML(reports, sales, cashControl) {
+        let html = '<div class="reports-container">';
+        
+        // Mostrar status dos caixas
+        html += '<div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">';
+        html += '<h3>📊 Status dos Caixas (Tempo Real)</h3>';
+        
+        const categories = ['caixa-manha', 'caixa-tarde', 'caixa-noite'];
+        const categoryNames = {
+          'caixa-manha': 'Caixa Manhã',
+          'caixa-tarde': 'Caixa Tarde',
+          'caixa-noite': 'Caixa Noite'
+        };
+        
+        categories.forEach(category => {
+          const categorySales = sales.filter(sale => sale.category === category);
+          const categoryValue = categorySales.reduce((sum, sale) => sum + (sale.total || 0), 0);
+          const isOpen = cashControl.isOpen && cashControl.category === category;
+          
+          html += `
+            <div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: ${isOpen ? '#d4edda' : '#f8f9fa'};">
+              <strong>${categoryNames[category]}:</strong> 
+              R$ ${categoryValue.toFixed(2)} 
+              ${isOpen ? '<span style="color: #28a745;">(ABERTO)</span>' : '<span style="color: #6c757d;">(FECHADO)</span>'}
+              - ${categorySales.length} vendas
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+        
+        // Mostrar relatórios fechados
+        if (reports.length > 0) {
+          html += '<h3>📋 Relatórios Fechados</h3>';
+          reports.forEach((report, index) => {
+            const openTime = new Date(report.openTime).toLocaleString('pt-BR');
+            const closeTime = new Date(report.closeTime).toLocaleString('pt-BR');
+            
+            const categoryNames = {
+              'caixa-manha': 'Caixa Manhã',
+              'caixa-tarde': 'Caixa Tarde', 
+              'caixa-noite': 'Caixa Noite',
+              'admin': 'Administrador'
+            };
+            
+            const friendlyCategory = categoryNames[report.category] || report.category;
+            
+            html += `
+              <div class="report-card" style="border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 8px;">
+                <h3>📈 ${friendlyCategory} - ${report.cashier}</h3>
+                <div class="report-info">
+                  <p><strong>⏰ Abertura:</strong> ${openTime}</p>
+                  <p><strong>⏰ Fechamento:</strong> ${closeTime}</p>
+                  <p><strong>💰 Caixa Inicial:</strong> R$ ${report.initialCash.toFixed(2)}</p>
+                  <p><strong>💰 Vendas:</strong> R$ ${report.totalSales.toFixed(2)}</p>
+                  <p><strong>💰 Saldo Final:</strong> R$ ${report.finalBalance.toFixed(2)}</p>
+                  ${report.observations ? `<p><strong>📝 Observações:</strong> ${report.observations}</p>` : ''}
+                </div>
+                
+                <div class="sales-details">
+                  <h4>🛒 Vendas Detalhadas:</h4>
+                  ${this.generateSalesDetailsHTML(report.sales)}
+                </div>
+              </div>
+            `;
+          });
+        } else {
+          html += '<p>Nenhum relatório de caixa fechado encontrado para hoje.</p>';
+        }
+        
+        html += '</div>';
+        return html;
       }
       
       generateCashReportsHTML(reports) {
@@ -1336,13 +1507,36 @@
       }
     }
     
+    // Variável para controle de atualização automática
+    let autoRefreshInterval = null;
+    
     // Funções globais
     function showCashReports() {
       adminSystem.showCashReports();
     }
     
     function updateCashReports() {
-      adminSystem.updateCashReportsStats();
+      adminSystem.updateRealTimeStats();
+    }
+    
+    function startAutoRefresh() {
+      if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+        alert('Atualização automática desativada!');
+        return;
+      }
+      
+      // Atualizar imediatamente
+      updateCashReports();
+      
+      // Configurar atualização a cada 5 segundos
+      autoRefreshInterval = setInterval(() => {
+        console.log('🔄 Atualização automática executada');
+        updateCashReports();
+      }, 5000);
+      
+      alert('Atualização automática ativada! Os dados serão atualizados a cada 5 segundos.');
     }
     
     function openAddUserModal() {
