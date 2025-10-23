@@ -689,6 +689,17 @@
           reports: reports
         });
         
+        // Debug: Mostrar todos os relatórios disponíveis
+        console.log('🔍 All available reports:');
+        reports.forEach((report, index) => {
+          console.log(`Report ${index + 1}:`, {
+            category: report.category,
+            closeTime: report.closeTime,
+            totalSales: report.totalSales,
+            cashier: report.cashier
+          });
+        });
+        
         // Filtrar relatórios por período
         const filteredReports = this.filterReportsByPeriod(reports, period);
         
@@ -726,7 +737,9 @@
           case 'today':
             return reports.filter(report => {
               const reportDate = new Date(report.closeTime);
-              return reportDate.toDateString() === today.toDateString();
+              const reportDateOnly = new Date(reportDate.getFullYear(), reportDate.getMonth(), reportDate.getDate());
+              const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+              return reportDateOnly.getTime() === todayOnly.getTime();
             });
             
           case 'week':
@@ -762,19 +775,33 @@
               return reports;
             }
             
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            end.setHours(23, 59, 59, 999); // Incluir todo o dia final
+            // Criar datas corretamente
+            const start = new Date(startDate + 'T00:00:00.000Z');
+            const end = new Date(endDate + 'T23:59:59.999Z');
             
-            console.log('🔍 Date range:', { start, end });
+            console.log('🔍 Date range:', { 
+              startDate, 
+              endDate, 
+              start: start.toISOString(), 
+              end: end.toISOString() 
+            });
             
             const filteredReports = reports.filter(report => {
               const reportDate = new Date(report.closeTime);
-              const isInRange = reportDate >= start && reportDate <= end;
+              
+              // Comparar apenas a data (ignorar hora)
+              const reportDateOnly = new Date(reportDate.getFullYear(), reportDate.getMonth(), reportDate.getDate());
+              const startDateOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+              const endDateOnly = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+              
+              const isInRange = reportDateOnly >= startDateOnly && reportDateOnly <= endDateOnly;
               
               console.log('🔍 Report date check:', {
-                reportDate: reportDate.toISOString(),
                 reportCloseTime: report.closeTime,
+                reportDate: reportDate.toISOString(),
+                reportDateOnly: reportDateOnly.toISOString(),
+                startDateOnly: startDateOnly.toISOString(),
+                endDateOnly: endDateOnly.toISOString(),
                 isInRange,
                 reportCategory: report.category,
                 reportTotalSales: report.totalSales
