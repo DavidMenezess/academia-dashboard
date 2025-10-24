@@ -59,26 +59,45 @@
       min-height: 100vh;
     }
     
-    .    header {
-      background: linear-gradient(135deg, var(--neutral-dark) 0%, var(--neutral) 50%, var(--primary) 100%);
+    header {
+      background: linear-gradient(135deg, var(--neutral-dark) 0%, var(--neutral) 30%, var(--primary) 70%, var(--primary-light) 100%);
       color: var(--white);
-      padding: 1.5rem 2rem;
-      box-shadow: var(--shadow-lg);
+      padding: 2rem 2rem;
+      box-shadow: var(--shadow-xl);
       position: relative;
       overflow: hidden;
+      border-bottom: 3px solid var(--primary-light);
     }
     
-    .header::before {
+    header::before {
       content: '';
       position: absolute;
-      top: 0;
-      right: 0;
-      width: 200px;
-      height: 200px;
-      background: linear-gradient(45deg, var(--secondary) 0%, rgba(245, 158, 11, 0.3) 100%);
+      top: -50px;
+      right: -50px;
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(45deg, var(--secondary) 0%, var(--accent) 50%, rgba(245, 158, 11, 0.2) 100%);
       border-radius: 50%;
-      transform: translate(50%, -50%);
+      opacity: 0.15;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -30px;
+      left: -30px;
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(45deg, var(--accent) 0%, var(--primary-light) 100%);
+      border-radius: 50%;
       opacity: 0.1;
+      animation: float 4s ease-in-out infinite reverse;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
     }
     
     .header-content {
@@ -96,49 +115,81 @@
     }
     
     .header-icon {
-      width: 48px;
-      height: 48px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: var(--radius-lg);
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+      border-radius: var(--radius-xl);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 1.75rem;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
     }
     
     .header h1 {
-      font-size: 1.875rem;
-      font-weight: 700;
+      font-size: 2.25rem;
+      font-weight: 800;
       margin-bottom: 0.25rem;
       letter-spacing: -0.025em;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(135deg, var(--white) 0%, rgba(255, 255, 255, 0.8) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     
     .header-subtitle {
-      font-size: 0.875rem;
-      opacity: 0.9;
-      font-weight: 400;
+      font-size: 1rem;
+      opacity: 0.95;
+      font-weight: 500;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      letter-spacing: 0.5px;
     }
     
     .logout-btn {
-      background: rgba(255, 255, 255, 0.15);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
       color: var(--white);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 0.75rem 1.5rem;
-      border-radius: var(--radius);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 0.875rem 1.75rem;
+      border-radius: var(--radius-lg);
       cursor: pointer;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 600;
       transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(15px);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .logout-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
     }
     
     .logout-btn:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-md);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .logout-btn:hover::before {
+      left: 100%;
     }
     
     .container {
