@@ -69,7 +69,7 @@
       border-bottom: 3px solid var(--primary-light);
     }
     
-    header::after {
+    .header::after {
       content: '';
       position: absolute;
       top: 0;
@@ -82,7 +82,7 @@
       border-radius: 0 0 3px 3px;
     }
     
-    header::before {
+    .header::before {
       content: '';
       position: absolute;
       top: -50px;
@@ -93,19 +93,6 @@
       border-radius: 50%;
       opacity: 0.15;
       animation: float 6s ease-in-out infinite;
-    }
-    
-    header::after {
-      content: '';
-      position: absolute;
-      bottom: -30px;
-      left: -30px;
-      width: 150px;
-      height: 150px;
-      background: linear-gradient(45deg, var(--accent) 0%, var(--primary-light) 100%);
-      border-radius: 50%;
-      opacity: 0.1;
-      animation: float 4s ease-in-out infinite reverse;
     }
     
     @keyframes float {
