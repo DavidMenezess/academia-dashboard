@@ -176,3 +176,5 @@ systemctl daemon-reload
 systemctl enable academia-dashboard.service
 
 log "Configuração concluída!"
+
+

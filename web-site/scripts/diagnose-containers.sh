@@ -134,3 +134,5 @@ echo ""
 log "Para verificar status:"
 echo "  docker ps"
 echo ""
+
+

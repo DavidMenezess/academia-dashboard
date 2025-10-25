@@ -104,3 +104,5 @@ echo ""
 log "Para acessar o dashboard:"
 echo "  http://$(curl -s ifconfig.me)"
 echo ""
+
+

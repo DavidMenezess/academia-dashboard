@@ -1,46 +1,47 @@
 #!/bin/bash
 set -e
 
-# Log simples
+# Log detalhado
 log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"; }
 
 # Redirecionar output
 exec > >(tee -a /var/log/user-data.log) 2>&1
 
-log "Iniciando configuração..."
+log "=== INICIANDO CONFIGURAÇÃO ROBUSTA ==="
 
 # Atualizar sistema
 export DEBIAN_FRONTEND=noninteractive
+log "Atualizando sistema..."
 apt-get update -y
 apt-get upgrade -y
 
 # Instalar dependências essenciais
-apt-get install -y curl wget git unzip
+log "Instalando dependências..."
+apt-get install -y curl wget git unzip htop
 
 # Instalar Docker
+log "Instalando Docker..."
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 usermod -aG docker ubuntu
 
 # Instalar Docker Compose
+log "Instalando Docker Compose..."
 curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
-# Instalar AWS CLI
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-./aws/install
-
 # Configurar usuário docker
 usermod -aG docker ubuntu
-sleep 5
+sleep 10
 
 # Clonar repositório
+log "Clonando repositório..."
 cd /home/ubuntu
 git clone https://github.com/DavidMenezess/academia-dashboard.git
 chown -R ubuntu:ubuntu /home/ubuntu/academia-dashboard
 
 # Configurar variáveis de ambiente
+log "Configurando variáveis de ambiente..."
 cat > /home/ubuntu/academia-dashboard/web-site/.env << EOF
 DATABASE_TYPE=dynamodb
 AWS_REGION=${aws_region}
@@ -48,16 +49,18 @@ DYNAMODB_TABLE=academia-dashboard-prod
 AWS_USE_IAM_ROLE=true
 EOF
 
-# Configurar permissões
 chown ubuntu:ubuntu /home/ubuntu/academia-dashboard/web-site/.env
 
 # Navegar para o projeto
 cd /home/ubuntu/academia-dashboard/web-site
 
 # Criar diretórios necessários
+log "Criando diretórios..."
 mkdir -p data logs api/uploads
+chown -R ubuntu:ubuntu data logs api/uploads
 
 # Criar dados iniciais
+log "Criando dados iniciais..."
 cat > data/academia_data.json << 'EOF'
 {
   "academia": {
@@ -79,84 +82,107 @@ cat > data/academia_data.json << 'EOF'
 EOF
 
 # Instalar dependências da API
+log "Instalando dependências da API..."
 if [ -d "api" ]; then
     cd api
     npm install --production
     cd ..
 fi
 
-# Limpar containers
+# Limpar containers existentes
+log "Limpando containers existentes..."
 docker system prune -f || true
+docker-compose -f docker-compose.prod.yml down || true
 
-# Usar docker-compose-fixed.yml se existir, senão usar o padrão
-if [ -f "docker-compose-fixed.yml" ]; then
-    COMPOSE_FILE="docker-compose-fixed.yml"
-else
-    COMPOSE_FILE="docker-compose.prod.yml"
-fi
-
-log "Usando arquivo: $COMPOSE_FILE"
+# Aguardar Docker estar pronto
+log "Aguardando Docker estar pronto..."
+sleep 15
 
 # Fazer build e iniciar containers
-docker-compose -f $COMPOSE_FILE down || true
-docker-compose -f $COMPOSE_FILE build --no-cache
-docker-compose -f $COMPOSE_FILE up -d
+log "Fazendo build dos containers..."
+docker-compose -f docker-compose.prod.yml build --no-cache
+
+log "Iniciando containers..."
+docker-compose -f docker-compose.prod.yml up -d
 
 # Aguardar inicialização
 log "Aguardando containers iniciarem..."
-sleep 60
+sleep 90
 
-# Verificar status
-log "Status dos containers:"
+# Verificar status inicial
+log "Status inicial dos containers:"
 docker ps
 
-# Verificar e reiniciar se necessário
-for i in {1..3}; do
-    log "Verificação $i/3..."
+# Função para verificar e reiniciar containers
+check_and_restart_containers() {
+    local max_attempts=5
+    local attempt=1
     
-    dashboard_running=$(docker ps | grep -q "academia-dashboard-prod" && echo "yes" || echo "no")
-    api_running=$(docker ps | grep -q "academia-data-api-prod" && echo "yes" || echo "no")
+    while [ $attempt -le $max_attempts ]; do
+        log "Verificação $attempt/$max_attempts..."
+        
+        # Verificar se containers estão rodando
+        dashboard_running=$(docker ps | grep -q "academia-dashboard-prod" && echo "yes" || echo "no")
+        api_running=$(docker ps | grep -q "academia-data-api-prod" && echo "yes" || echo "no")
+        
+        log "Dashboard: $dashboard_running, API: $api_running"
+        
+        # Reiniciar se necessário
+        if [ "$dashboard_running" = "no" ]; then
+            log "Dashboard não está rodando, reiniciando..."
+            docker-compose -f docker-compose.prod.yml restart academia-dashboard || true
+            sleep 30
+        fi
+        
+        if [ "$api_running" = "no" ]; then
+            log "API não está rodando, reiniciando..."
+            docker-compose -f docker-compose.prod.yml restart data-api || true
+            sleep 30
+        fi
+        
+        # Verificar novamente
+        dashboard_running=$(docker ps | grep -q "academia-dashboard-prod" && echo "yes" || echo "no")
+        api_running=$(docker ps | grep -q "academia-data-api-prod" && echo "yes" || echo "no")
+        
+        # Se ambos estão rodando, sair do loop
+        if [ "$dashboard_running" = "yes" ] && [ "$api_running" = "yes" ]; then
+            log "✅ Todos os containers estão rodando!"
+            return 0
+        fi
+        
+        attempt=$((attempt + 1))
+        sleep 20
+    done
     
-    if [ "$dashboard_running" = "no" ]; then
-        log "Dashboard não está rodando, reiniciando..."
-        docker-compose -f $COMPOSE_FILE restart academia-dashboard
-        sleep 30
-    fi
-    
-    if [ "$api_running" = "no" ]; then
-        log "API não está rodando, reiniciando..."
-        docker-compose -f $COMPOSE_FILE restart data-api
-        sleep 30
-    fi
-    
-    # Se ambos estão rodando, sair do loop
-    if [ "$dashboard_running" = "yes" ] && [ "$api_running" = "yes" ]; then
-        log "Todos os containers estão rodando!"
-        break
-    fi
-    
-    sleep 15
-done
+    log "⚠️ Alguns containers não conseguiram iniciar após $max_attempts tentativas"
+    return 1
+}
+
+# Executar verificação
+check_and_restart_containers
 
 # Testar conectividade
 log "Testando conectividade..."
-sleep 20
+sleep 30
 
+# Testar dashboard
 if curl -s http://localhost > /dev/null; then
     log "✅ Dashboard funcionando!"
 else
     log "⚠️ Dashboard não respondeu"
-    docker logs academia-dashboard-prod --tail 10
+    docker logs academia-dashboard-prod --tail 20 || true
 fi
 
+# Testar API
 if curl -s http://localhost:3000/health > /dev/null; then
     log "✅ API funcionando!"
 else
     log "⚠️ API não respondeu"
-    docker logs academia-data-api-prod --tail 10
+    docker logs academia-data-api-prod --tail 20 || true
 fi
 
-# Criar serviço systemd
+# Criar serviço systemd para reinicialização automática
+log "Criando serviço systemd..."
 cat > /etc/systemd/system/academia-dashboard.service << EOF
 [Unit]
 Description=Academia Dashboard
@@ -167,16 +193,79 @@ Requires=docker.service
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/home/ubuntu/academia-dashboard/web-site
-ExecStart=/usr/local/bin/docker-compose -f $COMPOSE_FILE up -d
-ExecStop=/usr/local/bin/docker-compose -f $COMPOSE_FILE down
+ExecStart=/usr/local/bin/docker-compose -f docker-compose.prod.yml up -d
+ExecStop=/usr/local/bin/docker-compose -f docker-compose.prod.yml down
 User=ubuntu
 Group=ubuntu
+Restart=on-failure
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
+# Criar script de monitoramento
+cat > /home/ubuntu/academia-dashboard/web-site/monitor-containers.sh << 'EOF'
+#!/bin/bash
+log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"; }
+
+cd /home/ubuntu/academia-dashboard/web-site
+
+# Verificar containers
+dashboard_running=$(docker ps | grep -q "academia-dashboard-prod" && echo "yes" || echo "no")
+api_running=$(docker ps | grep -q "academia-data-api-prod" && echo "yes" || echo "no")
+
+if [ "$dashboard_running" = "no" ] || [ "$api_running" = "no" ]; then
+    log "Containers não estão rodando, reiniciando..."
+    docker-compose -f docker-compose.prod.yml up -d
+    sleep 30
+fi
+EOF
+
+chmod +x /home/ubuntu/academia-dashboard/web-site/monitor-containers.sh
+chown ubuntu:ubuntu /home/ubuntu/academia-dashboard/web-site/monitor-containers.sh
+
+# Configurar cron job para monitoramento
+echo "*/5 * * * * /home/ubuntu/academia-dashboard/web-site/monitor-containers.sh >> /var/log/container-monitor.log 2>&1" | crontab -u ubuntu -
+
+# Habilitar e iniciar serviço
 systemctl daemon-reload
 systemctl enable academia-dashboard.service
+systemctl start academia-dashboard.service
 
-log "Configuração concluída!"
+# Status final
+log "=== STATUS FINAL ==="
+docker ps
+log "Configuração robusta concluída!"
+
+# Criar script de diagnóstico
+cat > /home/ubuntu/academia-dashboard/web-site/diagnose.sh << 'EOF'
+#!/bin/bash
+echo "=== DIAGNÓSTICO ACADEMIA DASHBOARD ==="
+echo "Data: $(date)"
+echo ""
+echo "=== DOCKER STATUS ==="
+docker ps -a
+echo ""
+echo "=== DOCKER COMPOSE STATUS ==="
+cd /home/ubuntu/academia-dashboard/web-site
+docker-compose -f docker-compose.prod.yml ps
+echo ""
+echo "=== SYSTEMD STATUS ==="
+systemctl status academia-dashboard.service
+echo ""
+echo "=== LOGS DASHBOARD ==="
+docker logs academia-dashboard-prod --tail 10
+echo ""
+echo "=== LOGS API ==="
+docker logs academia-data-api-prod --tail 10
+echo ""
+echo "=== CONECTIVIDADE ==="
+curl -s http://localhost > /dev/null && echo "Dashboard: OK" || echo "Dashboard: FALHA"
+curl -s http://localhost:3000/health > /dev/null && echo "API: OK" || echo "API: FALHA"
+EOF
+
+chmod +x /home/ubuntu/academia-dashboard/web-site/diagnose.sh
+chown ubuntu:ubuntu /home/ubuntu/academia-dashboard/web-site/diagnose.sh
+
+log "=== CONFIGURAÇÃO ROBUSTA CONCLUÍDA ==="

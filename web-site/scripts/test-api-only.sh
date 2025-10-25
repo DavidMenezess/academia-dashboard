@@ -122,3 +122,5 @@ echo ""
 log "Se a API funcionou, o problema está no dashboard."
 log "Se a API não funcionou, o problema está na API."
 echo ""
+
+

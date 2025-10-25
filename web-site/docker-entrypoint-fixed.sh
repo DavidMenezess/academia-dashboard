@@ -36,3 +36,5 @@ echo "✅ Inicialização concluída!"
 
 # Executar o comando principal
 exec "$@"
+
+

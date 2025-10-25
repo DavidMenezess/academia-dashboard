@@ -193,3 +193,5 @@ echo ""
 log "Para reiniciar:"
 echo "  docker-compose -f $COMPOSE_FILE restart"
 echo ""
+
+

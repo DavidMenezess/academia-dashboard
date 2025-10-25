@@ -85,3 +85,5 @@ echo "1. Faça logout: exit"
 echo "2. Conecte novamente via SSH"
 echo "3. Execute: docker ps (sem sudo)"
 echo ""
+
+

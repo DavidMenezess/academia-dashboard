@@ -315,3 +315,5 @@ log "Se ainda não funcionar, execute:"
 echo "  docker logs academia-dashboard-prod"
 echo "  docker logs academia-data-api-prod"
 echo ""
+
+

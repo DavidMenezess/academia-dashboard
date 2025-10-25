@@ -373,3 +373,5 @@ echo ""
 log "Para parar tudo:"
 echo "  docker compose -f docker-compose-simple.yml down"
 echo ""
+
+
