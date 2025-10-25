@@ -139,6 +139,23 @@
       filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
     }
     
+    .header-divider {
+      position: relative;
+      margin: 0.5rem 0;
+    }
+    
+    .header-divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #000;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+    
     .header-subtitle {
       font-size: 1rem;
       color: var(--white);
@@ -146,7 +163,13 @@
       text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
       letter-spacing: 0.5px;
       opacity: 0.9;
-      margin-bottom: 1.5rem;
+      margin: 0;
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(135deg, var(--neutral-dark) 0%, var(--neutral) 30%, var(--primary) 70%, var(--primary-light) 100%);
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      display: inline-block;
     }
     
     .logout-btn {
@@ -489,7 +512,9 @@
         </div>
         <div>
           <h1>Painel Administrativo</h1>
-          <div class="header-subtitle" id="currentUserName">Carregando...</div>
+          <div class="header-divider">
+            <div class="header-subtitle" id="currentUserName">Carregando...</div>
+          </div>
         </div>
       </div>
       <a href="#" class="logout-btn" onclick="logout()">
