@@ -438,6 +438,30 @@
       margin-top: 1rem;
     }
     
+    /* Layout das Ações Rápidas */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    
+    .quick-actions .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    
+    @media (max-width: 768px) {
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+    
     .table {
       width: 100%;
       border-collapse: separate;
@@ -737,24 +761,33 @@
           </div>
           Ações Rápidas
         </h2>
-        <button class="btn btn-success" onclick="openAddUserModal()">
-          <i class="fas fa-plus"></i>
-          Novo Usuário
-        </button>
-        <button class="btn btn-info" onclick="refreshUsers()">
-          <i class="fas fa-sync-alt"></i>
-          Atualizar Lista
-        </button>
-        <button class="btn btn-warning" onclick="exportUsers()">
-          <i class="fas fa-download"></i>
-          Exportar Dados
-        </button>
-        <button class="btn btn-success" onclick="window.open('dashboard.html', '_blank')">
-          <i class="fas fa-home"></i>
-          Dashboard
-        </button>
+        <div class="quick-actions">
+          <button class="btn btn-success" onclick="openAddUserModal()">
+            <i class="fas fa-plus"></i>
+            Novo Usuário
+          </button>
+          <button class="btn btn-info" onclick="refreshUsers()">
+            <i class="fas fa-sync-alt"></i>
+            Atualizar Lista
+          </button>
+          <button class="btn btn-warning" onclick="exportUsers()">
+            <i class="fas fa-download"></i>
+            Exportar Dados
+          </button>
+          <button class="btn btn-info" onclick="importUsers()">
+            <i class="fas fa-upload"></i>
+            Importar Dados
+          </button>
+          <button class="btn btn-success" onclick="window.open('dashboard.html', '_blank')">
+            <i class="fas fa-home"></i>
+            Dashboard
+          </button>
+        </div>
       </div>
     </div>
+
+    <!-- Input oculto para importação de dados -->
+    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleFileImport(event)">
 
     <!-- Lista de Usuários -->
     <div class="card">
@@ -1786,20 +1819,129 @@
       }
       
       exportUsers() {
-        const data = this.users.map(user => ({
-          ID: user.id,
-          Nome: user.name,
-          Usuario: user.username,
-          Funcao: user.role,
-          Categoria: user.category,
-          Status: user.isActive ? 'Ativo' : 'Inativo',
-          'Ultimo Login': user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Nunca',
-          'Data Criacao': new Date(user.createdAt).toLocaleString()
-        }));
+        try {
+          // Criar backup completo do sistema
+          const backupData = {
+            timestamp: new Date().toISOString(),
+            version: '1.0.0',
+            users: this.users,
+            settings: {
+              currentUser: this.currentUser,
+              systemConfig: {
+                autoRefresh: localStorage.getItem('autoRefresh') === 'true',
+                theme: localStorage.getItem('theme') || 'light'
+              }
+            },
+            metadata: {
+              totalUsers: this.users.length,
+              activeUsers: this.users.filter(u => u.isActive).length,
+              exportDate: new Date().toLocaleString('pt-BR')
+            }
+          };
+          
+          // Converter para JSON e fazer download
+          const jsonString = JSON.stringify(backupData, null, 2);
+          const blob = new Blob([jsonString], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `backup_academia_${new Date().toISOString().split('T')[0]}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          this.showAlert('Backup completo exportado com sucesso!', 'success');
+        } catch (error) {
+          console.error('Erro ao exportar dados:', error);
+          this.showAlert('Erro ao exportar dados. Tente novamente.', 'error');
+        }
+      }
+      
+      importUsers() {
+        document.getElementById('importFile').click();
+      }
+      
+      handleFileImport(event) {
+        const file = event.target.files[0];
+        if (!file) return;
         
-        const csv = this.convertToCSV(data);
-        this.downloadCSV(csv, 'usuarios_academia.csv');
-        this.showAlert('Dados exportados com sucesso!', 'success');
+        if (!file.name.endsWith('.json')) {
+          this.showAlert('Por favor, selecione um arquivo JSON válido.', 'error');
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const backupData = JSON.parse(e.target.result);
+            
+            // Validar estrutura do backup
+            if (!backupData.users || !Array.isArray(backupData.users)) {
+              throw new Error('Arquivo de backup inválido');
+            }
+            
+            // Confirmar importação
+            const confirmMessage = `Deseja importar o backup de ${backupData.metadata?.exportDate || 'data desconhecida'}?\n\n` +
+                                 `Usuários: ${backupData.users.length}\n` +
+                                 `Usuários Ativos: ${backupData.users.filter(u => u.isActive).length}\n\n` +
+                                 `⚠️ ATENÇÃO: Esta ação irá substituir todos os dados atuais!`;
+            
+            if (confirm(confirmMessage)) {
+              this.performImport(backupData);
+            }
+          } catch (error) {
+            console.error('Erro ao processar arquivo:', error);
+            this.showAlert('Arquivo de backup inválido ou corrompido.', 'error');
+          }
+        };
+        
+        reader.readAsText(file);
+      }
+      
+      performImport(backupData) {
+        try {
+          // Backup dos dados atuais antes da importação
+          const currentBackup = {
+            users: [...this.users],
+            timestamp: new Date().toISOString()
+          };
+          
+          // Importar dados
+          this.users = backupData.users.map(user => ({
+            ...user,
+            id: user.id || Date.now() + Math.random(), // Garantir ID único
+            createdAt: user.createdAt || new Date().toISOString(),
+            lastLogin: user.lastLogin || null
+          }));
+          
+          // Salvar no localStorage
+          localStorage.setItem('academia_users', JSON.stringify(this.users));
+          
+          // Restaurar configurações se disponíveis
+          if (backupData.settings) {
+            if (backupData.settings.systemConfig?.autoRefresh !== undefined) {
+              localStorage.setItem('autoRefresh', backupData.settings.systemConfig.autoRefresh);
+            }
+            if (backupData.settings.systemConfig?.theme) {
+              localStorage.setItem('theme', backupData.settings.systemConfig.theme);
+            }
+          }
+          
+          // Atualizar interface
+          this.loadUsersTable();
+          this.updateStats();
+          
+          this.showAlert(`Backup importado com sucesso! ${backupData.users.length} usuários restaurados.`, 'success');
+          
+          // Salvar backup de segurança dos dados anteriores
+          localStorage.setItem('backup_antes_importacao', JSON.stringify(currentBackup));
+          
+        } catch (error) {
+          console.error('Erro ao importar dados:', error);
+          this.showAlert('Erro ao importar dados. Verifique o arquivo e tente novamente.', 'error');
+        }
       }
       
       convertToCSV(data) {
@@ -2317,6 +2459,14 @@
     
     function exportUsers() {
       adminSystem.exportUsers();
+    }
+    
+    function importUsers() {
+      adminSystem.importUsers();
+    }
+    
+    function handleFileImport(event) {
+      adminSystem.handleFileImport(event);
     }
     
     function logout() {
