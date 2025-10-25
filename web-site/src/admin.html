@@ -1357,7 +1357,7 @@
         let afternoonValue = afternoonSales.reduce((sum, sale) => sum + (sale.total || 0), 0);
         let nightValue = nightSales.reduce((sum, sale) => sum + (sale.total || 0), 0);
         
-        // Se o caixa estiver aberto E for período "hoje", incluir vendas atuais
+        // Se o caixa estiver aberto E for período "hoje", usar vendas atuais em vez de somar
         if (cashControl.isOpen && cashControl.category && period === 'today') {
           const currentCategory = cashControl.category;
           const currentSales = cashControl.todaySales || 0;
@@ -1367,13 +1367,13 @@
             currentSales: currentSales
           });
           
-          // Adicionar vendas atuais ao valor correspondente
+          // Usar vendas atuais em vez de somar (evitar duplicação)
           if (currentCategory === 'caixa-manha') {
-            morningValue += currentSales;
+            morningValue = currentSales; // Usar valor atual, não somar
           } else if (currentCategory === 'caixa-tarde') {
-            afternoonValue += currentSales;
+            afternoonValue = currentSales; // Usar valor atual, não somar
           } else if (currentCategory === 'caixa-noite') {
-            nightValue += currentSales;
+            nightValue = currentSales; // Usar valor atual, não somar
           }
         }
         
