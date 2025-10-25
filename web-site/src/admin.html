@@ -371,6 +371,73 @@
       background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     }
     
+    /* Botões Modernos - Relatórios de Caixa */
+    .modern-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .modern-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .modern-btn:hover::before {
+      left: 100%;
+    }
+    
+    .modern-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modern-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .modern-btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+    }
+    
+    .modern-btn-primary:hover {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    }
+    
+    .modern-btn-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+    
+    .modern-btn-success:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    }
+    
+    .modern-btn-full {
+      width: 100%;
+      margin-top: 1rem;
+    }
+    
     .table {
       width: 100%;
       border-collapse: separate;
@@ -615,11 +682,13 @@
             </div>
           </div>
           
-        <button onclick="updateCashReports()" style="width: 100%; padding: 8px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
-          🔄 Atualizar Relatórios
+        <button onclick="updateCashReports()" class="modern-btn modern-btn-primary">
+          <i class="fas fa-sync-alt"></i>
+          Atualizar Relatórios
         </button>
-        <button onclick="startAutoRefresh()" style="width: 100%; padding: 8px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 5px;">
-          ⚡ Atualização Automática
+        <button onclick="startAutoRefresh()" class="modern-btn modern-btn-success">
+          <i class="fas fa-bolt"></i>
+          Atualização Automática
         </button>
         </div>
         
@@ -654,8 +723,9 @@
           </div>
         </div>
         
-        <button onclick="showCashReports()" style="margin-top: 15px; width: 100%; padding: 8px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
-          📋 Ver Relatórios Detalhados
+        <button onclick="showCashReports()" class="modern-btn modern-btn-primary modern-btn-full">
+          <i class="fas fa-file-alt"></i>
+          Ver Relatórios Detalhados
         </button>
       </div>
 
