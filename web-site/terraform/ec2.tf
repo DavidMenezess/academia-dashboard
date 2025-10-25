@@ -26,8 +26,8 @@ resource "aws_instance" "academia_dashboard" {
   # Monitoramento (desabilitado para Free Tier)
   monitoring = var.enable_detailed_monitoring
 
-  # User Data - Script de inicialização corrigido
-  user_data = base64encode(templatefile("${path.module}/user-data-fixed.sh", {
+  # User Data - Script usando quick-fix.sh
+  user_data = base64encode(templatefile("${path.module}/user-data-quickfix.sh", {
     aws_region = var.aws_region
   }))
 
